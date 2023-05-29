@@ -24,7 +24,6 @@ dist-ssr
 *.sw?
 
 .env
-src/config.js
 
 coverage
 __tests__ 
