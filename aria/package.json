@@ -1,7 +1,7 @@
 {
-  "name": "a.r.i.a.",
+  "name": "aria",
   "private": true,
-  "version": "3.5.1",
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
