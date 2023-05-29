@@ -17,8 +17,6 @@ A virtual study assistant aimed towards college students, with two features:
 
 ## Version Specifications: 3.6.0
 
-Major
-
 1. Basic Rendering of pages
 2. Authentication
 3. Database Integration
@@ -27,13 +25,9 @@ Major
 6. New Dependancies
    6.1. react-scripts
    6.2. testing-library
-
-Minor 
 7. UI reform for popups 
 8. Supabase APIKEY and ProjectURL masked 
 9. 404 page + route
 10. Forgot Password page
-
-Patch (3.4.8) 
-10. Correcting image paths  
-11. Better component resizing for landing and study session pages
+11. Correcting image paths  
+12. Better component resizing for landing and study session pages
