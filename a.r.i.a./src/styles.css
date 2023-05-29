@@ -1,0 +1,522 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #e9cdcd;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  font-family: "Ubuntu";
+}
+
+.loginscreen--container {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  position: relative;
+  overflow: hidden;
+  width: 768px;
+  max-width: 100%;
+  min-height: 480px;
+  margin: auto;
+  top: 20vh;
+}
+
+.form-container {
+  position: absolute;
+  height: 100%;
+}
+
+.log-in-container {
+  left: 0;
+  width: 50%;
+}
+
+form {
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 50px;
+  height: 100%;
+  text-align: center;
+}
+
+input {
+  background-color: #eee;
+  border: none;
+  padding: 12px 15px;
+  margin: 8px 0;
+  width: 100%;
+}
+
+.forgot--password {
+  border: none;
+  background-color: transparent;
+  color: black;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.log--in {
+  border-radius: 20px;
+  border: 1px solid #ff4b2b;
+  background-color: #ff4b2b;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px 45px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.overlay-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.6s ease-in-out;
+  z-index: 100;
+}
+
+.overlay {
+  background: #4e1530;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 0 0;
+  color: #ffffff;
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
+}
+
+.overlay-panel {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 40px;
+  text-align: center;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
+}
+
+.overlay-right {
+  right: 0;
+}
+
+.sign--up {
+  border-radius: 20px;
+  border: 1px solid white;
+  background-color: transparent;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 10px;
+  padding: 12px 45px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.password-mismatch {
+  margin-top: 10px;
+}
+
+.nav--container {
+  font-family: "Montserrat";
+}
+
+.navbar {
+  display: inline-flexbox;
+  padding: 0.5rem;
+  background-color: #4e1530;
+}
+
+.navbar-brand {
+  font-family: "Ubuntu";
+  font-weight: 700;
+  font-size: 2.5rem;
+  padding-left: 2rem;
+  color: white;
+}
+
+.nav-item {
+  font-weight: 700;
+  padding: 0 18px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.nav-item:hover {
+  color: white;
+}
+
+.nav--sign--out {
+  font-weight: 700;
+  padding: 0 18px;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background-color: #4e1530;
+  color: white;
+  font-size: 2rem;
+}
+
+.nav-link {
+  font-size: 2rem;
+}
+
+.nav-link:hover {
+  color: white;
+}
+
+.website--condensed {
+  width: auto;
+  text-align: center;
+  padding: 200px;
+  border: none;
+  animation: fadeIn var(--fadeinTimeSecondary);
+  -webkit-animation: fadeIn var(--fadeinTimeSecondary);
+  -moz-animation: fadeIn var(--fadeinTimeSecondary);
+  -o-animation: fadeIn var(--fadeinTimeSecondary);
+  -ms-animation: fadeIn var(--fadeinTimeSecondary);
+}
+
+.welcome_message {
+  font-size: 2.2vw;
+  position: absolute;
+  font-weight: 800;
+  color: var(--colortextsecondary);
+  left: 5vw;
+  top: 20vw;
+  animation: fadeIn var(--fadeinTimePrimary);
+  -webkit-animation: fadeIn var(--fadeinTimePrimary);
+  -moz-animation: fadeIn var(--fadeinTimePrimary);
+  -o-animation: fadeIn var(--fadeinTimePrimary);
+  -ms-animation: fadeIn var(--fadeinTimePrimary);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.brand {
+  font-size: 100px;
+  /* line-height: 1.35; */
+  color: black;
+  font-weight: 700;
+}
+
+.brand_description {
+  font-size: 2vw;
+  font-weight: 600;
+  color: black;
+}
+
+.feature_icons {
+  padding: 0px;
+  max-width: 100%;
+  height: auto;
+}
+
+.feature_icon {
+  display: inline-block;
+  width: 15%;
+}
+
+.section--learn--more {
+  background-color: white;
+  text-align: center;
+  padding: 5rem 5rem;
+  border-top: 1px solid black;
+}
+
+.learn_more {
+  display: inline-block;
+  width: 30%;
+}
+
+.website_summary {
+  column-count: 3;
+  column-gap: 40px;
+  column-span: 3;
+  column-width: 150px;
+}
+
+#study-link {
+  text-decoration: underline;
+}
+
+.study-container {
+  display: flex;
+  margin-top: 20%;
+}
+
+.button-menu {
+  width: 200px;
+  background-color: #e9cdcd;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button {
+  width: 100%;
+  display: block;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #4e1530;
+  color: #ffffff;
+  border: none;
+  text-decoration: none;
+}
+
+.button:hover {
+  cursor: pointer;
+  background-color: #742d4e;
+}
+
+.plant {
+  margin-left: 55vw;
+}
+
+.ground {
+  background-color: #966f33;
+  text-align: center;
+  padding: 3rem 3rem;
+  border-top: 1px solid black;
+}
+
+#gpa-link {
+  text-decoration: underline;
+}
+
+.gpa-container {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+  background-color: #a86868;
+  min-height: 800px;
+  height: auto;
+  width: 1800px;
+  margin: 130px auto;
+  padding: 20px;
+  border-radius: 5px;
+  border: 5px solid #000000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.label {
+  width: 95%;
+  height: 50px;
+  font-size: 50px;
+  color: #e9cdcd;
+  background-color: transparent;
+  text-align: center;
+}
+
+.function-button {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: #e9cdcd;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.add-button {
+  top: 10px;
+  right: 10px;
+}
+
+.help-button {
+  bottom: 10px;
+  right: 10px;
+}
+
+.admin-button {
+  bottom: 10px;
+  right: 80px;
+}
+
+.button-label {
+  font-weight: 1000;
+  font-size: 30px;
+  color: #000000;
+}
+
+.note {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  margin: 50px;
+  background-color: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.edit {
+  position: absolute;
+  top: 10px;
+  right: 0px;
+}
+
+.edit button {
+  background: none;
+  border: none;
+  border-radius: 30%;
+  cursor: pointer;
+}
+
+.bottom-third {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 30%;
+  background-color: black;
+}
+
+.text {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  color: #e9cdcd;
+  font-size: 30px;
+  text-align: left;
+  width: 80%;
+  font-family: "Montserrat";
+  font-weight: bold;
+}
+
+.forgot--password--container {
+  width: 70%;
+  margin: auto;
+  height: 100vh;
+}
+
+.btn--update--password {
+  border-radius: 20px;
+  border: 1px solid #ff4b2b;
+  background-color: #ff4b2b;
+  color: #ffffff;
+  padding: 12px 45px;
+  margin-top: 20px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.popup-container {
+  background-color: white;
+  width: 30%;
+  margin: auto;
+  padding: 10px;
+  text-align: center;
+}
+
+.popup-text {
+  padding: 20px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.btn-popup {
+  border-radius: 20px;
+  border: none;
+  background-color: transparent;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px 45px;
+  margin: 10px 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.popup-container-bottom-third {
+  background-color: #4e1530;
+}
+
+.page-not-found {
+  background-color: white;
+  width: 50%;
+  height: 100vh;
+  margin: auto;
+}
+
+.page-not-found-message {
+  text-align: center;
+}
+
+.magnifying-glass {
+  margin: 10vh 15vw;
+  width: 40%;
+}
