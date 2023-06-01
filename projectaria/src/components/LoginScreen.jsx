@@ -1,14 +1,18 @@
 import { supabase } from "../supabase.js";
-import { useEffect, useState } from "react";
+import { React, useState } from "react";
 import UniversalPopup from "./UniversalPopup.jsx";
+import SupportPopup from "./SupportPopup.jsx";
+import { createContext } from "react";
 
 export default function LoginScreen() {
   const [accountConfirm, setAccountConfirm] = useState(false);
   const [passwordMatching, setPasswordMatching] = useState(true);
   const [emailValid, setEmailValid] = useState(true);
+  const [accountCreated, setAccountCreated] = useState(true);
 
   function closePopUp() {
     setAccountConfirm(false);
+    setAccountCreated(true);
   }
 
   async function logIn(e) {
@@ -17,10 +21,38 @@ export default function LoginScreen() {
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     if (document.getElementById("loginemail").value.match(validRegex)) {
       setEmailValid(true);
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const {} = await supabase.auth.signInWithPassword({
         email: document.getElementById("loginemail").value,
         password: document.getElementById("loginpassword").value,
       });
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      console.log(user.email);
+
+      const { data } = await supabase
+        .from("administrators")
+        .select("email")
+        .eq("email", user.email);
+      // console.log(data[0].email);
+      console.log(data[0]);
+
+      if (data[0] === undefined) {
+        // globalThis = false;
+        // console.log(globalThis);
+      }
+
+      // if (data[0] === undefined) {
+      //   globalThis = false;
+      //   console.log(globalThis);
+      // } else {
+      //   if (data[0] === user.email) {
+      //     globalThis = true;
+      //     console.log(user.email);
+      //     console.log(globalThis);
+      //   }
+      // }
     } else {
       setEmailValid(false);
     }
@@ -33,15 +65,22 @@ export default function LoginScreen() {
       document.getElementById("confirmpassword").value
     ) {
       setPasswordMatching(true);
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email: document.getElementById("signupemail").value,
         password: document.getElementById("signuppassword").value,
+        options: {
+          data: { username: document.getElementById("signupusername").value },
+        },
       });
-      const email = document.getElementById("signupemail").value;
-      const { addUserNameError } = await supabase
-        .from("users")
-        .insert({ email: email });
-      setAccountConfirm(true);
+      if (error) {
+        setAccountCreated(false);
+      } else {
+        setAccountConfirm(true);
+        // const {} = await supabase.from("users").insert({
+        //   email: document.getElementById("signupemail").value,
+        //   username: document.getElementById("signupusername").value,
+        // });
+      }
     } else {
       setPasswordMatching(false);
     }
@@ -69,6 +108,12 @@ export default function LoginScreen() {
         <UniversalPopup
           closePopUp={closePopUp}
           text="Account Created! Please verify your email before logging in."
+        />
+      )}
+      {!accountCreated && (
+        <SupportPopup
+          closePopUp={closePopUp}
+          text="Account creation unsuccessful. Check the required fields?"
         />
       )}
       <div className="loginscreen--container">
@@ -133,3 +178,5 @@ export default function LoginScreen() {
     </>
   );
 }
+
+export const adminAccessContext = createContext(false);

@@ -1,13 +1,15 @@
-import React from "react";
+import { React, useContext } from "react";
 import LandingScreen from "./LandingScreen";
 import GradePointArchiveScreen from "./GradePointArchiveScreen";
 import StudySessionScreen from "./StudySessionScreen";
-import LoginScreen from "./LoginScreen";
 import NoPage from "./NoPage";
+import Profile from "./Profile";
 import { Routes, Route, NavLink } from "react-router-dom";
 import { supabase } from "../supabase";
+import { adminAccessContext } from "./LoginScreen";
 
 export default function NavBar() {
+  const adminAccess = useContext(adminAccessContext);
   function signOut(e) {
     e.preventDefault();
     supabase.auth.signOut();
@@ -49,7 +51,18 @@ export default function NavBar() {
             StudySession
           </NavLink>
         </div>
-        <button className="nav--sign--out" onClick={signOut}>
+        <div className="nav-item nav-link" style={{ margin: "10px" }}>
+          <NavLink
+            to="/profile"
+            style={({ isActive }) => ({
+              textDecoration: isActive ? "underline" : "none",
+              color: isActive ? "white" : "grey",
+            })}
+          >
+            Profile
+          </NavLink>
+        </div>
+        <button onClick={signOut} className="nav--sign--out">
           Sign Out
         </button>
       </div>
@@ -61,7 +74,15 @@ export default function NavBar() {
           element={<GradePointArchiveScreen />}
         />
         <Route exact path="/studysession" element={<StudySessionScreen />} />
-        <Route exact path="/loginscreen" element={<LoginScreen />} />
+        <Route
+          exact
+          path="/profile"
+          element={
+            <adminAccessContext.Provider value={adminAccess}>
+              <Profile />
+            </adminAccessContext.Provider>
+          }
+        />
         <Route exact path="*" element={<NoPage />} />
       </Routes>
     </>

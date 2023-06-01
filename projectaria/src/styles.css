@@ -487,7 +487,21 @@ input {
   text-align: center;
 }
 
-.btn-popup {
+.btn-contact-support {
+  border-radius: 20px;
+  border: none;
+  background-color: transparent;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px 45px;
+  margin: 10px 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.btn-confirm-popup {
   border-radius: 20px;
   border: none;
   background-color: transparent;
@@ -505,6 +519,24 @@ input {
   background-color: #4e1530;
 }
 
+.form-support-ticket {
+  padding: 15px;
+}
+
+.btn-help-request {
+  border-radius: 20px;
+  border: none;
+  background-color: transparent;
+  color: #4e1530;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px 45px;
+  margin: 10px 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
 .page-not-found {
   background-color: white;
   width: 50%;
@@ -519,4 +551,22 @@ input {
 .magnifying-glass {
   margin: 10vh 15vw;
   width: 40%;
+}
+
+.user-profile-container {
+  height: 100vh;
+  margin: auto;
+  background-color: white;
+  width: 50%;
+}
+
+.admin-profile-container {
+  background-color: white;
+  margin: auto;
+  text-align: center;
+}
+
+.support-ticket {
+  width: 50%;
+  margin-top: 50px;
 }

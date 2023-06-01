@@ -1,10 +1,8 @@
-// import NavBar from "./NavBar";
 import Note from "./Note";
 
 export default function GradePointArchiveScreen() {
   return (
     <>
-      {/* <NavBar /> */}
       <div className="container-fluid">
         <div className="gpa-container container-fluid">
           <div className="label">

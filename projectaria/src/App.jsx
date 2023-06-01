@@ -1,7 +1,6 @@
 import "./styles.css";
 import LoginScreen from "./components/LoginScreen";
 import NavBar from "./components/NavBar";
-import NoPage from "./components/NoPage";
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 import { BrowserRouter } from "react-router-dom";

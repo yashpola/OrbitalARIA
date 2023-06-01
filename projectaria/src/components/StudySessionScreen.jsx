@@ -1,9 +1,6 @@
-// import NavBar from "./NavBar";
-
 export default function StudySessionScreen() {
   return (
     <>
-      {/* <NavBar /> */}
       <div className="study-container">
         <div className="button-menu">
           <button className="button">Start Session</button>
