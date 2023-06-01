@@ -29,19 +29,16 @@ export default function LoginScreen() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      console.log(user.email);
 
-      const { data } = await supabase
-        .from("administrators")
-        .select("email")
-        .eq("email", user.email);
-      // console.log(data[0].email);
-      console.log(data[0]);
+      // const { data } = await supabase
+      //   .from("administrators")
+      //   .select("email")
+      //   .eq("email", user.email);
 
-      if (data[0] === undefined) {
-        // globalThis = false;
-        // console.log(globalThis);
-      }
+      // if (data[0] === undefined) {
+      // globalThis = false;
+      // console.log(globalThis);
+      // }
 
       // if (data[0] === undefined) {
       //   globalThis = false;
@@ -179,4 +176,4 @@ export default function LoginScreen() {
   );
 }
 
-export const adminAccessContext = createContext(false);
+// export const adminAccessContext = createContext(false);

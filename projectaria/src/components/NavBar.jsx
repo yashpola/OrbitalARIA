@@ -6,10 +6,10 @@ import NoPage from "./NoPage";
 import Profile from "./Profile";
 import { Routes, Route, NavLink } from "react-router-dom";
 import { supabase } from "../supabase";
-import { adminAccessContext } from "./LoginScreen";
+// import { adminAccessContext } from "./LoginScreen";
 
 export default function NavBar() {
-  const adminAccess = useContext(adminAccessContext);
+  // const adminAccess = useContext(adminAccessContext);
   function signOut(e) {
     e.preventDefault();
     supabase.auth.signOut();
@@ -78,9 +78,9 @@ export default function NavBar() {
           exact
           path="/profile"
           element={
-            <adminAccessContext.Provider value={adminAccess}>
-              <Profile />
-            </adminAccessContext.Provider>
+            // <adminAccessContext.Provider value={adminAccess}>
+            <Profile />
+            // </adminAccessContext.Provider>
           }
         />
         <Route exact path="*" element={<NoPage />} />
