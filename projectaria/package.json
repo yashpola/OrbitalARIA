@@ -1,7 +1,8 @@
 {
   "name": "projectaria",
   "private": true,
-  "version": "0.1.0",
+  "version": "3.7",
+  "type": "module",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -27,10 +28,17 @@
     ]
   },
   "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.13.3",
     "@reduxjs/toolkit": "^1.9.5",
     "@supabase/supabase-js": "^2.22.0",
+    "dotenv": "^16.1.4",
+    "js-confetti": "^0.11.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^8.0.7",
     "react-router-dom": "^6.11.2",
     "react-scripts": "^5.0.1",
     "redux": "^4.2.1"
