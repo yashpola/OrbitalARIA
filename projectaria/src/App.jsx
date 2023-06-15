@@ -21,6 +21,12 @@ export const ariaTheme = createTheme({
       main: "#A86868",
       contrastThreshold: 4.5,
     },
+    tertiary: {
+      main: "black",
+    },
+    font: {
+      main: "white",
+    },
   },
 });
 

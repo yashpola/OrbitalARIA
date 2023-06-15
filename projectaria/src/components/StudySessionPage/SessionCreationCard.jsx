@@ -11,12 +11,19 @@ import {
 import { Help } from "@mui/icons-material";
 // react imports
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 // component imports
+import { toggle } from "./studySessionSlice";
 import TimerCard from "./TimerCard";
 
-export default function SessionCreationCard({ openSessionCreationCard }) {
+export default function SessionCreationCard({
+  openSessionCreationCard,
+  email,
+}) {
+  const timerStart = useSelector((state) => state.timer.value);
+  const dispatch = useDispatch();
+
   /* React States */
-  const [timer, setTimer] = useState(false);
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [invalidTiming, showInvalidTiming] = useState(false);
@@ -28,17 +35,21 @@ export default function SessionCreationCard({ openSessionCreationCard }) {
     e.preventDefault();
     let tempHours = document.getElementById("workHoursEntry").value;
     let tempMinutes = document.getElementById("workMinutesEntry").value;
-    if (tempHours < 0 || tempMinutes < 0) {
+    if (
+      tempHours < 0 ||
+      tempMinutes < 0 ||
+      (tempHours === "" && tempMinutes === "")
+    ) {
       showInvalidTiming(true);
     } else if (tempHours >= 24 || tempMinutes >= 1440) {
       setHours(24);
       showInvalidTiming(false);
-      setTimer(true);
+      dispatch(toggle());
     } else {
       setHours(tempHours);
       setMinutes(tempMinutes);
       showInvalidTiming(false);
-      setTimer(true);
+      dispatch(toggle());
     }
   }
 
@@ -63,8 +74,8 @@ export default function SessionCreationCard({ openSessionCreationCard }) {
   };
 
   return (
-    <Card sx={{ backgroundColor: "#4e1530", padding: 3 }}>
-      {!timer ? (
+    <Card sx={{ height: "445px", backgroundColor: "#A86868", padding: 3 }}>
+      {!timerStart ? (
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <IconButton
@@ -84,17 +95,19 @@ export default function SessionCreationCard({ openSessionCreationCard }) {
                   padding: 1,
                 }}
               >
-                Max 23:59:58 countdown. Rest time excluded!
+                Max 23:59:58 countdown.
               </Card>
             )}
           </Grid>
           <Grid item xs={12}>
             <Stack direction="column" spacing={2}>
-              <h4 style={headingStyle}>Work</h4>{" "}
+              <h4 style={headingStyle}>Set Time</h4>{" "}
               <TextField
                 sx={{
                   backgroundColor: "white",
+                  fontStyle: "bold",
                 }}
+                color="tertiary"
                 type="number"
                 id="workHoursEntry"
                 label="Hours"
@@ -102,6 +115,7 @@ export default function SessionCreationCard({ openSessionCreationCard }) {
               <FormControl>
                 <TextField
                   sx={{ backgroundColor: "white" }}
+                  color="tertiary"
                   type="number"
                   label="Minutes"
                   id="workMinutesEntry"
@@ -110,13 +124,14 @@ export default function SessionCreationCard({ openSessionCreationCard }) {
               </FormControl>
             </Stack>
           </Grid>
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <Stack spacing={2}>
               <h4 style={headingStyle}>Rest</h4>
               <TextField
                 sx={{
                   backgroundColor: "white",
                 }}
+                color="tertiary"
                 type="number"
                 id="restHoursEntry"
                 label="Hours"
@@ -124,6 +139,7 @@ export default function SessionCreationCard({ openSessionCreationCard }) {
               <FormControl>
                 <TextField
                   sx={{ backgroundColor: "white" }}
+                  color="tertiary"
                   type="number"
                   id="restMinutesEntry"
                   label="Minutes"
@@ -131,7 +147,7 @@ export default function SessionCreationCard({ openSessionCreationCard }) {
                 />
               </FormControl>
             </Stack>
-          </Grid>
+          </Grid> */}
           <Grid item xs={12}>
             {invalidTiming && <h6 style={headingStyle}>Invalid timing</h6>}
             <FormControl>
@@ -165,7 +181,7 @@ export default function SessionCreationCard({ openSessionCreationCard }) {
           </Grid>
         </Grid>
       ) : (
-        <TimerCard hours={hours} minutes={minutes} setTimer={setTimer} />
+        <TimerCard email={email} hours={hours} minutes={minutes} />
       )}
     </Card>
   );
