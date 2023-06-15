@@ -1,6 +1,5 @@
 // mui imports
 import {
-  Avatar,
   Button,
   Card,
   Container,
@@ -11,17 +10,34 @@ import {
 } from "@mui/material";
 // react imports
 import { useState } from "react";
+import { supabase } from "../../supabase";
 // component imports
 import plantIcon from "../images/studysessionimages/plant.png";
 import { ariaTheme } from "../../App";
 import SessionCreationCard from "./SessionCreationCard";
+import SessionHistoryCard from "./SessionHistoryCard";
 
-export default function StudySessionScreen() {
+export default function StudySessionScreen({ email }) {
   const [sessionCreationCard, openSessionCreationCard] = useState(false);
+  const [sessionHistoryArray, setSessionHistory] = useState([]);
+  const [sessionHistoryCardOpen, setSessionHistoryCardOpen] = useState(false);
 
   function newSession(e) {
     e.preventDefault();
     openSessionCreationCard(!sessionCreationCard);
+    setSessionHistoryCardOpen(false);
+  }
+
+  async function sessionHistory(e) {
+    e.preventDefault();
+    const { data, error } = await supabase
+      .from("studysessions")
+      .select("created_at, duration, completed")
+      .eq("user_email", email);
+
+    setSessionHistory(data);
+    openSessionCreationCard(false);
+    setSessionHistoryCardOpen(!sessionHistoryCardOpen);
   }
 
   return (
@@ -34,11 +50,13 @@ export default function StudySessionScreen() {
           container
           spacing={2}
         >
-          <Grid item xs={12} md={4} sm={6}>
+          <Grid item xs={12} sm={6}>
             <Card
               sx={{
                 display: "inline-flex",
                 padding: 10,
+                height: "445px",
+                alignItems: "center",
                 justifyContent: "center",
                 border: "5px solid #966f33",
                 backgroundColor: "#B5A197",
@@ -58,6 +76,7 @@ export default function StudySessionScreen() {
                 </Button>
                 <Button
                   color="secondary"
+                  onClick={sessionHistory}
                   variant="contained"
                   sx={{
                     fontFamily: "Ubuntu",
@@ -80,19 +99,22 @@ export default function StudySessionScreen() {
           <Grid sx={{ textAlign: "center" }} item xs={12} sm={6}>
             {sessionCreationCard && (
               <SessionCreationCard
+                email={email}
                 openSessionCreationCard={openSessionCreationCard}
               />
+            )}
+            {sessionHistoryCardOpen && (
+              <SessionHistoryCard sessionHistoryArray={sessionHistoryArray} />
             )}
           </Grid>
         </Grid>
       </Container>
-      <Avatar
+      <img
         src={plantIcon}
-        sx={{ marginLeft: "auto", width: 300, height: 300 }}
-      ></Avatar>
+        style={{ marginLeft: "auto", width: 300, height: 300 }}
+      ></img>
       <Paper
         square={true}
-        fullWidth
         sx={{
           backgroundColor: "#966f33",
           padding: "3rem 3rem",

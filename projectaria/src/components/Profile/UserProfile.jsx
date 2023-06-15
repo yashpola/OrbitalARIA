@@ -16,13 +16,13 @@ import { AccountCircle, Email, Edit } from "@mui/icons-material";
 // supabase imports
 import { supabase } from "../../supabase";
 // react imports
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useEffect, useState } from "react";
 // component imports
 import UniversalPopup from "../Universal/UniversalPopup";
 import { ariaTheme } from "../../App";
 import userProfileIcon from "../../userprofile.png";
 
-export default function UserProfile() {
+export default function UserProfile({ username, email }) {
   /* React States */
 
   // internal Form Rendering
@@ -34,8 +34,6 @@ export default function UserProfile() {
   const [invalidUsername, setInvalidUsername] = useState(false);
 
   // internal username, email, pfp display
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
   const [src, setSrc] = useState("userProfileIcon");
 
   // supabase authentication success / failure
@@ -75,7 +73,6 @@ export default function UserProfile() {
       await supabase.auth.updateUser({
         data: { username: document.getElementById("newUsername").value },
       });
-      setUsername(document.getElementById("newUsername").value);
       setUsernameFormOpen(false);
       setInvalidUsername(false);
     } else {
@@ -102,6 +99,11 @@ export default function UserProfile() {
   // internal username/email/pfp display functions
 
   async function retrieveUserData() {
+    /* supabase.auth.getUser() here seems redundant. it could be removed and username/email 
+    passed as props from NavBar, but removing it leads to the console logging a "pfp is undefined"
+    error i.e. the user email needs to be explicitly retrieved again to be used for looking up 
+    the user's pfp in the user table. can be resolved, but don't remove this method here
+    */
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -115,8 +117,6 @@ export default function UserProfile() {
     }
 
     setSrc(data[0].pfp);
-    setUsername(user.user_metadata.username);
-    setEmail(user.email);
   }
 
   async function handlePictureSelected() {
@@ -134,7 +134,7 @@ export default function UserProfile() {
     setSrc(data[0].pfp);
   }
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     retrieveUserData();
   }, [username, src]);
 

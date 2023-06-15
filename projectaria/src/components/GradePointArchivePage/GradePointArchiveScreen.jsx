@@ -1,11 +1,33 @@
 import { Box, Container, Grid, Paper } from "@mui/material";
-import { Help, SentimentVeryDissatisfied } from "@mui/icons-material";
+import {
+  Help,
+  SentimentVeryDissatisfied,
+  Unarchive,
+} from "@mui/icons-material";
+
+import { useSelector, useDispatch } from "react-redux";
+// component imports
+import { toggle } from "../StudySessionPage/studySessionSlice";
 
 import YearContainer from "./YearContainer";
+import UniversalPopup from "../Universal/UniversalPopup";
 
 export default function GradePointArchiveScreen() {
+  const timerOngoing = useSelector((state) => state.timer.value);
+  const dispatch = useDispatch();
+
+  function closePopUp() {
+    dispatch(toggle());
+  }
+
   return (
     <>
+      {timerOngoing && (
+        <UniversalPopup
+          closePopUp={closePopUp}
+          popupText="Your session is joever"
+        />
+      )}
       <Paper
         sx={{
           display: "inline-flex",
