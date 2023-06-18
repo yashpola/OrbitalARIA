@@ -1,12 +1,12 @@
-import { Box, Container, Grid, Paper } from "@mui/material";
-import {
-  Help,
-  SentimentVeryDissatisfied,
-  Unarchive,
-} from "@mui/icons-material";
+import { Backdrop, Button, Container, Grid, Paper } from "@mui/material";
+import { AddCircle } from "@mui/icons-material";
+
+import { useState, useEffect } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-// component imports
+
+import { supabase } from "../../supabase";
+
 import { toggle } from "../StudySessionPage/studySessionSlice";
 
 import YearContainer from "./YearContainer";
@@ -15,149 +15,169 @@ import UniversalPopup from "../Universal/UniversalPopup";
 export default function GradePointArchiveScreen() {
   const timerOngoing = useSelector((state) => state.timer.value);
   const dispatch = useDispatch();
+  const [yearCount, setYearCount] = useState(4);
+  const [gpa, setGPA] = useState("");
+  const [modData, setModData] = useState([]);
+  const gradePoint = {
+    "A+": 5,
+    A: 5,
+    "A-": 4.5,
+    "B+": 4,
+    B: 3.5,
+    "B-": 3,
+    "C+": 2.5,
+    C: 2,
+    "D+": 1.5,
+    D: 1,
+    F: 0,
+    U: 0,
+  };
 
-  function closePopUp() {
+  const yearsList = [];
+
+  for (let i = 1; i <= yearCount; i++) {
+    yearsList.push(
+      <YearContainer
+        key={i}
+        modData={modData}
+        calculateGPA={calculateGPA}
+        yearID={i}
+      />
+    );
+  }
+
+  function addYear(e) {
+    e.preventDefault();
+    setYearCount(yearCount + 1);
+  }
+
+  function removeLastYear(e) {
+    e.preventDefault();
+    setYearCount(yearCount - 1);
+  }
+
+  const notCountedGrades = ["S", "CS", "CU", "IP", "IC", "W"];
+
+  async function closePopUp(e) {
+    e.preventDefault();
     dispatch(toggle());
   }
 
+  async function calculateGPA() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { data, error } = await supabase
+      .from("modules")
+      .select("credits, lettergrade")
+      .eq("user_email", user.email);
+
+    if (data.length === 0) {
+      setGPA("");
+      return;
+    }
+
+    let totalScore = 0;
+    let totalCredits = 0;
+
+    data.map((mod) => {
+      if (!notCountedGrades.includes(mod.lettergrade)) {
+        totalScore += gradePoint[mod.lettergrade] * mod.credits;
+        totalCredits += mod.credits;
+      }
+    });
+
+    let cumulativeGPA = (totalScore / totalCredits).toFixed(2);
+
+    setGPA(isNaN(cumulativeGPA) ? "" : cumulativeGPA);
+  }
+
+  async function fetchModData() {
+    const response = await fetch(
+      "https://api.nusmods.com/v2/2022-2023/moduleInfo.json"
+    );
+    const jsonData = await response.json();
+    setModData(jsonData);
+  }
+
+  useEffect(() => {
+    calculateGPA();
+  }, []);
+
+  useEffect(() => {
+    fetchModData();
+  }, []);
+
   return (
     <>
-      {timerOngoing && (
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={timerOngoing}
+        onClick={closePopUp}
+      >
         <UniversalPopup
           closePopUp={closePopUp}
-          popupText="Your session is joever"
+          popupText="Your session is terminated."
         />
-      )}
+      </Backdrop>
       <Paper
         sx={{
-          display: "inline-flex",
+          display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          margin: 5,
+          marginBottom: 5,
           padding: 2,
           fontSize: 40,
           backgroundColor: "white",
         }}
         elevation={0}
       >
-        Current GPA: 1.69 &nbsp; <SentimentVeryDissatisfied />
+        Current GPA: {gpa}
       </Paper>
       {/* <Container sx={{ padding: 0 }}> */}
-      <Grid container spacing={15}>
-        <Grid item xs={12}>
-          <Container sx={{ padding: 2, backgroundColor: "#A86868" }}>
-            <YearContainer yearID="Year 1" />
-          </Container>
+      <Container
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 2,
+          backgroundColor: "#A86868",
+        }}
+      >
+        <Grid container spacing={5}>
+          {yearsList.map((year, index) => (
+            <Grid key={index} item xs={12}>
+              {year}
+            </Grid>
+          ))}
+          <Grid sx={{}} item xs={6}>
+            <Button
+              sx={{
+                fontFamily: "inherit",
+                backgroundColor: "#4e1530",
+              }}
+              variant="contained"
+              onClick={addYear}
+            >
+              Add Year
+            </Button>
+            {yearCount > 4 && (
+              <Button
+                sx={{
+                  fontFamily: "inherit",
+                  backgroundColor: "#4e1530",
+                  marginLeft: 5,
+                }}
+                variant="contained"
+                onClick={removeLastYear}
+              >
+                Undo Add Year
+              </Button>
+            )}
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <Container sx={{ padding: 2, backgroundColor: "#A86868" }}>
-            <YearContainer yearID="Year 2" />
-          </Container>
-        </Grid>
-        <Grid item xs={12}>
-          <Container sx={{ padding: 2, backgroundColor: "#A86868" }}>
-            <YearContainer yearID="Year 3" />
-          </Container>
-        </Grid>
-        <Grid item xs={12}>
-          <Container sx={{ padding: 2, backgroundColor: "#A86868" }}>
-            <YearContainer yearID="Year 4" />
-          </Container>
-        </Grid>
-        <Grid item xs={12}>
-          <Container sx={{ padding: 2, backgroundColor: "#A86868" }}>
-            <YearContainer yearID="Year 5" />
-          </Container>
-        </Grid>
-      </Grid>
-      {/* </Container> */}
+      </Container>
     </>
   );
 }
-
-// import {
-//   Card,
-//   Container,
-//   ThemeProvider,
-//   IconButton,
-//   Paper,
-//   List,
-//   ListItem,
-// } from "@mui/material";
-// import { ariaTheme } from "../../App";
-// import RecordCard from "./RecordCard";
-// import { Help, AddCircle } from "@mui/icons-material";
-// import { useState } from "react";
-
-// export default function GradePointArchiveScreen() {
-//   const [helpMessage, setHelpMessage] = useState(false);
-
-//   function displayHelpMessage(e) {
-//     e.preventDefault();
-//     setHelpMessage(true);
-//   }
-
-//   function closeHelpMessage(e) {
-//     e.preventDefault();
-//     setHelpMessage(false);
-//   }
-
-//   return (
-//     <ThemeProvider theme={ariaTheme}>
-//       <IconButton
-//         sx={{ color: "black", float: "right" }}
-//         id="help-button"
-//         aria-label="info-help"
-//         size="large"
-//         onMouseOver={displayHelpMessage}
-//         onMouseOut={closeHelpMessage}
-//       >
-//         <Help fontSize="inherit" />
-//       </IconButton>
-//       <br />
-//       {helpMessage && (
-//         <Card sx={{ marginBottom: 1, float: "right" }}>
-//           <List>
-//             <ListItem>Use the + button to add a card.</ListItem>
-//             <ListItem>Click a card to explore it.</ListItem>
-//           </List>
-//         </Card>
-//       )}
-//       <Paper
-//         style={{
-//           backgroundColor: "transparent",
-//           color: "black",
-//           fontSize: 40,
-//           fontStyle: "italic",
-//           textAlign: "center",
-//         }}
-//         elevation={0}
-//       >
-//         YEARS
-//       </Paper>
-//       <Container
-//         sx={{
-//           display: "flex",
-//           flexWrap: "wrap",
-//           alignItems: "center",
-//           justifyContent: "center",
-
-//           margin: "auto",
-//           marginTop: 5,
-//           marginBottom: 5,
-//           border: "2px solid white",
-//           backgroundColor: "#a86868",
-//         }}
-//       >
-//         <RecordCard cardInfo="Year 1" />
-//         <RecordCard cardInfo="Year 2" />
-//         <RecordCard cardInfo="Year 3" />
-//         <RecordCard cardInfo="Year 4" />
-//         <RecordCard cardInfo="Year 5" />
-//         <IconButton aria-label="Add-Card" sx={{ color: "white" }} size="large">
-//           <AddCircle fontSize="inherit" />
-//         </IconButton>
-//       </Container>
-//     </ThemeProvider>
-//   );
-// }
