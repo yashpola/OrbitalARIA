@@ -1,30 +1,16 @@
-import {
-  Card,
-  Container,
-  FormControl,
-  Paper,
-  Grid,
-  IconButton,
-  Stack,
-  TextField,
-  Button,
-} from "@mui/material";
-import { AddCircle } from "@mui/icons-material";
-
-import ModuleCard from "./ModuleCard";
+// mui imports
+import { Paper, Grid, IconButton } from "@mui/material";
+import { ExpandMore, ExpandLess, Delete } from "@mui/icons-material";
 import { useState } from "react";
+// component imports
+import SemesterContainer from "./SemesterContainer";
 
-export default function YearContainer({ yearID }) {
-  const [addModForm, showAddModForm] = useState(false);
+export default function YearContainer({ calculateGPA, modData, yearID }) {
+  const [semsShown, setSemsShown] = useState(false);
 
-  function createMod(e) {
+  function showMods(e) {
     e.preventDefault();
-    showAddModForm(!addModForm);
-  }
-
-  function addMod(e) {
-    e.preventDefault();
-    showAddModForm(false);
+    setSemsShown(!semsShown);
   }
 
   return (
@@ -33,121 +19,44 @@ export default function YearContainer({ yearID }) {
         <Grid item xs={12}>
           <Paper
             sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               padding: 1,
-              maxWidth: "90%",
-              textAlign: "center",
-              margin: "auto",
               fontSize: 30,
             }}
             elevation={3}
           >
-            {yearID}
+            Year {yearID}
+            <IconButton onClick={showMods} sx={{ color: "black" }} size="large">
+              {semsShown ? (
+                <ExpandLess fontSize="inherit" />
+              ) : (
+                <ExpandMore fontSize="inherit" />
+              )}
+            </IconButton>
           </Paper>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <Container
-            sx={{
-              maxWidth: "90%",
-              padding: 2,
-              backgroundColor: "#eee",
-              borderStyle: "dotted",
-            }}
-          >
-            <Paper
-              sx={{
-                padding: 0.5,
-                textAlign: "center",
-                fontSize: 30,
-              }}
-              elevation={3}
-            >
-              Sem 1
-              <IconButton sx={{ color: "black" }} onClick={createMod}>
-                <AddCircle />
-              </IconButton>
-            </Paper>
-            {addModForm && (
-              <Card
-                sx={{
-                  marginTop: 2,
-                  padding: 2,
-                }}
-                elevation={0}
-              >
-                <Stack direction="column" spacing={2}>
-                  <FormControl>
-                    <TextField
-                      id="moduleCode"
-                      label="Module Code"
-                      variant="outlined"
-                    />
-                  </FormControl>
-                  <FormControl>
-                    <TextField
-                      id="moduleGrade"
-                      label="Module Grade"
-                      variant="outlined"
-                    />
-                  </FormControl>
-                  <FormControl>
-                    <TextField
-                      id="moduleTitle"
-                      label="Module Title"
-                      variant="outlined"
-                    />
-                  </FormControl>
-                  <FormControl>
-                    <TextField
-                      id="moduleCredits"
-                      label="Module Credits"
-                      variant="outlined"
-                    />
-                  </FormControl>
-                  <FormControl>
-                    <Button onClick={addMod} variant="outlined">
-                      Add Module
-                    </Button>
-                  </FormControl>
-                </Stack>
-              </Card>
-            )}
-            <ModuleCard
-              modName="Discrete Structures"
-              modCredits={4}
-              modGrade="D"
-              modTitle="CS1231S"
-            />
-          </Container>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Container
-            sx={{
-              maxWidth: "90%",
-              padding: 2,
-              backgroundColor: "#eee",
-              borderStyle: "dotted",
-            }}
-          >
-            <Paper
-              sx={{
-                padding: 0.5,
-                textAlign: "center",
-                fontSize: 30,
-              }}
-            >
-              Sem 2
-              <IconButton sx={{ color: "black" }}>
-                <AddCircle />
-              </IconButton>
-            </Paper>
-            <ModuleCard
-              modTitle="CS2100"
-              modCredits={4}
-              modGrade="C+"
-              modName="Computer Architecture"
-            />
-          </Container>
-        </Grid>
+        {semsShown && (
+          <>
+            <Grid item xs={12} sm={6}>
+              <SemesterContainer
+                calculateGPA={calculateGPA}
+                modData={modData}
+                yearID={yearID}
+                semID={1}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <SemesterContainer
+                calculateGPA={calculateGPA}
+                modData={modData}
+                yearID={yearID}
+                semID={2}
+              />
+            </Grid>
+          </>
+        )}
       </Grid>
     </>
   );
