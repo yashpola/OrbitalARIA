@@ -2,6 +2,7 @@
 import {
   Autocomplete,
   Card,
+  createFilterOptions,
   Paper,
   IconButton,
   TextField,
@@ -35,6 +36,7 @@ export default function ModuleCard({
   gradeList,
 }) {
   const [grade, setGrade] = useState("");
+  const [modCodeOptions, showModCodeOptions] = useState(false);
 
   const moduleCodeList = modData.map(({ moduleCode }) => moduleCode);
   const moduleTitleList = modData.map(({ title }) => title);
@@ -70,7 +72,12 @@ export default function ModuleCard({
     const newModCode = document.getElementById("newModCode").value;
 
     let newModTitle = moduleTitleList[moduleCodeList.indexOf(newModCode)];
-    let newModCredits = moduleCreditsList[moduleCodeList.indexOf(newModCode)];
+    let newModCredits =
+      moduleCreditsList[
+        moduleCodeList.indexOf(newModCode === "" ? code : newModCode)
+      ];
+
+    console.log(newModCredits);
 
     if (!newModTitle) {
       newModTitle = "";
@@ -99,8 +106,13 @@ export default function ModuleCard({
     setEditForm(false);
     retrieveUserMods();
     calculateGPA();
-    setGrade(false);
+    setGrade("");
   }
+
+  const filterOptions = createFilterOptions({
+    matchFrom: "any",
+    limit: 300,
+  });
 
   return (
     <ThemeProvider theme={ariaTheme}>
@@ -138,6 +150,15 @@ export default function ModuleCard({
             <FormControl fullWidth>
               <Autocomplete
                 disablePortal
+                filterOptions={filterOptions}
+                onInputChange={(_, value) => {
+                  if (value.length === 0) {
+                    if (modCodeOptions) showModCodeOptions(false);
+                  } else {
+                    if (!modCodeOptions) showModCodeOptions(true);
+                  }
+                }}
+                onClose={() => showModCodeOptions(false)}
                 id="newModCode"
                 options={moduleCodeList}
                 renderInput={(params) => (

@@ -225,7 +225,7 @@ export default function SemesterContainer({
                   id="moduleCode"
                   options={moduleCodeList}
                   renderInput={(params) => (
-                    <TextField {...params} label="Search Module Code" />
+                    <TextField {...params} label="Module Code" />
                   )}
                 />
               </FormControl>
