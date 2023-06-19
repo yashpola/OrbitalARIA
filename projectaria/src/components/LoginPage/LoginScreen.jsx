@@ -21,9 +21,6 @@ export default function LoginScreen() {
   const [accountCreationFail, setAccountCreationFail] = useState(false);
   const [accountLoginFail, setAccountLoginFail] = useState(false);
 
-  // mui aesthetic
-  const [backgroundBlur, setBackgroundBlur] = useState(false);
-
   // others
   const [passwordResetEmail, setPasswordResetEmail] = useState(false);
 
@@ -125,10 +122,8 @@ export default function LoginScreen() {
         },
       });
       if (error) {
-        setBackgroundBlur(true);
         setAccountCreationFail(true);
       } else {
-        setBackgroundBlur(true);
         setAccountCreated(true);
         // await supabase.from("users").insert({
         //   email: document.getElementById("signupemail").value,
@@ -151,7 +146,6 @@ export default function LoginScreen() {
 
   // popup functions
   function closePopUp() {
-    setBackgroundBlur(false);
     setAccountCreated(false);
     setAccountCreationFail(false);
     setAccountLoginFail(false);
@@ -160,11 +154,6 @@ export default function LoginScreen() {
 
   return (
     <>
-      {/* <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={backgroundBlur}
-        onClick={closePopUp}
-      > */}
       {accountLoginFail && (
         <UniversalPopup
           closePopUp={closePopUp}
@@ -177,25 +166,18 @@ export default function LoginScreen() {
           popupText="Password reset email sent!"
         />
       )}
-      {/* </Backdrop> */}
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={backgroundBlur}
-        onClick={closePopUp}
-      >
-        {accountCreated && (
-          <UniversalPopup
-            closePopUp={closePopUp}
-            popupText="Account created! Please verify your email before logging in."
-          />
-        )}
-        {accountCreationFail && (
-          <UniversalPopup
-            closePopUp={closePopUp}
-            popupText="Account creation fail. Check email and password? Or contact aria@gmail.com"
-          />
-        )}
-      </Backdrop>
+      {accountCreated && (
+        <UniversalPopup
+          closePopUp={closePopUp}
+          popupText="Account created! Please verify your email before logging in."
+        />
+      )}
+      {accountCreationFail && (
+        <UniversalPopup
+          closePopUp={closePopUp}
+          popupText="Account creation fail. Check email and password? Or contact aria@gmail.com"
+        />
+      )}
 
       <div className="loginscreen--container">
         <div className="form-container log-in-container">

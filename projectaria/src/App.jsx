@@ -1,3 +1,4 @@
+"use client";
 // css imports
 import "./style.css";
 // mui imports
@@ -5,11 +6,13 @@ import { createTheme } from "@mui/material";
 // react imports
 import { useState, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
+import { ErrorBoundary } from "react-error-boundary";
 // supabase imports
 import { supabase } from "./supabase";
 // component imports
 import LoginScreen from "./components/LoginPage/LoginScreen";
 import NavBar from "./components/Universal/NavBar";
+import Fallback from "./components/Universal/FallBack";
 
 export const ariaTheme = createTheme({
   palette: {

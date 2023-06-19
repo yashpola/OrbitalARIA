@@ -58,7 +58,7 @@ export default function GradePointArchiveScreen() {
 
   const notCountedGrades = ["S", "CS", "CU", "IP", "IC", "W"];
 
-  async function closePopUp(e) {
+  function closePopUp(e) {
     e.preventDefault();
     dispatch(toggle());
   }
@@ -111,16 +111,12 @@ export default function GradePointArchiveScreen() {
 
   return (
     <>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={timerOngoing}
-        onClick={closePopUp}
-      >
+      {timerOngoing && (
         <UniversalPopup
           closePopUp={closePopUp}
-          popupText="Your session is terminated."
+          popupText="Your ongoing session was terminated."
         />
-      </Backdrop>
+      )}
       <Paper
         sx={{
           display: "flex",

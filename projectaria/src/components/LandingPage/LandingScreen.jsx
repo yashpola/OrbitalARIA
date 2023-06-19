@@ -2,16 +2,21 @@
 import { Card, Container } from "@mui/material";
 // react imports
 import { useState, useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 // component imports
 import userProfileIcon from "../images/landingimages/userprofile.png";
 import gradePointArchiveIcon from "../images/landingimages/gradepointarchive.png";
 import studySessionIcon from "../images/landingimages/studysession.png";
 import FeatureSlide from "./FeatureSlide";
+import UniversalPopup from "../Universal/UniversalPopup";
+import { toggle } from "../StudySessionPage/studySessionSlice";
 
 export default function LandingScreen() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const timeOutRef = useRef(null);
   const delay = 4000;
+  const timerOngoing = useSelector((state) => state.timer.value);
+  const dispatch = useDispatch();
 
   function resetTimeout() {
     if (timeOutRef.current) {
@@ -41,7 +46,7 @@ export default function LandingScreen() {
       background="#DC9A7F"
       feature="User Profiles"
       image={userProfileIcon}
-      description="Personalized website experience with secure authentication"
+      description="Personalized secure website experience"
     />,
     <FeatureSlide
       navigateNext={navigateNext}
@@ -49,7 +54,7 @@ export default function LandingScreen() {
       background="#A86868"
       feature="GradePointArchive"
       image={gradePointArchiveIcon}
-      description="A repo of all your module grades. Compute GPA at any point in your academic record"
+      description="Your academic health at a glance"
     />,
     <FeatureSlide
       navigateNext={navigateNext}
@@ -57,7 +62,7 @@ export default function LandingScreen() {
       background="#983811"
       feature="StudySession"
       image={studySessionIcon}
-      description="Study tracking assistant and a motivation to complete your daily study goals"
+      description="Bringing focus to your tasks"
     />,
   ];
 
@@ -73,42 +78,52 @@ export default function LandingScreen() {
     setCurrentSlide(nextSlide);
   }
 
+  function closePopUp(e) {
+    e.preventDefault();
+    dispatch(toggle());
+  }
+
   return (
-    <Container sx={{ padding: 5 }}>
-      <Card sx={{ fontSize: 100, textAlign: "center" }}>
-        aria
-        <p style={{ fontSize: 20, color: "#4e1530" }}>
-          artificial resource for interactive academics
-        </p>
-      </Card>
-      <Card
-        elevation={0}
-        sx={{
-          wordWrap: "break-word",
-        }}
-      >
-        <div
-          className="slideshowSlider"
-          style={{ transform: `translate3d(${-currentSlide * 100}%, 0, 0)` }}
-        >
-          {slides.map((feature, index) => (
-            <div className="slide" key={index}>
-              {feature}
-            </div>
-          ))}
-        </div>
-        <div className="slideshowDots">
-          {slides.map((_, idx) => (
-            <div
-              key={idx}
-              className={`slideshowDot${currentSlide === idx ? " active" : ""}`}
-              onClick={() => {
-                setCurrentSlide(idx);
-              }}
-            ></div>
-          ))}
-        </div>
-      </Card>
-    </Container>
+    <>
+      {timerOngoing && (
+        <UniversalPopup
+          closePopUp={closePopUp}
+          popupText="Your ongoing session was terminated."
+        />
+      )}
+      <Container sx={{ padding: 5 }}>
+        <Card sx={{ fontSize: 100, textAlign: "center" }}>
+          aria
+          <p style={{ fontSize: 20, color: "#4e1530" }}>
+            artificial resource for interactive academics
+          </p>
+        </Card>
+        <Card elevation={0}>
+          <div
+            className="slideshowSlider"
+            style={{ transform: `translate3d(${-currentSlide * 100}%, 0, 0)` }}
+          >
+            {slides.map((feature, index) => (
+              <div className="slide" key={index}>
+                {feature}
+              </div>
+            ))}
+          </div>
+          <div className="slideshowDots">
+            {slides.map((_, idx) => (
+              <div
+                key={idx}
+                className={`slideshowDot${
+                  currentSlide === idx ? " active" : ""
+                }`}
+                onClick={() => {
+                  setCurrentSlide(idx);
+                }}
+              ></div>
+            ))}
+          </div>
+        </Card>
+      </Container>
+    </>
   );
 }

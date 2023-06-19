@@ -1,7 +1,7 @@
 // mui imports
 import {
   Button,
-  Container,
+  Card,
   FilledInput,
   Paper,
   Grid,
@@ -17,10 +17,12 @@ import { AccountCircle, Email, Edit } from "@mui/icons-material";
 import { supabase } from "../../supabase";
 // react imports
 import { useLayoutEffect, useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 // component imports
 import UniversalPopup from "../Universal/UniversalPopup";
 import { ariaTheme } from "../../App";
 import userProfileIcon from "../../userprofile.png";
+import { toggle } from "../StudySessionPage/studySessionSlice";
 
 export default function UserProfile({ username, email }) {
   /* React States */
@@ -39,7 +41,8 @@ export default function UserProfile({ username, email }) {
   // supabase authentication success / failure
   const [emailChangeNotif, setEmailChangeNotif] = useState(false);
 
-  // mui aesthetic
+  const timerOngoing = useSelector((state) => state.timer.value);
+  const dispatch = useDispatch();
 
   /* Component functionality */
 
@@ -145,23 +148,36 @@ export default function UserProfile({ username, email }) {
     setEmailChangeNotif(false);
   }
 
+  function closeSessionTerminatedPopUp(e) {
+    e.preventDefault();
+    dispatch(toggle());
+  }
+
   return (
     <ThemeProvider theme={ariaTheme}>
       {emailChangeNotif && (
         <UniversalPopup
-          closePopUp={closePopUp}
+          closePopUp={closeSessionTerminatedPopUp}
           popupText="Please check both your old and new emails for a 
             successful email change"
         />
       )}
-      <Container
+      {timerOngoing && (
+        <UniversalPopup
+          closePopUp={closePopUp}
+          popupText="Your ongoing session was terminated."
+        />
+      )}
+      <Card
         sx={{
+          width: "80%",
+          margin: "auto",
           marginTop: 5,
           paddingTop: 5,
           backgroundColor: "white",
         }}
       >
-        <Grid container sx={{ padding: 2 }} spacing={2}>
+        <Grid container sx={{ padding: 2 }} spacing={0}>
           <Grid item xs={12} sm={8}>
             <img
               src={src}
@@ -174,22 +190,25 @@ export default function UserProfile({ username, email }) {
               onChange={handlePictureSelected}
             />
           </Grid>
-          <Grid item xs={8} sm={4}>
+          <Grid item xs={12} sm={4}>
             <Stack spacing={2}>
-              <Paper
-                sx={{
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  backgroundColor: "#e9cdcd",
-                  width: "300px",
-                  lineHeight: "60px",
-                  border: "1px solid black",
-                }}
-              >
-                {username}
+              <Paper>
+                <Paper
+                  sx={{
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    letterSpacing: "1px",
+                    backgroundColor: "#A86868",
+                    color: "white",
+                    lineHeight: "60px",
+                    border: "1px solid black",
+                  }}
+                >
+                  {username}
+                </Paper>
                 <IconButton
                   onClick={handleUsernameForm}
-                  sx={{ float: "right" }}
+                  sx={{ float: "right", color: "black" }}
                   size="large"
                 >
                   <Edit fontSize="inherit" />
@@ -200,7 +219,6 @@ export default function UserProfile({ username, email }) {
                   <FormControl>
                     <InputLabel htmlFor="newUsername">New Username</InputLabel>
                     <FilledInput
-                      sx={{ width: "300px" }}
                       id="newUsername"
                       startAdornment={
                         <InputAdornment position="start">
@@ -215,7 +233,7 @@ export default function UserProfile({ username, email }) {
                     }}
                   >
                     <Button
-                      sx={{ width: "300px", fontFamily: "inherit" }}
+                      sx={{ fontFamily: "inherit" }}
                       color="secondary"
                       onClick={updateUsername}
                       variant="outlined"
@@ -237,20 +255,24 @@ export default function UserProfile({ username, email }) {
                   </FormControl>
                 </>
               )}
-              <Paper
-                sx={{
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  backgroundColor: "#e9cdcd",
-                  width: "300px",
-                  lineHeight: "60px",
-                  border: "1px solid black",
-                }}
-              >
-                {email}
+              <Paper>
+                <Paper
+                  sx={{
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    letterSpacing: "1px",
+                    backgroundColor: "#A86868",
+                    color: "white",
+                    lineHeight: "60px",
+                    border: "1px solid black",
+                    overflow: "auto",
+                  }}
+                >
+                  {email}
+                </Paper>
                 <IconButton
                   onClick={handleEmailForm}
-                  sx={{ float: "right" }}
+                  sx={{ float: "right", color: "black" }}
                   size="large"
                 >
                   <Edit fontSize="inherit" />
@@ -261,7 +283,6 @@ export default function UserProfile({ username, email }) {
                   <FormControl>
                     <InputLabel htmlFor="newEmail">New Email</InputLabel>
                     <FilledInput
-                      sx={{ width: "300px" }}
                       id="newEmail"
                       type="text"
                       startAdornment={
@@ -277,7 +298,7 @@ export default function UserProfile({ username, email }) {
                     }}
                   >
                     <Button
-                      sx={{ width: "300px", fontFamily: "inherit" }}
+                      sx={{ fontFamily: "inherit" }}
                       color="secondary"
                       onClick={updateEmail}
                       variant="outlined"
@@ -301,7 +322,6 @@ export default function UserProfile({ username, email }) {
               )}
               <Button
                 sx={{
-                  width: "300px",
                   borderWidth: 2,
                   fontFamily: "inherit",
                 }}
@@ -314,7 +334,7 @@ export default function UserProfile({ username, email }) {
             </Stack>
           </Grid>
         </Grid>
-      </Container>
+      </Card>
     </ThemeProvider>
   );
 }

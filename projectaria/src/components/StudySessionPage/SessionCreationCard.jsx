@@ -8,7 +8,7 @@ import {
   Grid,
   IconButton,
 } from "@mui/material";
-import { Help } from "@mui/icons-material";
+import { Help, Cancel } from "@mui/icons-material";
 // react imports
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -20,7 +20,7 @@ export default function SessionCreationCard({
   openSessionCreationCard,
   email,
 }) {
-  const timerStart = useSelector((state) => state.timer.value);
+  const timerOngoing = useSelector((state) => state.timer.value);
   const dispatch = useDispatch();
 
   /* React States */
@@ -33,12 +33,14 @@ export default function SessionCreationCard({
 
   function startTimer(e) {
     e.preventDefault();
-    let tempHours = document.getElementById("workHoursEntry").value;
-    let tempMinutes = document.getElementById("workMinutesEntry").value;
+    let tempHours = Number(document.getElementById("workHoursEntry").value);
+    let tempMinutes = Number(document.getElementById("workMinutesEntry").value);
     if (
       tempHours < 0 ||
       tempMinutes < 0 ||
-      (tempHours === "" && tempMinutes === "")
+      (tempHours === 0 && tempMinutes < 1) ||
+      !Number.isSafeInteger(tempHours) ||
+      !Number.isSafeInteger(tempMinutes)
     ) {
       showInvalidTiming(true);
     } else if (tempHours >= 24 || tempMinutes >= 1440) {
@@ -74,31 +76,25 @@ export default function SessionCreationCard({
   };
 
   return (
-    <Card sx={{ height: "445px", backgroundColor: "#A86868", padding: 3 }}>
-      {!timerStart ? (
+    <Card
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        height: "445px",
+        backgroundColor: "#DC9A7F",
+        padding: 3,
+      }}
+    >
+      {!timerOngoing ? (
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <IconButton
-              sx={{ float: "right", color: "white" }}
-              id="help-button"
-              aria-label="info-help"
-              size="large"
-              onMouseOver={displayHelpMessage}
-              onMouseOut={closeHelpMessage}
-            >
-              <Help fontSize="inherit" />
-            </IconButton>
-            {helpMessage && (
-              <Card
-                className="help-info-card"
-                sx={{
-                  padding: 1,
-                }}
-              >
-                Max 23:59:58 countdown.
-              </Card>
-            )}
-          </Grid>
+          <IconButton
+            onClick={closeSessionCreationCard}
+            sx={{ float: "right", color: "white" }}
+          >
+            <Cancel fontSize="inherit" />
+          </IconButton>
           <Grid item xs={12}>
             <Stack direction="column" spacing={2}>
               <h4 style={headingStyle}>Set Time</h4>{" "}
@@ -161,21 +157,7 @@ export default function SessionCreationCard({
                 onClick={startTimer}
                 variant="contained"
               >
-                Start Session
-              </Button>
-            </FormControl>
-            <FormControl>
-              <Button
-                sx={{
-                  fontFamily: "inherit",
-                  backgroundColor: "black",
-                  color: "white",
-                  margin: 2,
-                }}
-                onClick={closeSessionCreationCard}
-                variant="contained"
-              >
-                Cancel
+                Start
               </Button>
             </FormControl>
           </Grid>
