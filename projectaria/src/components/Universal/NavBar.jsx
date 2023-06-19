@@ -105,7 +105,7 @@ export default function NavBar() {
                     color: !isActive ? "white" : "grey",
                   })}
                 >
-                  Yashypola
+                  {username}
                 </NavLink>
               </div>
             </li>
