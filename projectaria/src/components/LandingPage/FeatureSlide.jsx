@@ -7,7 +7,7 @@ export default function FeatureSlide({
   description,
 }) {
   return (
-    <Card sx={{ backgroundColor: { background } }}>
+    <Card sx={{ textAlign: "center", backgroundColor: { background } }}>
       <Avatar
         src={image}
         alt="gpaicon"
@@ -26,12 +26,13 @@ export default function FeatureSlide({
       >
         {feature}
       </h1>
+      <br />
       <h4
         style={{
           textAlign: "center",
           color: "white",
           paddingBottom: 30,
-          wordWrap: "break-word",
+          wordBreak: "normal",
         }}
       >
         {description}

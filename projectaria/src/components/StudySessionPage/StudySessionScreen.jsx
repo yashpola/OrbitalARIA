@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 // react imports
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { supabase } from "../../supabase";
 // component imports
 import plantIcon from "../images/studysessionimages/plant.png";
@@ -18,42 +19,41 @@ import SessionCreationCard from "./SessionCreationCard";
 import SessionHistoryCard from "./SessionHistoryCard";
 
 export default function StudySessionScreen({ email }) {
+  const timerOngoing = useSelector((state) => state.timer.value);
   const [sessionCreationCard, openSessionCreationCard] = useState(false);
-  const [sessionHistoryArray, setSessionHistory] = useState([]);
   const [sessionHistoryCardOpen, setSessionHistoryCardOpen] = useState(false);
+  const [sessionHistoryArray, setSessionHistory] = useState([]);
 
   function newSession(e) {
     e.preventDefault();
-    openSessionCreationCard(!sessionCreationCard);
+    openSessionCreationCard(true);
     setSessionHistoryCardOpen(false);
   }
 
-  async function sessionHistory(e) {
+  function openSessionHistory(e) {
     e.preventDefault();
+    openSessionCreationCard(false);
+    retrieveSessionHistory();
+    setSessionHistoryCardOpen(true);
+  }
+
+  async function retrieveSessionHistory() {
     const { data, error } = await supabase
       .from("studysessions")
       .select("created_at, duration, completed")
       .eq("user_email", email);
 
     setSessionHistory(data);
-    openSessionCreationCard(false);
-    setSessionHistoryCardOpen(!sessionHistoryCardOpen);
   }
 
   return (
     <ThemeProvider theme={ariaTheme}>
-      <Container>
-        <Grid
-          justifyContent="space-evenly"
-          alignItems="center"
-          sx={{ padding: 10 }}
-          container
-          spacing={2}
-        >
+      <Container sx={{ padding: 5 }}>
+        <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <Card
               sx={{
-                display: "inline-flex",
+                display: "flex",
                 padding: 10,
                 height: "445px",
                 alignItems: "center",
@@ -66,9 +66,11 @@ export default function StudySessionScreen({ email }) {
               <Stack direction="column" spacing={2}>
                 <Button
                   onClick={newSession}
+                  disabled={timerOngoing}
                   color="secondary"
                   variant="contained"
                   sx={{
+                    fontSize: 20,
                     fontFamily: "Ubuntu",
                   }}
                 >
@@ -76,9 +78,11 @@ export default function StudySessionScreen({ email }) {
                 </Button>
                 <Button
                   color="secondary"
-                  onClick={sessionHistory}
+                  onClick={openSessionHistory}
+                  disabled={timerOngoing}
                   variant="contained"
                   sx={{
+                    fontSize: 20,
                     fontFamily: "Ubuntu",
                   }}
                 >
@@ -87,7 +91,9 @@ export default function StudySessionScreen({ email }) {
                 <Button
                   color="secondary"
                   variant="contained"
+                  disabled={timerOngoing}
                   sx={{
+                    fontSize: 20,
                     fontFamily: "Ubuntu",
                   }}
                 >
@@ -96,7 +102,7 @@ export default function StudySessionScreen({ email }) {
               </Stack>
             </Card>
           </Grid>
-          <Grid sx={{ textAlign: "center" }} item xs={12} sm={6}>
+          <Grid item xs={12} sm={6}>
             {sessionCreationCard && (
               <SessionCreationCard
                 email={email}
@@ -104,14 +110,19 @@ export default function StudySessionScreen({ email }) {
               />
             )}
             {sessionHistoryCardOpen && (
-              <SessionHistoryCard sessionHistoryArray={sessionHistoryArray} />
+              <SessionHistoryCard
+                email={email}
+                retrieveSessionHistory={retrieveSessionHistory}
+                sessionHistoryArray={sessionHistoryArray}
+                setSessionHistoryCardOpen={setSessionHistoryCardOpen}
+              />
             )}
           </Grid>
         </Grid>
       </Container>
       <img
         src={plantIcon}
-        style={{ marginLeft: "auto", width: 300, height: 300 }}
+        style={{ marginLeft: "auto", width: 250, height: 250 }}
       ></img>
       <Paper
         square={true}

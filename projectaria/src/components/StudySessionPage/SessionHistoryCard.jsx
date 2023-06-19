@@ -8,21 +8,59 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Button,
+  IconButton,
 } from "@mui/material";
+import { Cancel } from "@mui/icons-material";
+import { supabase } from "../../supabase";
 
-export default function SessionHistoryCard({ sessionHistoryArray }) {
-  console.log(sessionHistoryArray);
+export default function SessionHistoryCard({
+  email,
+  retrieveSessionHistory,
+  sessionHistoryArray,
+  setSessionHistoryCardOpen,
+}) {
+  async function clearSessionHistory(e) {
+    e.preventDefault();
+    const { error } = await supabase
+      .from("studysessions")
+      .delete()
+      .eq("user_email", email);
+
+    retrieveSessionHistory();
+  }
+
+  function closeSessionHistory(e) {
+    e.preventDefault();
+    setSessionHistoryCardOpen(false);
+  }
 
   return (
     <Container>
       <Card
         sx={{
           height: "445px",
-          maxWidth: "380px",
-          width: "400px",
           overflow: "auto",
+          padding: 2,
         }}
       >
+        <Button
+          sx={{ float: "right", fontFamily: "inherit", marginBottom: 2 }}
+          color="secondary"
+          disabled={sessionHistoryArray.length === 0}
+          onClick={clearSessionHistory}
+          variant="outlined"
+        >
+          Clear History
+        </Button>
+        <IconButton
+          onClick={closeSessionHistory}
+          sx={{ float: "left", color: "black" }}
+        >
+          {" "}
+          <Cancel fontSize="inherit" />
+        </IconButton>
+        <br />
         <TableContainer component={Paper}>
           <Table sx={{ backgroundColor: "#DC9A7F" }}>
             <TableHead>
@@ -31,7 +69,7 @@ export default function SessionHistoryCard({ sessionHistoryArray }) {
                   sx={{ fontFamily: "Ubuntu", color: "white" }}
                   align="left"
                 >
-                  Created At{" "}
+                  Timestamp
                 </TableCell>
                 <TableCell
                   sx={{ fontFamily: "Ubuntu", color: "white" }}
@@ -43,7 +81,7 @@ export default function SessionHistoryCard({ sessionHistoryArray }) {
                   sx={{ fontFamily: "Ubuntu", color: "white" }}
                   align="left"
                 >
-                  Completion Status
+                  Status
                 </TableCell>
               </TableRow>
             </TableHead>

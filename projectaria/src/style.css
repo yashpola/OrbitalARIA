@@ -158,43 +158,32 @@ input {
 }
 
 .navbar {
-  display: inline-flexbox;
-  padding: 0.5rem;
   background-color: #4e1530;
 }
 
-.navbar-brand {
+.navbar-brand-aria {
   font-family: "Ubuntu";
   font-weight: 700;
-  font-size: 2.5rem;
-  padding-left: 2rem;
-  color: white;
+  font-size: 2rem;
 }
 
 .nav-item {
-  font-weight: 700;
-  padding: 0 18px;
   font-family: inherit;
   cursor: pointer;
 }
 
-.nav-item:hover {
-  color: white;
+@media (min-width: 992px) {
+  .navbar li {
+    margin-left: 18vw;
+  }
 }
 
-.nav--sign--out {
-  font-weight: 700;
-  padding: 0 18px;
-  font-family: inherit;
-  cursor: pointer;
-  border: none;
-  background-color: #4e1530;
-  color: white;
-  font-size: 2rem;
+.navbar-toggler-icon {
+  color: "white";
 }
 
 .nav-link {
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .nav-link:hover {

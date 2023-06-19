@@ -16,8 +16,8 @@ import { toggle } from "./studySessionSlice";
 //supabase imports
 import { supabase } from "../../supabase";
 // js imports
-// import JSConfetti from "js-confetti";
-// const jsConfetti = new JSConfetti();
+import JSConfetti from "js-confetti";
+const jsConfetti = new JSConfetti();
 
 export default function TimerCard({ email, hours, minutes }) {
   /* React States */
@@ -59,7 +59,7 @@ export default function TimerCard({ email, hours, minutes }) {
         if (distance < 0) {
           clearInterval(timer.current);
           timer.current = null;
-          // jsConfetti.addConfetti();
+          jsConfetti.addConfetti();
           setSessionSuccess(true);
           await supabase.from("studysessions").insert({
             user_email: email,
@@ -114,8 +114,8 @@ export default function TimerCard({ email, hours, minutes }) {
   });
 
   const headingStyle = {
-    textAlign: "center",
     color: "white",
+    fontSize: "20px",
   };
 
   return (
@@ -135,9 +135,9 @@ export default function TimerCard({ email, hours, minutes }) {
           <Grid item xs={12}>
             <Card
               sx={{
-                fontSize: 30,
                 textAlign: "center",
-                backgroundColor: "#A86868",
+                fontSize: 60,
+                backgroundColor: "transparent",
                 color: "white",
               }}
               elevation={0}
@@ -167,6 +167,7 @@ export default function TimerCard({ email, hours, minutes }) {
           <Button
             sx={{
               fontFamily: "inherit",
+              fontSize: 20,
               backgroundColor: "black",
               color: "white",
             }}
@@ -179,14 +180,14 @@ export default function TimerCard({ email, hours, minutes }) {
       )}
       {timerTerminated && (
         <>
-          <h6 style={headingStyle}>
-            This session is <u>terminated</u>. You may navigate away safely now.
-          </h6>
+          <h6 style={headingStyle}>This session is terminated.</h6>
+          <br />
           <Button
             sx={{
               fontFamily: "inherit",
               backgroundColor: "black",
               color: "white",
+              fontSize: 20,
             }}
             onClick={returnToSessionCreation}
             variant="contained"
