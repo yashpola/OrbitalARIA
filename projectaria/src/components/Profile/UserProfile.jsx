@@ -157,14 +157,14 @@ export default function UserProfile({ username, email }) {
     <ThemeProvider theme={ariaTheme}>
       {emailChangeNotif && (
         <UniversalPopup
-          closePopUp={closeSessionTerminatedPopUp}
+          closePopUp={closePopUp}
           popupText="Please check both your old and new emails for a 
             successful email change"
         />
       )}
       {timerOngoing && (
         <UniversalPopup
-          closePopUp={closePopUp}
+          closePopUp={closeSessionTerminatedPopUp}
           popupText="Your ongoing session was terminated."
         />
       )}
