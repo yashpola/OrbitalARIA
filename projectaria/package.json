@@ -42,7 +42,10 @@
     "react-redux": "^8.0.7",
     "react-router-dom": "^6.11.2",
     "react-scripts": "^5.0.1",
-    "redux": "^4.2.1"
+    "redux": "^4.2.1",
+    "requests": "^0.3.0",
+    "selenium": "^2.20.0",
+    "selenium-webdriver": "^4.10.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",

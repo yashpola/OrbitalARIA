@@ -23,6 +23,7 @@ import { supabase } from "../../supabase";
 import { ariaTheme } from "../../App";
 
 export default function ModuleCard({
+  userModCodes,
   modData,
   code,
   title,
@@ -37,6 +38,7 @@ export default function ModuleCard({
 }) {
   const [grade, setGrade] = useState("");
   const [modCodeOptions, showModCodeOptions] = useState(false);
+  const [existingMod, setExistingMod] = useState(false);
 
   const moduleCodeList = modData.map(({ moduleCode }) => moduleCode);
   const moduleTitleList = modData.map(({ title }) => title);
@@ -64,12 +66,18 @@ export default function ModuleCard({
   async function openEditForm(e) {
     e.preventDefault();
     setEditForm(!editForm);
+    setExistingMod(false);
   }
 
   async function editMod(e) {
     e.preventDefault();
 
     const newModCode = document.getElementById("newModCode").value;
+
+    if (userModCodes.includes(newModCode)) {
+      setExistingMod(!existingMod);
+      return;
+    }
 
     let newModTitle = moduleTitleList[moduleCodeList.indexOf(newModCode)];
     let newModCredits =
@@ -116,8 +124,9 @@ export default function ModuleCard({
 
   return (
     <ThemeProvider theme={ariaTheme}>
-      <Card sx={{ marginTop: 3, padding: 2 }}>
+      <Card id="mod-container" sx={{ marginTop: 3, padding: 2 }}>
         <Paper
+          id="mod-header"
           sx={{
             display: "flex",
             alignItems: "center",
@@ -131,20 +140,24 @@ export default function ModuleCard({
         >
           {code} ({lettergrade})
           <IconButton
+            id="edit-mod-form-button"
             onClick={openEditForm}
             sx={{ marginLeft: "auto", color: "white" }}
           >
             <Edit />
           </IconButton>
           <IconButton
+            id="delete-mod-button"
             onClick={deleteMod}
             sx={{ marginLeft: "auto", color: "white" }}
           >
             <Delete />
           </IconButton>
         </Paper>
-        <h5>{title}</h5>
-        <h5 style={{ float: "right" }}>{credits}mc</h5>
+        <h5 id="mod-title">{title}</h5>
+        <h5 id="mod-credits" style={{ float: "right" }}>
+          {credits}mc
+        </h5>
         {editForm && (
           <Stack sx={{ marginTop: 5 }} direction="column" spacing={2}>
             <FormControl fullWidth>
@@ -183,7 +196,11 @@ export default function ModuleCard({
               </Select>
             </FormControl>
             <FormControl>
+              {existingMod && (
+                <h6 style={{ textAlign: "center" }}>Already added!</h6>
+              )}
               <Button
+                id="edit-mod-button"
                 sx={{
                   fontFamily: "inherit",
                   fontSize: 20,

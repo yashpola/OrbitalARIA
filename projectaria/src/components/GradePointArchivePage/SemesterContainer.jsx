@@ -32,9 +32,10 @@ export default function SemesterContainer({
   semID,
 }) {
   const [addModForm, showAddModForm] = useState(false);
-  const [modArray, setModArray] = useState([]);
+  const [userModArray, setModArray] = useState([]);
   const [email, setEmail] = useState("");
   const [emptyFields, setEmptyFields] = useState(false);
+  const [existingMod, setExistingMod] = useState(false);
   const [clearAllButton, setClearAllButton] = useState(true);
   const [confirmPopup, openConfirmPopup] = useState(false);
   const [modCodeOptions, showModCodeOptions] = useState(false);
@@ -72,8 +73,13 @@ export default function SemesterContainer({
   async function createMod(e) {
     e.preventDefault();
     setClearAllButton(!clearAllButton);
+    setEmptyFields(false);
+    setExistingMod(false);
+    setGrade("");
     showAddModForm(!addModForm);
   }
+
+  const userModCodes = userModArray.map(({ code }) => code);
 
   async function addMod(e) {
     e.preventDefault();
@@ -83,8 +89,13 @@ export default function SemesterContainer({
 
     const moduleCode = document.getElementById("moduleCode").value;
 
+    if (userModCodes.includes(moduleCode)) {
+      setExistingMod(!existingMod);
+      return;
+    }
+
     if (moduleCode === "" || grade === "") {
-      setEmptyFields(true);
+      setEmptyFields(!emptyFields);
       return;
     }
 
@@ -176,6 +187,7 @@ export default function SemesterContainer({
   return (
     <ThemeProvider theme={ariaTheme}>
       <Container
+        id="semester-container"
         sx={{
           maxWidth: "90%",
           padding: 2,
@@ -184,6 +196,7 @@ export default function SemesterContainer({
         }}
       >
         <Paper
+          id="semester-container-header"
           sx={{
             padding: 0.5,
             textAlign: "center",
@@ -193,6 +206,7 @@ export default function SemesterContainer({
         >
           Sem {semID}
           <IconButton
+            id="create-mod-button"
             sx={{ marginLeft: "auto", color: "black" }}
             onClick={createMod}
           >
@@ -201,6 +215,7 @@ export default function SemesterContainer({
         </Paper>
         {addModForm && (
           <Card
+            id="add-mod-form"
             sx={{
               marginTop: 2,
               padding: 2,
@@ -247,11 +262,15 @@ export default function SemesterContainer({
                   ))}
                 </Select>
               </FormControl>
+              {existingMod && (
+                <h6 style={{ textAlign: "center" }}>Already added!</h6>
+              )}
               {emptyFields && (
                 <h6 style={{ textAlign: "center" }}>No empty fields!</h6>
               )}
               <FormControl>
                 <Button
+                  id="add-mod-button"
                   sx={{ fontFamily: "inherit", fontSize: 20 }}
                   onClick={addMod}
                   variant="contained"
@@ -271,8 +290,8 @@ export default function SemesterContainer({
         )}
         {clearAllButton && !confirmPopup && (
           <Button
-            // onClick={}
-            disabled={modArray.length === 0}
+            id="clear-all-button"
+            disabled={userModArray.length === 0}
             sx={{
               color: "black",
               fontFamily: "inherit",
@@ -285,9 +304,10 @@ export default function SemesterContainer({
             Clear All
           </Button>
         )}
-        {modArray.map((mod, index) => (
+        {userModArray.map((mod, index) => (
           <ModuleCard
             {...mod}
+            userModCodes={userModCodes}
             modData={modData}
             key={index}
             email={email}

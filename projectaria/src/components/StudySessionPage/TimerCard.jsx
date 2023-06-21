@@ -1,12 +1,5 @@
 // mui imports
-import {
-  Card,
-  Container,
-  FormControl,
-  Button,
-  ClickAwayListener,
-  Grid,
-} from "@mui/material";
+import { Card, Container, FormControl, Button, Grid } from "@mui/material";
 import { Mood } from "@mui/icons-material";
 // react imports
 import { useEffect, useState, useRef } from "react";
@@ -16,8 +9,8 @@ import { toggle } from "./studySessionSlice";
 //supabase imports
 import { supabase } from "../../supabase";
 // js imports
-import JSConfetti from "js-confetti";
-const jsConfetti = new JSConfetti();
+// import JSConfetti from "js-confetti";
+// const jsConfetti = new JSConfetti();
 
 export default function TimerCard({ email, hours, minutes }) {
   /* React States */
@@ -53,13 +46,13 @@ export default function TimerCard({ email, hours, minutes }) {
         );
         let secondsLeft = Math.floor((distance % (1000 * 60)) / 1000);
 
-        document.getElementById("countdown").innerHTML =
+        document.getElementById("session-countdown-card").innerHTML =
           hoursLeft + "h " + minutesLeft + "m " + secondsLeft + "s ";
 
         if (distance < 0) {
           clearInterval(timer.current);
           timer.current = null;
-          jsConfetti.addConfetti();
+          // jsConfetti.addConfetti();
           setSessionSuccess(true);
           await supabase.from("studysessions").insert({
             user_email: email,
@@ -119,11 +112,12 @@ export default function TimerCard({ email, hours, minutes }) {
   };
 
   return (
-    <Container>
+    <Container id="timer-card-container">
       {!sessionSuccess && !timerTerminated && (
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Card
+              id="session-timer-warning-card"
               className="help-info-card"
               sx={{
                 padding: 1,
@@ -134,6 +128,7 @@ export default function TimerCard({ email, hours, minutes }) {
           </Grid>
           <Grid item xs={12}>
             <Card
+              id="session-countdown-card"
               sx={{
                 textAlign: "center",
                 fontSize: 60,
@@ -141,10 +136,10 @@ export default function TimerCard({ email, hours, minutes }) {
                 color: "white",
               }}
               elevation={0}
-              id="countdown"
             ></Card>
             <FormControl>
               <Button
+                id="terminate-session-button"
                 sx={{
                   fontFamily: "inherit",
                   backgroundColor: "black",
@@ -165,6 +160,7 @@ export default function TimerCard({ email, hours, minutes }) {
             Congratulations! You've completed a session <br /> <Mood />
           </h6>
           <Button
+            id="return-new-session-button"
             sx={{
               fontFamily: "inherit",
               fontSize: 20,
@@ -183,6 +179,7 @@ export default function TimerCard({ email, hours, minutes }) {
           <h6 style={headingStyle}>This session is terminated.</h6>
           <br />
           <Button
+            id="return-new-session-button"
             sx={{
               fontFamily: "inherit",
               backgroundColor: "black",

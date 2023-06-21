@@ -18,6 +18,7 @@ export default function YearContainer({ calculateGPA, modData, yearID }) {
       <Grid sx={{ padding: 2 }} container spacing={2}>
         <Grid item xs={12}>
           <Paper
+            id="year-header"
             sx={{
               display: "flex",
               alignItems: "center",
@@ -28,7 +29,12 @@ export default function YearContainer({ calculateGPA, modData, yearID }) {
             elevation={3}
           >
             Year {yearID}
-            <IconButton onClick={showMods} sx={{ color: "black" }} size="large">
+            <IconButton
+              id="year-expand-button"
+              onClick={showMods}
+              sx={{ color: "black" }}
+              size="large"
+            >
               {semsShown ? (
                 <ExpandLess fontSize="inherit" />
               ) : (

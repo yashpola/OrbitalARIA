@@ -1,5 +1,5 @@
 // mui imports
-import { Backdrop, Stack, Checkbox, FormControlLabel } from "@mui/material";
+import { Stack, Checkbox, FormControlLabel } from "@mui/material";
 // react imports
 import { React, useState } from "react";
 // supabase imports
@@ -93,7 +93,7 @@ export default function LoginScreen() {
     if (
       !(
         document.getElementById("signuppassword").value ===
-        document.getElementById("confirmpassword").value
+        document.getElementById("confirmsignuppassword").value
       )
     ) {
       errors[3] = true;
@@ -183,17 +183,21 @@ export default function LoginScreen() {
         <div className="form-container log-in-container">
           <form>
             <h1 style={{ fontSize: "5rem" }}>aria</h1>
-            <input type="email" id="loginemail" placeholder="Email" required />
+            <input id="loginemail" type="email" placeholder="Email" required />
             <input
-              type="password"
               id="loginpassword"
+              type="password"
               placeholder="Password"
               required
             />
-            <button onClick={logIn} className="log--in">
+            <button onClick={logIn} id="login-button" className="log--in">
               Log In
             </button>
-            <button onClick={forgotPassword} className="forgot--password">
+            <button
+              id="forgot-password-link"
+              onClick={forgotPassword}
+              className="forgot--password"
+            >
               Forgot your password?
             </button>
           </form>
@@ -203,26 +207,26 @@ export default function LoginScreen() {
             <div className="sign-up-container overlay-panel overlay-right">
               <h1>Sign Up</h1>
               <input
-                type="text"
                 id="signupusername"
+                type="text"
                 placeholder="Username"
                 required
               />
               <input
-                type="email"
                 id="signupemail"
+                type="email"
                 placeholder="Email"
                 required
               />
               <input
-                type="password"
                 id="signuppassword"
+                type="password"
                 placeholder="Password (min 7 characters)"
                 required
               />
               <input
+                id="confirmsignuppassword"
                 type="password"
-                id="confirmpassword"
                 placeholder="Confirm Password"
                 required
               />
@@ -255,7 +259,7 @@ export default function LoginScreen() {
                 {emailInvalid && <h6>Invalid email!</h6>}
                 {!passwordMatching && <h6>Passwords do not match!</h6>}
               </Stack>
-              <button onClick={signUp} className="sign--up">
+              <button id="signup-button" onClick={signUp} className="sign--up">
                 Sign Up
               </button>
             </div>

@@ -8,7 +8,7 @@ import {
   Grid,
   IconButton,
 } from "@mui/material";
-import { Help, Cancel } from "@mui/icons-material";
+import { Cancel } from "@mui/icons-material";
 // react imports
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -27,14 +27,17 @@ export default function SessionCreationCard({
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [invalidTiming, showInvalidTiming] = useState(false);
-  const [helpMessage, openHelpMessage] = useState(false);
 
   /* Component functionality */
 
   function startTimer(e) {
     e.preventDefault();
-    let tempHours = Number(document.getElementById("workHoursEntry").value);
-    let tempMinutes = Number(document.getElementById("workMinutesEntry").value);
+    let tempHours = Number(
+      document.getElementById("session-hours-input").value
+    );
+    let tempMinutes = Number(
+      document.getElementById("session-minutes-input").value
+    );
     if (
       tempHours < 0 ||
       tempMinutes < 0 ||
@@ -55,16 +58,6 @@ export default function SessionCreationCard({
     }
   }
 
-  function displayHelpMessage(e) {
-    e.preventDefault();
-    openHelpMessage(true);
-  }
-
-  function closeHelpMessage(e) {
-    e.preventDefault();
-    openHelpMessage(false);
-  }
-
   function closeSessionCreationCard(e) {
     e.preventDefault();
     openSessionCreationCard(false);
@@ -77,6 +70,7 @@ export default function SessionCreationCard({
 
   return (
     <Card
+      id="new-session-container"
       sx={{
         display: "flex",
         alignItems: "center",
@@ -90,6 +84,7 @@ export default function SessionCreationCard({
       {!timerOngoing ? (
         <Grid container spacing={2}>
           <IconButton
+            id="close-new-session-button"
             onClick={closeSessionCreationCard}
             sx={{ float: "right", color: "white" }}
           >
@@ -99,22 +94,22 @@ export default function SessionCreationCard({
             <Stack direction="column" spacing={2}>
               <h4 style={headingStyle}>Set Time</h4>{" "}
               <TextField
+                id="session-hours-input"
                 sx={{
                   backgroundColor: "white",
                   fontStyle: "bold",
                 }}
                 color="tertiary"
                 type="number"
-                id="workHoursEntry"
                 label="Hours"
               />
               <FormControl>
                 <TextField
+                  id="session-minutes-input"
                   sx={{ backgroundColor: "white" }}
                   color="tertiary"
                   type="number"
                   label="Minutes"
-                  id="workMinutesEntry"
                   variant="outlined"
                 />
               </FormControl>
@@ -148,6 +143,7 @@ export default function SessionCreationCard({
             {invalidTiming && <h6 style={headingStyle}>Invalid timing</h6>}
             <FormControl>
               <Button
+                id="session-start-button"
                 sx={{
                   fontFamily: "inherit",
                   backgroundColor: "black",
