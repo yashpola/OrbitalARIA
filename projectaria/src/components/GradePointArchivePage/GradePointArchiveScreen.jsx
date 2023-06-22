@@ -1,14 +1,12 @@
-import { Backdrop, Button, Container, Grid, Paper } from "@mui/material";
-import { AddCircle } from "@mui/icons-material";
-
+// mui imports
+import { Button, Container, Grid, Paper } from "@mui/material";
+// react imports
 import { useState, useEffect } from "react";
-
 import { useSelector, useDispatch } from "react-redux";
-
+// supabase imports
 import { supabase } from "../../supabase";
-
+// component imports
 import { toggle } from "../StudySessionPage/studySessionSlice";
-
 import YearContainer from "./YearContainer";
 import UniversalPopup from "../Universal/UniversalPopup";
 
@@ -118,6 +116,7 @@ export default function GradePointArchiveScreen() {
         />
       )}
       <Paper
+        id="gpa-page-header"
         sx={{
           display: "flex",
           alignItems: "center",
@@ -133,6 +132,7 @@ export default function GradePointArchiveScreen() {
       </Paper>
       {/* <Container sx={{ padding: 0 }}> */}
       <Container
+        id="gpa-page-body"
         sx={{
           display: "flex",
           alignItems: "center",
@@ -149,6 +149,7 @@ export default function GradePointArchiveScreen() {
           ))}
           <Grid sx={{}} item xs={6}>
             <Button
+              id="add-year-button"
               sx={{
                 fontFamily: "inherit",
                 backgroundColor: "#4e1530",
@@ -160,6 +161,7 @@ export default function GradePointArchiveScreen() {
             </Button>
             {yearCount > 4 && (
               <Button
+                id="undo-add-year-button"
                 sx={{
                   fontFamily: "inherit",
                   backgroundColor: "#4e1530",

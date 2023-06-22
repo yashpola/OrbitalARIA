@@ -40,12 +40,16 @@ export default function NavBar() {
 
   useEffect(() => {
     setAccess();
-  }, []);
+  }, [username]);
 
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-dark">
-        <div className="navbar-brand-aria" style={{ margin: "10px" }}>
+        <div
+          id="navbar-brand"
+          className="navbar-brand-aria"
+          style={{ margin: "10px" }}
+        >
           <NavLink
             to="/"
             style={({ isActive }) => ({
@@ -71,8 +75,9 @@ export default function NavBar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
             <li>
-              <div className="nav-item nav-link">
+              <div id="navbar-gpa" className="nav-item nav-link">
                 <NavLink
+                  id="gpa-nav-link"
                   to="/gradepointarchive"
                   style={({ isActive }) => ({
                     textDecoration: isActive ? "underline" : "none",
@@ -84,7 +89,7 @@ export default function NavBar() {
               </div>
             </li>
             <li>
-              <div className="nav-item nav-link">
+              <div id="navbar-studysession" className="nav-item nav-link">
                 <NavLink
                   to="/studysession"
                   style={({ isActive }) => ({
@@ -97,7 +102,7 @@ export default function NavBar() {
               </div>
             </li>
             <li>
-              <div className="nav-item nav-link">
+              <div id="navbar-username" className="nav-item nav-link">
                 <NavLink
                   to="/profile"
                   style={({ isActive }) => ({
@@ -127,7 +132,13 @@ export default function NavBar() {
         <Route
           exact
           path="/profile"
-          element={<UserProfile username={username} email={email} />}
+          element={
+            <UserProfile
+              username={username}
+              setUsername={setUsername}
+              email={email}
+            />
+          }
         />
         <Route exact path="*" element={<NoPage />} />
       </Routes>

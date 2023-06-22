@@ -9,6 +9,7 @@ export default function FeatureSlide({
   return (
     <Card sx={{ textAlign: "center", backgroundColor: { background } }}>
       <Avatar
+        id="landing-card-feature-icon"
         src={image}
         alt="gpaicon"
         sx={{
@@ -18,6 +19,7 @@ export default function FeatureSlide({
         }}
       ></Avatar>
       <h1
+        id="landing-feature-name"
         style={{
           textAlign: "center",
           // padding: 2,
@@ -28,6 +30,7 @@ export default function FeatureSlide({
       </h1>
       <br />
       <h4
+        id="landing-feature-description"
         style={{
           textAlign: "center",
           color: "white",

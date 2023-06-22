@@ -15,7 +15,7 @@ import { supabase } from "../../supabase";
 // component imports
 import plantIcon from "../images/studysessionimages/plant.png";
 import { ariaTheme } from "../../App";
-import SessionCreationCard from "./SessionCreationCard";
+import SessionCreationCard from "./NewSession";
 import SessionHistoryCard from "./SessionHistoryCard";
 
 export default function StudySessionScreen({ email }) {

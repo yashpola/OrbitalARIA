@@ -16,7 +16,7 @@ import { AccountCircle, Email, Edit } from "@mui/icons-material";
 // supabase imports
 import { supabase } from "../../supabase";
 // react imports
-import { useLayoutEffect, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 // component imports
 import UniversalPopup from "../Universal/UniversalPopup";
@@ -24,7 +24,7 @@ import { ariaTheme } from "../../App";
 import userProfileIcon from "../../userprofile.png";
 import { toggle } from "../StudySessionPage/studySessionSlice";
 
-export default function UserProfile({ username, email }) {
+export default function UserProfile({ username, setUsername, email }) {
   /* React States */
 
   // internal Form Rendering
@@ -76,6 +76,7 @@ export default function UserProfile({ username, email }) {
       await supabase.auth.updateUser({
         data: { username: document.getElementById("newUsername").value },
       });
+      setUsername(document.getElementById("newUsername").value);
       setUsernameFormOpen(false);
       setInvalidUsername(false);
     } else {
@@ -169,6 +170,7 @@ export default function UserProfile({ username, email }) {
         />
       )}
       <Card
+        id="user-profile-container"
         sx={{
           width: "80%",
           margin: "auto",
@@ -180,12 +182,13 @@ export default function UserProfile({ username, email }) {
         <Grid container sx={{ padding: 2 }} spacing={0}>
           <Grid item xs={12} sm={8}>
             <img
+              id="pfp-image"
               src={src}
               style={{ borderRadius: "50%", width: 200, height: 200 }}
             ></img>
             <input
               style={{ backgroundColor: "white" }}
-              id="pfpInput"
+              id="pfp-input-button"
               type="file"
               onChange={handlePictureSelected}
             />
@@ -194,6 +197,7 @@ export default function UserProfile({ username, email }) {
             <Stack spacing={2}>
               <Paper>
                 <Paper
+                  id="username-card"
                   sx={{
                     textAlign: "center",
                     fontWeight: "bold",
@@ -207,6 +211,7 @@ export default function UserProfile({ username, email }) {
                   {username}
                 </Paper>
                 <IconButton
+                  id="edit-username-button"
                   onClick={handleUsernameForm}
                   sx={{ float: "right", color: "black" }}
                   size="large"
@@ -233,6 +238,7 @@ export default function UserProfile({ username, email }) {
                     }}
                   >
                     <Button
+                      id="update-username-button"
                       sx={{ fontFamily: "inherit" }}
                       color="secondary"
                       onClick={updateUsername}
@@ -257,6 +263,7 @@ export default function UserProfile({ username, email }) {
               )}
               <Paper>
                 <Paper
+                  id="user-email-card"
                   sx={{
                     textAlign: "center",
                     fontWeight: "bold",
@@ -271,6 +278,7 @@ export default function UserProfile({ username, email }) {
                   {email}
                 </Paper>
                 <IconButton
+                  id="edit-email-button"
                   onClick={handleEmailForm}
                   sx={{ float: "right", color: "black" }}
                   size="large"
@@ -298,6 +306,7 @@ export default function UserProfile({ username, email }) {
                     }}
                   >
                     <Button
+                      id="update-email-button"
                       sx={{ fontFamily: "inherit" }}
                       color="secondary"
                       onClick={updateEmail}
@@ -321,6 +330,7 @@ export default function UserProfile({ username, email }) {
                 </>
               )}
               <Button
+                id="sign-out-button"
                 sx={{
                   borderWidth: 2,
                   fontFamily: "inherit",

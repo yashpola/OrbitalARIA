@@ -92,13 +92,16 @@ export default function LandingScreen() {
         />
       )}
       <Container sx={{ padding: 5 }}>
-        <Card sx={{ fontSize: 100, textAlign: "center" }}>
+        <Card
+          id="landing-slideshow-header"
+          sx={{ fontSize: 100, textAlign: "center" }}
+        >
           aria
           <p style={{ fontSize: 20, color: "#4e1530" }}>
             artificial resource for interactive academics
           </p>
         </Card>
-        <Card elevation={0}>
+        <Card id="landing-slideshow-body" elevation={0}>
           <div
             className="slideshowSlider"
             style={{ transform: `translate3d(${-currentSlide * 100}%, 0, 0)` }}
@@ -109,7 +112,7 @@ export default function LandingScreen() {
               </div>
             ))}
           </div>
-          <div className="slideshowDots">
+          <div id="landing-slideshow-footer" className="slideshowDots">
             {slides.map((_, idx) => (
               <div
                 key={idx}

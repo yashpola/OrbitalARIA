@@ -38,6 +38,7 @@ export default function SessionHistoryCard({
   return (
     <Container>
       <Card
+        id="session-history-container"
         sx={{
           height: "445px",
           overflow: "auto",
@@ -45,6 +46,7 @@ export default function SessionHistoryCard({
         }}
       >
         <Button
+          id="clear-session-history-button"
           sx={{ float: "right", fontFamily: "inherit", marginBottom: 2 }}
           color="secondary"
           disabled={sessionHistoryArray.length === 0}
@@ -54,16 +56,16 @@ export default function SessionHistoryCard({
           Clear History
         </Button>
         <IconButton
+          id="close-session-history-button"
           onClick={closeSessionHistory}
           sx={{ float: "left", color: "black" }}
         >
-          {" "}
           <Cancel fontSize="inherit" />
         </IconButton>
         <br />
         <TableContainer component={Paper}>
-          <Table sx={{ backgroundColor: "#DC9A7F" }}>
-            <TableHead>
+          <Table id="session-history-table" sx={{ backgroundColor: "#DC9A7F" }}>
+            <TableHead id="session-history-table-header">
               <TableRow>
                 <TableCell
                   sx={{ fontFamily: "Ubuntu", color: "white" }}
@@ -85,7 +87,7 @@ export default function SessionHistoryCard({
                 </TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody id="session-history-table-body">
               {sessionHistoryArray.map((session, index) => (
                 <TableRow
                   key={index}
