@@ -19,10 +19,24 @@ import SessionCreationCard from "./NewSession";
 import SessionHistoryCard from "./SessionHistoryCard";
 
 export default function StudySessionScreen({ email }) {
+  /* React states */
+  // React-redux global states
   const timerOngoing = useSelector((state) => state.timer.value);
+  // Conditional rendering
   const [sessionCreationCard, openSessionCreationCard] = useState(false);
   const [sessionHistoryCardOpen, setSessionHistoryCardOpen] = useState(false);
+  // User data storage
   const [sessionHistoryArray, setSessionHistory] = useState([]);
+
+  /* Component Functionality */
+  async function retrieveSessionHistory() {
+    const { data, error } = await supabase
+      .from("studysessions")
+      .select("created_at, duration, completed")
+      .eq("user_email", email);
+
+    setSessionHistory(data);
+  }
 
   function newSession(e) {
     e.preventDefault();
@@ -35,15 +49,6 @@ export default function StudySessionScreen({ email }) {
     openSessionCreationCard(false);
     retrieveSessionHistory();
     setSessionHistoryCardOpen(true);
-  }
-
-  async function retrieveSessionHistory() {
-    const { data, error } = await supabase
-      .from("studysessions")
-      .select("created_at, duration, completed")
-      .eq("user_email", email);
-
-    setSessionHistory(data);
   }
 
   return (

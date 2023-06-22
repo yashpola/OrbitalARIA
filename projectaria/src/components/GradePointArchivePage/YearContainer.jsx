@@ -1,13 +1,16 @@
 // mui imports
 import { Paper, Grid, IconButton } from "@mui/material";
-import { ExpandMore, ExpandLess, Delete } from "@mui/icons-material";
+import { ExpandMore, ExpandLess } from "@mui/icons-material";
 import { useState } from "react";
 // component imports
 import SemesterContainer from "./SemesterContainer";
 
-export default function YearContainer({ calculateGPA, modData, yearID }) {
+export default function YearContainer({ calculateGPA, nusModsData, yearID }) {
+  /* React states */
+  // Conditional rendering
   const [semsShown, setSemsShown] = useState(false);
 
+  /* Component Functionality */
   function showMods(e) {
     e.preventDefault();
     setSemsShown(!semsShown);
@@ -48,7 +51,7 @@ export default function YearContainer({ calculateGPA, modData, yearID }) {
             <Grid item xs={12} sm={6}>
               <SemesterContainer
                 calculateGPA={calculateGPA}
-                modData={modData}
+                nusModsData={nusModsData}
                 yearID={yearID}
                 semID={1}
               />
@@ -56,7 +59,7 @@ export default function YearContainer({ calculateGPA, modData, yearID }) {
             <Grid item xs={12} sm={6}>
               <SemesterContainer
                 calculateGPA={calculateGPA}
-                modData={modData}
+                nusModsData={nusModsData}
                 yearID={yearID}
                 semID={2}
               />

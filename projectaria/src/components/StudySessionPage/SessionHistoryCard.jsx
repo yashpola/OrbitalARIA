@@ -1,3 +1,4 @@
+// mui imports
 import {
   Container,
   Card,
@@ -12,6 +13,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Cancel } from "@mui/icons-material";
+// supabase imports
 import { supabase } from "../../supabase";
 
 export default function SessionHistoryCard({
@@ -20,6 +22,7 @@ export default function SessionHistoryCard({
   sessionHistoryArray,
   setSessionHistoryCardOpen,
 }) {
+  /* Component functionality */
   async function clearSessionHistory(e) {
     e.preventDefault();
     const { error } = await supabase

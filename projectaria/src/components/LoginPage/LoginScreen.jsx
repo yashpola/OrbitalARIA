@@ -10,7 +10,7 @@ import UniversalPopup from "../Universal/UniversalPopup.jsx";
 export default function LoginScreen() {
   /* React States */
 
-  // internal checks
+  // internal bad user input handling
   const [passwordMatching, setPasswordMatching] = useState(true);
   const [usernameInvalid, setUsernameInvalid] = useState(false);
   const [emailInvalid, setEmailInvalid] = useState(false);

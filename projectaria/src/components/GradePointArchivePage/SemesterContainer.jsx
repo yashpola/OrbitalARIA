@@ -26,21 +26,12 @@ import ConfirmPopup from "../Universal/ConfirmPopup";
 import { ariaTheme } from "../../App";
 
 export default function SemesterContainer({
-  modData,
+  nusModsData,
   calculateGPA,
   yearID,
   semID,
 }) {
-  const [addModForm, showAddModForm] = useState(false);
-  const [userModArray, setModArray] = useState([]);
-  const [email, setEmail] = useState("");
-  const [emptyFields, setEmptyFields] = useState(false);
-  const [existingMod, setExistingMod] = useState(false);
-  const [clearAllButton, setClearAllButton] = useState(true);
-  const [confirmPopup, openConfirmPopup] = useState(false);
-  const [modCodeOptions, showModCodeOptions] = useState(false);
-
-  const [grade, setGrade] = useState("");
+  /* Component variables */
   const gradeList = [
     "A+",
     "A",
@@ -61,15 +52,30 @@ export default function SemesterContainer({
     "IC",
     "W",
   ];
+  const moduleCodeList = nusModsData.map(({ moduleCode }) => moduleCode);
+  const moduleTitleList = nusModsData.map(({ title }) => title);
+  const moduleCreditsList = nusModsData.map(({ moduleCredit }) => moduleCredit);
 
-  const moduleCodeList = modData.map(({ moduleCode }) => moduleCode);
-  const moduleTitleList = modData.map(({ title }) => title);
-  const moduleCreditsList = modData.map(({ moduleCredit }) => moduleCredit);
+  /* React states */
+  // Conditional rendering
+  const [addModForm, showAddModForm] = useState(false);
+  const [clearAllButton, setClearAllButton] = useState(true);
+  const [confirmPopup, openConfirmPopup] = useState(false);
 
-  const handleGradeInput = (event) => {
-    setGrade(event.target.value);
-  };
+  // User data storage
+  const [userModArray, setModArray] = useState([]);
+  const userModCodes = userModArray.map(({ code }) => code);
+  const [email, setEmail] = useState("");
 
+  // Internal bad user input handling
+  const [emptyFields, setEmptyFields] = useState(false);
+  const [existingMod, setExistingMod] = useState(false);
+
+  // Autocomplete + dropdown rendering
+  const [modCodeOptions, showModCodeOptions] = useState(false);
+  const [grade, setGrade] = useState("");
+
+  /* Component functionality */
   async function createMod(e) {
     e.preventDefault();
     setClearAllButton(!clearAllButton);
@@ -78,8 +84,6 @@ export default function SemesterContainer({
     setGrade("");
     showAddModForm(!addModForm);
   }
-
-  const userModCodes = userModArray.map(({ code }) => code);
 
   async function addMod(e) {
     e.preventDefault();
@@ -102,23 +106,13 @@ export default function SemesterContainer({
     let moduleTitle = moduleTitleList[moduleCodeList.indexOf(moduleCode)];
     let moduleCredits = moduleCreditsList[moduleCodeList.indexOf(moduleCode)];
 
-    if (!moduleTitle) {
-      moduleTitle = "";
-    }
-
-    if (!moduleCredits) {
-      moduleCredits = 0;
-    }
-
-    setEmptyFields(false);
-
     await supabase.from("modules").insert({
       user_email: user.email,
       year: yearID,
       semester: semID,
       code: moduleCode,
-      title: moduleTitle,
-      credits: moduleCredits,
+      title: moduleTitle ?? "",
+      credits: moduleCredits ?? 0,
       lettergrade: grade,
     });
 
@@ -148,15 +142,6 @@ export default function SemesterContainer({
     setModArray(data);
   }
 
-  useEffect(() => {
-    retrieveUserMods();
-  }, []);
-
-  function confirmDeleteAll(e) {
-    e.preventDefault();
-    openConfirmPopup(true);
-  }
-
   async function deleteAllMods(e) {
     e.preventDefault();
     const {
@@ -174,10 +159,23 @@ export default function SemesterContainer({
     calculateGPA();
   }
 
+  function confirmDeleteAll(e) {
+    e.preventDefault();
+    openConfirmPopup(true);
+  }
+
   function closePopUp(e) {
     e.preventDefault();
     openConfirmPopup(false);
   }
+
+  useEffect(() => {
+    retrieveUserMods();
+  }, []);
+
+  const handleGradeInput = (event) => {
+    setGrade(event.target.value);
+  };
 
   const filterOptions = createFilterOptions({
     matchFrom: "any",
@@ -308,7 +306,7 @@ export default function SemesterContainer({
           <ModuleCard
             {...mod}
             userModCodes={userModCodes}
-            modData={modData}
+            nusModsData={nusModsData}
             key={index}
             email={email}
             yearID={yearID}

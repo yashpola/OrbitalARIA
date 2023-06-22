@@ -13,12 +13,13 @@ import UserProfile from "../Profile/UserProfile";
 import Fallback from "./FallBack";
 
 export default function NavBar() {
-  // eslint-disable-next-line
-
+  /* React states */
+  // User info storage
   const [adminAccess, setAdminAccess] = useState(false);
   const [username, setUsername] = useState("Profile");
   const [email, setEmail] = useState("");
 
+  /* Component functionality */
   async function setAccess() {
     const {
       data: { user },

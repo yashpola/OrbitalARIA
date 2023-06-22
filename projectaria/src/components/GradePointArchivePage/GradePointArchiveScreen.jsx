@@ -11,11 +11,7 @@ import YearContainer from "./YearContainer";
 import UniversalPopup from "../Universal/UniversalPopup";
 
 export default function GradePointArchiveScreen() {
-  const timerOngoing = useSelector((state) => state.timer.value);
-  const dispatch = useDispatch();
-  const [yearCount, setYearCount] = useState(4);
-  const [gpa, setGPA] = useState("");
-  const [modData, setModData] = useState([]);
+  /* Component variables */
   const gradePoint = {
     "A+": 5,
     A: 5,
@@ -30,35 +26,31 @@ export default function GradePointArchiveScreen() {
     F: 0,
     U: 0,
   };
-
   const yearsList = [];
-
-  for (let i = 1; i <= yearCount; i++) {
-    yearsList.push(
-      <YearContainer
-        key={i}
-        modData={modData}
-        calculateGPA={calculateGPA}
-        yearID={i}
-      />
-    );
-  }
-
-  function addYear(e) {
-    e.preventDefault();
-    setYearCount(yearCount + 1);
-  }
-
-  function removeLastYear(e) {
-    e.preventDefault();
-    setYearCount(yearCount - 1);
-  }
-
   const notCountedGrades = ["S", "CS", "CU", "IP", "IC", "W"];
 
-  function closePopUp(e) {
-    e.preventDefault();
-    dispatch(toggle());
+  /* React States */
+  // Redux global
+  const timerOngoing = useSelector((state) => state.timer.value);
+  const dispatch = useDispatch();
+
+  // No. of years present
+  const [yearCount, setYearCount] = useState(4);
+
+  // Intermediate Data Storage
+  const [gpa, setGPA] = useState("");
+  const [nusModsData, setLocalModsData] = useState([]);
+
+  // Supabase fetch error
+  const [modulesFetchError, triggerModuleFetchError] = useState(false);
+
+  /* Component Functionality */
+  async function fetchModData() {
+    const response = await fetch(
+      "https://api.nusmods.com/v2/2022-2023/moduleInfo.json"
+    );
+    const jsonData = await response.json();
+    setLocalModsData(jsonData);
   }
 
   async function calculateGPA() {
@@ -70,6 +62,11 @@ export default function GradePointArchiveScreen() {
       .from("modules")
       .select("credits, lettergrade")
       .eq("user_email", user.email);
+
+    if (error) {
+      triggerModuleFetchError(true);
+      return;
+    }
 
     if (data.length === 0) {
       setGPA("");
@@ -91,12 +88,30 @@ export default function GradePointArchiveScreen() {
     setGPA(isNaN(cumulativeGPA) ? "" : cumulativeGPA);
   }
 
-  async function fetchModData() {
-    const response = await fetch(
-      "https://api.nusmods.com/v2/2022-2023/moduleInfo.json"
+  for (let i = 1; i <= yearCount; i++) {
+    yearsList.push(
+      <YearContainer
+        key={i}
+        nusModsData={nusModsData}
+        calculateGPA={calculateGPA}
+        yearID={i}
+      />
     );
-    const jsonData = await response.json();
-    setModData(jsonData);
+  }
+
+  function addYear(e) {
+    e.preventDefault();
+    setYearCount(yearCount + 1);
+  }
+
+  function removeLastYear(e) {
+    e.preventDefault();
+    setYearCount(yearCount - 1);
+  }
+
+  function closePopUp(e) {
+    e.preventDefault();
+    dispatch(toggle());
   }
 
   useEffect(() => {
@@ -123,14 +138,18 @@ export default function GradePointArchiveScreen() {
           justifyContent: "center",
           marginBottom: 5,
           padding: 2,
-          fontSize: 40,
+          fontSize: 20,
           backgroundColor: "white",
         }}
         elevation={0}
       >
-        Current GPA: {gpa}
+        Current GPA: &nbsp;
+        {modulesFetchError ? (
+          <div style={{ color: "red" }}>Error Fetching</div>
+        ) : (
+          gpa
+        )}
       </Paper>
-      {/* <Container sx={{ padding: 0 }}> */}
       <Container
         id="gpa-page-body"
         sx={{

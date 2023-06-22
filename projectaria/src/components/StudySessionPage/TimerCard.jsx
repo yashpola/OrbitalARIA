@@ -14,17 +14,16 @@ import { supabase } from "../../supabase";
 
 export default function TimerCard({ email, hours, minutes }) {
   /* React States */
-
+  // React-redux global states
   const dispatch = useDispatch();
 
+  // Timer states
   const [isRunning, setIsRunning] = useState(true);
   const [sessionSuccess, setSessionSuccess] = useState(false);
   const [timerTerminated, setTimerTerminated] = useState(false);
 
-  // countdown functionality
-
+  // Component functionality
   const targetTime = new Date().getTime() + hours * 3600000 + minutes * 60000;
-
   const timer = useRef();
 
   useEffect(() => {

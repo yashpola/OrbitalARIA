@@ -20,16 +20,18 @@ export default function SessionCreationCard({
   openSessionCreationCard,
   email,
 }) {
-  const timerOngoing = useSelector((state) => state.timer.value);
-  const dispatch = useDispatch();
-
   /* React States */
+
+  // User input storage + bad input handling
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [invalidTiming, showInvalidTiming] = useState(false);
 
-  /* Component functionality */
+  // React-redux global states
+  const timerOngoing = useSelector((state) => state.timer.value);
+  const dispatch = useDispatch();
 
+  /* Component functionality */
   function startTimer(e) {
     e.preventDefault();
     let tempHours = Number(

@@ -24,7 +24,7 @@ import { ariaTheme } from "../../App";
 
 export default function ModuleCard({
   userModCodes,
-  modData,
+  nusModsData,
   code,
   title,
   credits,
@@ -36,19 +36,23 @@ export default function ModuleCard({
   calculateGPA,
   gradeList,
 }) {
+  /* Module Info from NUSMODS */
+  const moduleCodeList = nusModsData.map(({ moduleCode }) => moduleCode);
+  const moduleTitleList = nusModsData.map(({ title }) => title);
+  const moduleCreditsList = nusModsData.map(({ moduleCredit }) => moduleCredit);
+
+  /* React States */
+  // Autocomplete + dropdown rendering
   const [grade, setGrade] = useState("");
   const [modCodeOptions, showModCodeOptions] = useState(false);
+
+  // Internal bad user input handling
   const [existingMod, setExistingMod] = useState(false);
 
-  const moduleCodeList = modData.map(({ moduleCode }) => moduleCode);
-  const moduleTitleList = modData.map(({ title }) => title);
-  const moduleCreditsList = modData.map(({ moduleCredit }) => moduleCredit);
-
-  const handleChange = (event) => {
-    setGrade(event.target.value);
-  };
+  // Conditional rendering
   const [editForm, setEditForm] = useState(false);
 
+  /* Component Functionality */
   async function deleteMod(e) {
     e.preventDefault();
     const { error } = await supabase.from("modules").delete().match({
@@ -85,22 +89,12 @@ export default function ModuleCard({
         moduleCodeList.indexOf(newModCode === "" ? code : newModCode)
       ];
 
-    console.log(newModCredits);
-
-    if (!newModTitle) {
-      newModTitle = "";
-    }
-
-    if (!newModCredits) {
-      newModCredits = 0;
-    }
-
     const { error } = await supabase
       .from("modules")
       .update({
         code: newModCode === "" ? code : newModCode,
-        title: newModTitle === "" ? title : newModTitle,
-        credits: newModCredits === "" ? credits : newModCredits,
+        title: newModTitle ?? title,
+        credits: newModCredits ?? credits,
         lettergrade: grade === "" ? lettergrade : grade,
       })
       .match({
@@ -116,6 +110,10 @@ export default function ModuleCard({
     calculateGPA();
     setGrade("");
   }
+
+  const handleGradeInput = (event) => {
+    setGrade(event.target.value);
+  };
 
   const filterOptions = createFilterOptions({
     matchFrom: "any",
@@ -186,7 +184,7 @@ export default function ModuleCard({
                 id="newModGrade"
                 value={grade}
                 label="Module Grade"
-                onChange={handleChange}
+                onChange={handleGradeInput}
               >
                 {gradeList.map((gradeValue, index) => (
                   <MenuItem key={index} value={gradeValue}>

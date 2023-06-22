@@ -12,33 +12,7 @@ import UniversalPopup from "../Universal/UniversalPopup";
 import { toggle } from "../StudySessionPage/studySessionSlice";
 
 export default function LandingScreen() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const timeOutRef = useRef(null);
-  const delay = 4000;
-  const timerOngoing = useSelector((state) => state.timer.value);
-  const dispatch = useDispatch();
-
-  function resetTimeout() {
-    if (timeOutRef.current) {
-      clearTimeout(timeOutRef.current);
-    }
-  }
-
-  useEffect(() => {
-    resetTimeout();
-    timeOutRef.current = setTimeout(
-      () =>
-        setCurrentSlide((prevSlide) =>
-          prevSlide === slides.length - 1 ? 0 : prevSlide + 1
-        ),
-      delay
-    );
-
-    return () => {
-      resetTimeout();
-    };
-  });
-
+  /* Component variables */
   const slides = [
     <FeatureSlide
       navigateNext={navigateNext}
@@ -65,6 +39,38 @@ export default function LandingScreen() {
       description="Bringing focus to your tasks"
     />,
   ];
+
+  /* React States */
+  // Slideshow Rendering
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const timeOutRef = useRef(null);
+  const delay = 4000;
+
+  // Redux global state
+  const timerOngoing = useSelector((state) => state.timer.value);
+  const dispatch = useDispatch();
+
+  /* Component Functionality */
+  function resetTimeout() {
+    if (timeOutRef.current) {
+      clearTimeout(timeOutRef.current);
+    }
+  }
+
+  useEffect(() => {
+    resetTimeout();
+    timeOutRef.current = setTimeout(
+      () =>
+        setCurrentSlide((prevSlide) =>
+          prevSlide === slides.length - 1 ? 0 : prevSlide + 1
+        ),
+      delay
+    );
+
+    return () => {
+      resetTimeout();
+    };
+  });
 
   function navigateNext() {
     const lastSlide = currentSlide === slides.length - 1;
