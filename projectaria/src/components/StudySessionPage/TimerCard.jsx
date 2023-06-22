@@ -9,8 +9,8 @@ import { toggle } from "./studySessionSlice";
 //supabase imports
 import { supabase } from "../../supabase";
 // js imports
-// import JSConfetti from "js-confetti";
-// const jsConfetti = new JSConfetti();
+import JSConfetti from "js-confetti";
+const jsConfetti = new JSConfetti();
 
 export default function TimerCard({ email, hours, minutes }) {
   /* React States */
@@ -51,7 +51,7 @@ export default function TimerCard({ email, hours, minutes }) {
         if (distance < 0) {
           clearInterval(timer.current);
           timer.current = null;
-          // jsConfetti.addConfetti();
+          jsConfetti.addConfetti();
           setSessionSuccess(true);
           await supabase.from("studysessions").insert({
             user_email: email,
