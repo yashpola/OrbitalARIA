@@ -76,25 +76,28 @@ export default function ModuleCard({
   async function editMod(e) {
     e.preventDefault();
 
-    const newModCode = document.getElementById("newModCode").value;
+    let newModCode = document.getElementById("newModCode").value;
 
-    if (userModCodes.includes(newModCode)) {
-      setExistingMod(!existingMod);
-      return;
+    if (newModCode !== "") {
+      if (userModCodes.includes(newModCode)) {
+        setExistingMod(true);
+        return;
+      } else {
+        setExistingMod(false);
+      }
+    } else {
+      newModCode = code;
     }
 
     let newModTitle = moduleTitleList[moduleCodeList.indexOf(newModCode)];
-    let newModCredits =
-      moduleCreditsList[
-        moduleCodeList.indexOf(newModCode === "" ? code : newModCode)
-      ];
+    let newModCredits = moduleCreditsList[moduleCodeList.indexOf(newModCode)];
 
     const { error } = await supabase
       .from("modules")
       .update({
-        code: newModCode === "" ? code : newModCode,
-        title: newModTitle ?? title,
-        credits: newModCredits ?? credits,
+        code: newModCode,
+        title: newModTitle ?? "",
+        credits: newModCredits ?? 0,
         lettergrade: grade === "" ? lettergrade : grade,
       })
       .match({

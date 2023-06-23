@@ -45,79 +45,78 @@ export default function NavBar() {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-dark">
-        <div
-          id="navbar-brand"
-          className="navbar-brand-aria"
-          style={{ margin: "10px" }}
-        >
-          <NavLink
-            to="/"
-            style={({ isActive }) => ({
-              textDecoration: isActive ? "underline" : "none",
-              color: !isActive ? "white" : "grey",
-            })}
+      <div>
+        <nav className="navbar navbar-expand-lg navbar-dark">
+          <div id="navbar-brand" className="navbar-brand-aria">
+            <NavLink
+              to="/"
+              style={({ isActive }) => ({
+                textDecoration: isActive ? "underline" : "none",
+                color: !isActive ? "white" : "grey",
+              })}
+            >
+              aria
+            </NavLink>
+          </div>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
           >
-            aria
-          </NavLink>
-        </div>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+            <span className="navbar-toggler-icon"></span>
+          </button>
 
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav mr-auto">
-            <li>
-              <div id="navbar-gpa" className="nav-item nav-link">
-                <NavLink
-                  id="gpa-nav-link"
-                  to="/gradepointarchive"
-                  style={({ isActive }) => ({
-                    textDecoration: isActive ? "underline" : "none",
-                    color: !isActive ? "white" : "grey",
-                  })}
-                >
-                  GradePointArchive
-                </NavLink>
-              </div>
-            </li>
-            <li>
-              <div id="navbar-studysession" className="nav-item nav-link">
-                <NavLink
-                  to="/studysession"
-                  style={({ isActive }) => ({
-                    textDecoration: isActive ? "underline" : "none",
-                    color: !isActive ? "white" : "grey",
-                  })}
-                >
-                  StudySession
-                </NavLink>
-              </div>
-            </li>
-            <li>
-              <div id="navbar-username" className="nav-item nav-link">
-                <NavLink
-                  to="/profile"
-                  style={({ isActive }) => ({
-                    textDecoration: isActive ? "underline" : "none",
-                    color: !isActive ? "white" : "grey",
-                  })}
-                >
-                  {username}
-                </NavLink>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </nav>
+          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul className="navbar-nav">
+              <li></li>
+              <li>
+                <div id="navbar-gpa" className="nav-item nav-link">
+                  <NavLink
+                    id="gpa-nav-link"
+                    to="/gradepointarchive"
+                    style={({ isActive }) => ({
+                      textDecoration: isActive ? "underline" : "none",
+                      color: !isActive ? "white" : "grey",
+                    })}
+                  >
+                    GradePointArchive
+                  </NavLink>
+                </div>
+              </li>
+              <li>
+                <div id="navbar-studysession" className="nav-item nav-link">
+                  <NavLink
+                    to="/studysession"
+                    style={({ isActive }) => ({
+                      textDecoration: isActive ? "underline" : "none",
+                      color: !isActive ? "white" : "grey",
+                    })}
+                  >
+                    StudySession
+                  </NavLink>
+                </div>
+              </li>
+              <li>
+                <div id="navbar-username" className="nav-item nav-link">
+                  <NavLink
+                    to="/profile"
+                    style={({ isActive }) => ({
+                      textDecoration: isActive ? "underline" : "none",
+                      color: !isActive ? "white" : "grey",
+                    })}
+                  >
+                    {username}
+                  </NavLink>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
       <Routes>
         <Route exact path="/" element={<LandingScreen />} />
         <Route

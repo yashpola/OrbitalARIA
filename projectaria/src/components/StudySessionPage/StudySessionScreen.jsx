@@ -1,6 +1,7 @@
 // mui imports
 import {
   Button,
+  Box,
   Card,
   Container,
   Grid,
@@ -53,7 +54,11 @@ export default function StudySessionScreen({ email }) {
 
   return (
     <ThemeProvider theme={ariaTheme}>
-      <Container sx={{ padding: 5 }}>
+      <Container
+        sx={{
+          padding: 5,
+        }}
+      >
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <Card
@@ -66,7 +71,7 @@ export default function StudySessionScreen({ email }) {
                 border: "5px solid #966f33",
                 backgroundColor: "#B5A197",
               }}
-              elevation={0}
+              elevation={10}
             >
               <Stack direction="column" spacing={2}>
                 <Button
@@ -125,18 +130,19 @@ export default function StudySessionScreen({ email }) {
           </Grid>
         </Grid>
       </Container>
-      <img
-        src={plantIcon}
-        style={{ marginLeft: "auto", width: 250, height: 250 }}
-      ></img>
+      <img src={plantIcon} style={{ width: 250, height: 250 }}></img>
       <Paper
         square={true}
         sx={{
           backgroundColor: "#966f33",
-          padding: "3rem 3rem",
+          padding: "5rem 5rem",
+          // height: "25vh",
           borderTop: "1px solid #966f33",
         }}
       ></Paper>
+      {/* <Box
+        sx={{ backgroundColor: "white", height: "25vh", textAlign: "center" }}
+      ></Box> */}
     </ThemeProvider>
   );
 }

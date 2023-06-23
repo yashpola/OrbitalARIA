@@ -6,6 +6,7 @@ import { React, useState } from "react";
 import { supabase } from "../../supabase.js";
 // component imports
 import UniversalPopup from "../Universal/UniversalPopup.jsx";
+import ForgotPasswordScreen from "../Universal/ForgotPasswordScreen.jsx";
 
 export default function LoginScreen() {
   /* React States */
@@ -125,10 +126,9 @@ export default function LoginScreen() {
         setAccountCreationFail(true);
       } else {
         setAccountCreated(true);
-        // await supabase.from("users").insert({
-        //   email: document.getElementById("signupemail").value,
-        //   username: document.getElementById("signupusername").value,
-        // });
+        await supabase.from("users").insert({
+          email: document.getElementById("signupemail").value,
+        });
       }
     } else {
       return;
@@ -137,10 +137,10 @@ export default function LoginScreen() {
 
   async function forgotPassword(e) {
     e.preventDefault();
-    console.log("yoyoyo mista white");
     setPasswordResetEmail(true);
     await supabase.auth.resetPasswordForEmail(
-      document.getElementById("loginemail").value
+      document.getElementById("loginemail").value,
+      { redirectTo: "https://orbital-aria.vercel.app/forgotpassword" }
     );
   }
 

@@ -112,31 +112,62 @@ export default function UserProfile({ username, setUsername, email }) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    const { data, error } = await supabase
-      .from("users")
-      .select("pfp")
-      .eq("email", user.email);
+    // const { data, error } = await supabase
+    //   .from("users")
+    //   .select("pfp")
+    //   .eq("email", user.email);
+    // if (error) {
+    //   setSrc(userProfileIcon);
+    // }
+
+    // setSrc(data[0].pfp);
+  }
+
+  // async function handlePictureSelected() {
+
+  const handlePictureSelected = async (e) => {
+    e.preventDefault();
+    // imgSrc.name gives us something like IMG_2720.JPG"
+    const imgSrc = document.getElementById("pfp-input-button").files[0];
+    await supabase.storage
+      .from("public")
+      .upload(`userimages/${username}.jpg`, imgSrc, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+
+    // const { data, error } = supabase.storage
+    //   .from("public")
+    //   .getPublicUrl(`userimages/${username}.png`);
+
+    // console.log(data.publicUrl);
+
+    // if (error) {
+    //   console.error("Error fetching profile picture:", error.message);
+    // } else {
+    //   setSrc(data.publicUrl);
+    // }
+  };
+
+  const fetchProfilePicture = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { data, error } = supabase.storage
+      .from("public")
+      .getPublicUrl(`userimages/${user.user_metadata.username}.jpg`);
+
     if (error) {
-      setSrc(userProfileIcon);
+      console.error("Error fetching profile picture:", error.message);
+    } else {
+      setSrc(data.publicUrl);
     }
+  };
 
-    setSrc(data[0].pfp);
-  }
-
-  async function handlePictureSelected() {
-    const pfpSrc = URL.createObjectURL(
-      document.getElementById("pfpInput").files[0]
-    );
-    const { data } = await supabase
-      .from("users")
-      .update({
-        pfp: pfpSrc,
-      })
-      .eq("email", email)
-      .select();
-
-    setSrc(data[0].pfp);
-  }
+  useEffect(() => {
+    fetchProfilePicture();
+  }, []);
 
   useEffect(() => {
     retrieveUserData();
@@ -185,9 +216,9 @@ export default function UserProfile({ username, setUsername, email }) {
               id="pfp-image"
               src={src}
               style={{ borderRadius: "50%", width: 200, height: 200 }}
-            ></img>
+            />
             <input
-              style={{ backgroundColor: "white" }}
+              style={{ backgroundColor: "white", color: "white" }}
               id="pfp-input-button"
               type="file"
               onChange={handlePictureSelected}

@@ -7,39 +7,45 @@ export default function FeatureSlide({
   description,
 }) {
   return (
-    <Card sx={{ textAlign: "center", backgroundColor: { background } }}>
-      <Avatar
-        id="landing-card-feature-icon"
-        src={image}
-        alt="gpaicon"
-        sx={{
-          margin: "auto",
-          width: 300,
-          height: 300,
-        }}
-      ></Avatar>
-      <h1
-        id="landing-feature-name"
-        style={{
-          textAlign: "center",
-          // padding: 2,
-          color: "white",
-        }}
-      >
-        {feature}
-      </h1>
-      <br />
-      <h4
-        id="landing-feature-description"
-        style={{
-          textAlign: "center",
-          color: "white",
-          paddingBottom: 30,
-          wordBreak: "normal",
-        }}
-      >
-        {description}
-      </h4>
+    <Card
+      sx={{
+        padding: 5,
+        textAlign: "center",
+        backgroundColor: { background },
+      }}
+    >
+      <div className="feature-slide-materials">
+        <Avatar
+          id="landing-card-feature-icon"
+          src={image}
+          alt="gpaicon"
+          sx={{
+            margin: "auto",
+            width: 300,
+            height: 300,
+          }}
+        ></Avatar>
+        <h2
+          id="landing-feature-name"
+          style={{
+            whiteSpace: "pre-wrap",
+            color: "white",
+          }}
+        >
+          {feature}
+        </h2>
+        <h4
+          className="feature-slide-description"
+          id="landing-feature-description"
+          style={{
+            color: "white",
+            whiteSpace: "pre-wrap" /* Webkit */,
+            wordWrap: "break-word" /* IE */,
+          }}
+        >
+          {description}
+        </h4>
+      </div>
     </Card>
   );
 }

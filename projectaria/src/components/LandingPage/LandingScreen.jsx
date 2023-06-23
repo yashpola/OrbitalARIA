@@ -1,5 +1,5 @@
 // mui imports
-import { Card, Container } from "@mui/material";
+import { Card, Box, Container } from "@mui/material";
 // react imports
 import { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -28,7 +28,7 @@ export default function LandingScreen() {
       background="#A86868"
       feature="GradePointArchive"
       image={gradePointArchiveIcon}
-      description="Your academic health at a glance"
+      description="All your grades in one repo. Stay updated on your academic progress"
     />,
     <FeatureSlide
       navigateNext={navigateNext}
@@ -36,7 +36,7 @@ export default function LandingScreen() {
       background="#983811"
       feature="StudySession"
       image={studySessionIcon}
-      description="Bringing focus to your tasks"
+      description="Track your study times and keep motivated on completing your goals"
     />,
   ];
 
@@ -97,42 +97,44 @@ export default function LandingScreen() {
           popupText="Your ongoing session was terminated."
         />
       )}
-      <Container sx={{ padding: 5 }}>
-        <Card
-          id="landing-slideshow-header"
-          sx={{ fontSize: 100, textAlign: "center" }}
+      <Card
+        id="landing-slideshow-header"
+        sx={{ fontSize: 100, textAlign: "center" }}
+      >
+        aria
+        <p style={{ fontSize: 30, color: "#4e1530" }}>
+          artificial resource for interactive academics
+        </p>
+      </Card>
+      <Card
+        sx={{ backgroundColor: "white" }}
+        id="landing-slideshow-body"
+        elevation={0}
+      >
+        <div
+          className="slideshowSlider"
+          style={{
+            transform: `translate3d(${-currentSlide * 100}%, 0, 0)`,
+          }}
         >
-          aria
-          <p style={{ fontSize: 20, color: "#4e1530" }}>
-            artificial resource for interactive academics
-          </p>
-        </Card>
-        <Card id="landing-slideshow-body" elevation={0}>
-          <div
-            className="slideshowSlider"
-            style={{ transform: `translate3d(${-currentSlide * 100}%, 0, 0)` }}
-          >
-            {slides.map((feature, index) => (
-              <div className="slide" key={index}>
-                {feature}
-              </div>
-            ))}
-          </div>
-          <div id="landing-slideshow-footer" className="slideshowDots">
-            {slides.map((_, idx) => (
-              <div
-                key={idx}
-                className={`slideshowDot${
-                  currentSlide === idx ? " active" : ""
-                }`}
-                onClick={() => {
-                  setCurrentSlide(idx);
-                }}
-              ></div>
-            ))}
-          </div>
-        </Card>
-      </Container>
+          {slides.map((feature, index) => (
+            <div className="slide" key={index}>
+              {feature}
+            </div>
+          ))}
+        </div>
+        <div id="landing-slideshow-footer" className="slideshowDots">
+          {slides.map((_, idx) => (
+            <div
+              key={idx}
+              className={`slideshowDot${currentSlide === idx ? " active" : ""}`}
+              onClick={() => {
+                setCurrentSlide(idx);
+              }}
+            ></div>
+          ))}
+        </div>
+      </Card>
     </>
   );
 }

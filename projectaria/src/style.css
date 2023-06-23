@@ -164,24 +164,14 @@ input {
 .navbar-brand-aria {
   font-family: "Ubuntu";
   font-weight: 700;
-  font-size: 2rem;
+  font-size: 4rem;
+  margin-right: 5vw;
 }
 
 .nav-item {
+  margin-right: 5vw;
   font-family: inherit;
   cursor: pointer;
-}
-
-@media only screen and (min-width: 992px) {
-  .navbar li {
-    margin-left: 12vw;
-  }
-}
-
-@media only screen and (min-width: 1200px) {
-  .navbar li {
-    margin-left: 16vw;
-  }
 }
 
 .navbar-toggler-icon {
@@ -189,7 +179,7 @@ input {
 }
 
 .nav-link {
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 
 .nav-link:hover {
@@ -207,8 +197,6 @@ input {
   width: 100%;
   border-radius: 40px;
 }
-
-/* Buttons */
 
 .slideshowDots {
   text-align: center;
