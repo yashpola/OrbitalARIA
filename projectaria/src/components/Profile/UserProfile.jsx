@@ -12,7 +12,13 @@ import {
   InputAdornment,
   Stack,
 } from "@mui/material";
-import { AccountCircle, Email, Edit, Construction } from "@mui/icons-material";
+import {
+  AccountCircle,
+  Email,
+  Edit,
+  Construction,
+  Key,
+} from "@mui/icons-material";
 // supabase imports
 import { supabase } from "../../supabase";
 // react imports
@@ -37,12 +43,16 @@ export default function UserProfile({
   // conditional Rendering
   const [usernameFormOpen, setUsernameFormOpen] = useState(false);
   const [emailFormOpen, setEmailFormOpen] = useState(false);
+  const [passwordUpdateError, setPasswordUpdateError] = useState(false);
+  const [passwordUpdateSuccess, setPasswordUpdateSuccess] = useState(false);
+  const [passwordUpdateForm, setPasswordUpdateForm] = useState(false);
 
   // internal Checking of Fields
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [invalidUsername, setInvalidUsername] = useState(false);
   const [usernameTaken, setUsernameTaken] = useState(false);
   const [emailTaken, setEmailTaken] = useState(false);
+  const [passwordMatching, setPasswordMatching] = useState(true);
 
   // internal username, email, pfp display
   const [src, setSrc] = useState(undefined);
@@ -199,6 +209,37 @@ export default function UserProfile({
     e.preventDefault();
     dispatch(toggle());
   }
+
+  async function updateUserPassword(e) {
+    e.preventDefault();
+    const newPassword = document.getElementById("newPassword").value;
+    const confirmNewPassword =
+      document.getElementById("confirmNewPassword").value;
+
+    if (newPassword !== confirmNewPassword) {
+      setPasswordMatching(false);
+      return;
+    } else {
+      setPasswordMatching(true);
+    }
+    // const newPassword = prompt(
+    //   "What would you like your new password to be?"
+    // );
+    const { data, error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (data) setPasswordUpdateSuccess(true);
+    if (error) setPasswordUpdateError(true);
+  }
+
+  useEffect(() => {
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event == "PASSWORD_RECOVERY") {
+        setPasswordUpdateForm(true);
+      }
+    });
+  }, []);
 
   return (
     <ThemeProvider theme={ariaTheme}>
@@ -406,6 +447,67 @@ export default function UserProfile({
                     <br />
                   </FormControl>
                 </>
+              )}
+              {passwordUpdateForm && (
+                <div>
+                  <Stack
+                    sx={{
+                      backgroundColor: "white",
+                      padding: 5,
+                      border: "2px solid black",
+                    }}
+                    direction="column"
+                    spacing={2}
+                  >
+                    <FormControl>
+                      <InputLabel htmlFor="newPassword">
+                        New Password
+                      </InputLabel>
+                      <FilledInput
+                        id="newPassword"
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <Key />
+                          </InputAdornment>
+                        }
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <InputLabel htmlFor="confirmNewPassword">
+                        Confirm New Password
+                      </InputLabel>
+                      <FilledInput
+                        id="confirmnNewPassword"
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <Key />
+                          </InputAdornment>
+                        }
+                      />
+                    </FormControl>
+                    {!passwordMatching && <h6>Passwords do not match!</h6>}
+                    {passwordUpdateSuccess && (
+                      <h6>Password updated! You may login now.</h6>
+                    )}
+                    {passwordUpdateError && (
+                      <h6>Error updating. Please try again later</h6>
+                    )}
+                    <FormControl>
+                      <Button
+                        onClick={updateUserPassword}
+                        sx={{
+                          fontFamily: "Ubuntu",
+                          fontWeight: "bold",
+                          color: "white",
+                          backgroundColor: "#ff4b2b",
+                        }}
+                        variant="contained"
+                      >
+                        Reset Password
+                      </Button>
+                    </FormControl>
+                  </Stack>
+                </div>
               )}
               <Button
                 id="sign-out-button"

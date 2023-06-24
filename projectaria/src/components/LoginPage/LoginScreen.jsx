@@ -17,6 +17,7 @@ import { supabase } from "../../supabase.js";
 // component imports
 import UniversalPopup from "../Universal/UniversalPopup.jsx";
 import ForgotPasswordScreen from "../Universal/ForgotPasswordScreen.jsx";
+import { redirect } from "react-router-dom";
 
 export default function LoginScreen({
   currentUserEmailData,
@@ -25,7 +26,6 @@ export default function LoginScreen({
   /* React States */
 
   // conditional rendering
-  const [passwordUpdateForm, setPasswordUpdateForm] = useState(false);
 
   // internal bad user input handling
   const [passwordMatching, setPasswordMatching] = useState(true);
@@ -38,8 +38,6 @@ export default function LoginScreen({
   const [accountCreated, setAccountCreated] = useState(false);
   const [accountCreationFail, setAccountCreationFail] = useState(false);
   const [accountLoginFail, setAccountLoginFail] = useState(false);
-  const [passwordUpdateError, setPasswordUpdateError] = useState(false);
-  const [passwordUpdateSuccess, setPasswordUpdateSuccess] = useState(false);
 
   // others
   const [passwordResetEmail, setPasswordResetEmail] = useState(false);
@@ -168,40 +166,10 @@ export default function LoginScreen({
     e.preventDefault();
     setPasswordResetEmail(true);
     await supabase.auth.resetPasswordForEmail(
-      document.getElementById("loginemail").value
+      document.getElementById("loginemail").value,
+      { redirectTo: "https://orbital-aria.vercel.app/profile" }
     );
   }
-
-  async function updateUserPassword(e) {
-    e.preventDefault();
-    const newPassword = document.getElementById("newPassword").value;
-    const confirmNewPassword =
-      document.getElementById("confirmNewPassword").value;
-
-    if (newPassword !== confirmNewPassword) {
-      setPasswordMatching(false);
-      return;
-    } else {
-      setPasswordMatching(true);
-    }
-    // const newPassword = prompt(
-    //   "What would you like your new password to be?"
-    // );
-    const { data, error } = await supabase.auth.updateUser({
-      password: newPassword,
-    });
-
-    if (data) setPasswordUpdateSuccess(true);
-    if (error) setPasswordUpdateError(true);
-  }
-
-  useEffect(() => {
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event == "PASSWORD_RECOVERY") {
-        setPasswordUpdateForm(true);
-      }
-    });
-  }, []);
 
   // popup functions
   function closePopUp() {
@@ -218,73 +186,6 @@ export default function LoginScreen({
           closePopUp={closePopUp}
           popupText="Login unsuccessful. Check email and password?"
         />
-      )}
-      {passwordUpdateForm && (
-        <div
-          style={{
-            // maxWidth: "60%",
-            height: "100vh",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Stack
-            sx={{
-              backgroundColor: "white",
-              padding: 5,
-              border: "2px solid black",
-            }}
-            direction="column"
-            spacing={2}
-          >
-            <h1 style={{ textAlign: "center" }}>aria</h1>
-            <FormControl>
-              <InputLabel htmlFor="newPassword">New Password</InputLabel>
-              <FilledInput
-                id="newPassword"
-                startAdornment={
-                  <InputAdornment position="start">
-                    <Key />
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="confirmNewPassword">
-                Confirm New Password
-              </InputLabel>
-              <FilledInput
-                id="confirmnNewPassword"
-                startAdornment={
-                  <InputAdornment position="start">
-                    <Key />
-                  </InputAdornment>
-                }
-              />
-            </FormControl>
-            {passwordMatching && <h6>Passwords do not match!</h6>}
-            {passwordUpdateSuccess && (
-              <h6>Password updated! You may login now.</h6>
-            )}
-            {passwordUpdateError && (
-              <h6>Error updating. Please try again later</h6>
-            )}
-            <FormControl>
-              <Button
-                onClick={updateUserPassword}
-                sx={{
-                  fontFamily: "Ubuntu",
-                  fontWeight: "bold",
-                  backgroundColor: "#A86868",
-                }}
-                variant="contained"
-              >
-                Reset Password
-              </Button>
-            </FormControl>
-          </Stack>
-        </div>
       )}
       {passwordResetEmail && (
         <UniversalPopup
