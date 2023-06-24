@@ -234,7 +234,7 @@ export default function UserProfile({
   }
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange(async (event, session) => {
+    supabase.auth.onAuthStateChange((event, session) => {
       if (event == "PASSWORD_RECOVERY") {
         setPasswordUpdateForm(true);
       }
