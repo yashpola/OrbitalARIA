@@ -1,26 +1,45 @@
 // mui imports
-import { Stack, Checkbox, FormControlLabel } from "@mui/material";
+import {
+  Stack,
+  Checkbox,
+  FormControlLabel,
+  FormControl,
+  FilledInput,
+  Button,
+  InputAdornment,
+  InputLabel,
+} from "@mui/material";
+import { Key } from "@mui/icons-material";
 // react imports
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 // supabase imports
 import { supabase } from "../../supabase.js";
 // component imports
 import UniversalPopup from "../Universal/UniversalPopup.jsx";
 import ForgotPasswordScreen from "../Universal/ForgotPasswordScreen.jsx";
 
-export default function LoginScreen() {
+export default function LoginScreen({
+  currentUserEmailData,
+  currentUserUsernameData,
+}) {
   /* React States */
+
+  // conditional rendering
+  const [passwordUpdateForm, setPasswordUpdateForm] = useState(false);
 
   // internal bad user input handling
   const [passwordMatching, setPasswordMatching] = useState(true);
   const [usernameInvalid, setUsernameInvalid] = useState(false);
+  const [usernameTaken, setUsernameTaken] = useState(false);
   const [emailInvalid, setEmailInvalid] = useState(false);
-  const [emailExist, setEmailExist] = useState(false);
+  const [emailTaken, setEmailTaken] = useState(false);
 
   // supabase states
   const [accountCreated, setAccountCreated] = useState(false);
   const [accountCreationFail, setAccountCreationFail] = useState(false);
   const [accountLoginFail, setAccountLoginFail] = useState(false);
+  const [passwordUpdateError, setPasswordUpdateError] = useState(false);
+  const [passwordUpdateSuccess, setPasswordUpdateSuccess] = useState(false);
 
   // others
   const [passwordResetEmail, setPasswordResetEmail] = useState(false);
@@ -46,22 +65,33 @@ export default function LoginScreen() {
 
   async function signUp(e) {
     e.preventDefault();
+
+    const signUpUsername = document.getElementById("signupusername").value;
+    const signUpEmail = document.getElementById("signupemail").value;
+    const signUpPassword = document.getElementById("signuppassword").value;
+    const confirmSignUpPassword = document.getElementById(
+      "confirmsignuppassword"
+    ).value;
+
     let usernameError = null;
+    let usernameExist = null;
     let emailError = null;
-    let emailExist = null;
+    let emailTaken = null;
     let passwordError = null;
     let privacyPolicyCheckboxError = null;
 
     const errors = [
       usernameError,
+      usernameExist,
       emailError,
-      emailExist,
+      emailTaken,
       passwordError,
       privacyPolicyCheckboxError,
     ];
 
     if (
-      !document.getElementById("signupusername").value.match(validUsernameRegex)
+      !signUpUsername.match(validUsernameRegex) ||
+      signUpUsername.match(validEmailRegex)
     ) {
       errors[0] = true;
       setUsernameInvalid(true);
@@ -70,55 +100,53 @@ export default function LoginScreen() {
       setUsernameInvalid(false);
     }
 
-    const { data } = await supabase
-      .from("users")
-      .select("email")
-      .eq("email", document.getElementById("signupemail").value);
-
-    if (!document.getElementById("signupemail").value.match(validEmailRegex)) {
+    if (currentUserUsernameData.includes(signUpUsername)) {
       errors[1] = true;
+      setUsernameTaken(true);
+    } else {
+      errors[0] = false;
+      setUsernameTaken(false);
+    }
+
+    if (!signUpEmail.match(validEmailRegex)) {
+      errors[2] = true;
       setEmailInvalid(true);
     } else {
-      errors[1] = false;
+      errors[2] = false;
       setEmailInvalid(false);
     }
 
-    if (data[0]) {
-      errors[2] = true;
-      setEmailExist(true);
-    } else {
-      errors[2] = false;
-      setEmailExist(false);
-    }
-
-    if (
-      !(
-        document.getElementById("signuppassword").value ===
-        document.getElementById("confirmsignuppassword").value
-      )
-    ) {
+    if (currentUserEmailData.includes(signUpEmail)) {
       errors[3] = true;
-      setPasswordMatching(false);
+      setEmailTaken(true);
     } else {
       errors[3] = false;
+      setEmailTaken(false);
+    }
+
+    if (!(signUpPassword === confirmSignUpPassword)) {
+      errors[4] = true;
+      setPasswordMatching(false);
+    } else {
+      errors[4] = false;
       setPasswordMatching(true);
     }
 
     if (!document.getElementById("privacypolicycheckbox").checked) {
-      errors[4] = true;
+      errors[5] = true;
       document.getElementById("privacypolicymessage").classList.add("error");
     } else {
-      errors[4] = false;
+      errors[5] = false;
       document.getElementById("privacypolicymessage").classList.remove("error");
     }
 
     if (!errors.includes(true)) {
       const { error } = await supabase.auth.signUp({
-        email: document.getElementById("signupemail").value,
-        password: document.getElementById("signuppassword").value,
+        email: signUpEmail,
+        password: signUpPassword,
         options: {
           data: {
-            username: document.getElementById("signupusername").value,
+            username: signUpUsername,
           },
         },
       });
@@ -127,7 +155,8 @@ export default function LoginScreen() {
       } else {
         setAccountCreated(true);
         await supabase.from("users").insert({
-          email: document.getElementById("signupemail").value,
+          email: signUpEmail,
+          username: signUpUsername,
         });
       }
     } else {
@@ -254,7 +283,8 @@ export default function LoginScreen() {
                 </a>
               />
               <Stack direction="column">
-                {emailExist && <h6>Email taken!</h6>}
+                {usernameTaken && <h6>Username Taken!</h6>}
+                {emailTaken && <h6>Email taken!</h6>}
                 {usernameInvalid && <h6>Invalid username!</h6>}
                 {emailInvalid && <h6>Invalid email!</h6>}
                 {!passwordMatching && <h6>Passwords do not match!</h6>}

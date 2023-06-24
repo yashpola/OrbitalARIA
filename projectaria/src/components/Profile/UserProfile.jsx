@@ -12,7 +12,7 @@ import {
   InputAdornment,
   Stack,
 } from "@mui/material";
-import { AccountCircle, Email, Edit } from "@mui/icons-material";
+import { AccountCircle, Email, Edit, Construction } from "@mui/icons-material";
 // supabase imports
 import { supabase } from "../../supabase";
 // react imports
@@ -24,19 +24,29 @@ import { ariaTheme } from "../../App";
 import userProfileIcon from "../../userprofile.png";
 import { toggle } from "../StudySessionPage/studySessionSlice";
 
-export default function UserProfile({ username, setUsername, email }) {
+export default function UserProfile({
+  currentUserPfpData,
+  currentUserEmailData,
+  currentUserUsernameData,
+  username,
+  setUsername,
+  email,
+}) {
   /* React States */
 
-  // internal Form Rendering
+  // conditional Rendering
   const [usernameFormOpen, setUsernameFormOpen] = useState(false);
   const [emailFormOpen, setEmailFormOpen] = useState(false);
 
   // internal Checking of Fields
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [invalidUsername, setInvalidUsername] = useState(false);
+  const [usernameTaken, setUsernameTaken] = useState(false);
+  const [emailTaken, setEmailTaken] = useState(false);
 
   // internal username, email, pfp display
-  const [src, setSrc] = useState("userProfileIcon");
+  const [src, setSrc] = useState(undefined);
+  const [profilePicError, setProfilePicError] = useState(false);
 
   // supabase authentication success / failure
   const [emailChangeNotif, setEmailChangeNotif] = useState(false);
@@ -69,14 +79,25 @@ export default function UserProfile({ username, setUsername, email }) {
 
   async function updateUsername(e) {
     e.preventDefault();
+    const newUsername = document.getElementById("newUsername").value;
     const validUsernameRegex = /^[a-zA-Z]/;
-    if (
-      document.getElementById("newUsername").value.match(validUsernameRegex)
-    ) {
+
+    if (currentUserUsernameData.includes(newUsername)) {
+      setUsernameTaken(true);
+      return;
+    } else {
+      setUsernameTaken(false);
+    }
+
+    if (newUsername.match(validUsernameRegex)) {
       await supabase.auth.updateUser({
-        data: { username: document.getElementById("newUsername").value },
+        data: { username: newUsername },
       });
-      setUsername(document.getElementById("newUsername").value);
+      await supabase
+        .from("users")
+        .update({ username: newUsername })
+        .eq("email", email);
+      setUsername(newUsername);
       setUsernameFormOpen(false);
       setInvalidUsername(false);
     } else {
@@ -86,11 +107,20 @@ export default function UserProfile({ username, setUsername, email }) {
 
   async function updateEmail(e) {
     e.preventDefault();
+    const newEmail = document.getElementById("newEmail").value;
     const validRegex =
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    if (document.getElementById("newEmail").value.match(validRegex)) {
+
+    if (currentUserEmailData.includes(newEmail)) {
+      setEmailTaken(true);
+      return;
+    } else {
+      setEmailTaken(false);
+    }
+
+    if (newEmail.match(validRegex)) {
       await supabase.auth.updateUser({
-        email: document.getElementById("newEmail").value,
+        email: newEmail,
       });
       setEmailFormOpen(false);
       setEmailChangeNotif(true);
@@ -102,54 +132,42 @@ export default function UserProfile({ username, setUsername, email }) {
 
   // internal username/email/pfp display functions
 
-  async function retrieveUserData() {
-    /* supabase.auth.getUser() here seems redundant. it could be removed and username/email 
-    passed as props from NavBar, but removing it leads to the console logging a "pfp is undefined"
-    error i.e. the user email needs to be explicitly retrieved again to be used for looking up 
-    the user's pfp in the user table. can be resolved, but don't remove this method here
-    */
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    // const { data, error } = await supabase
-    //   .from("users")
-    //   .select("pfp")
-    //   .eq("email", user.email);
-    // if (error) {
-    //   setSrc(userProfileIcon);
-    // }
-
-    // setSrc(data[0].pfp);
-  }
-
-  // async function handlePictureSelected() {
-
-  const handlePictureSelected = async (e) => {
+  async function setProfilePicture(e) {
     e.preventDefault();
-    // imgSrc.name gives us something like IMG_2720.JPG"
     const imgSrc = document.getElementById("pfp-input-button").files[0];
-    await supabase.storage
+    const { data, error } = await supabase.storage
       .from("public")
       .upload(`userimages/${username}.jpg`, imgSrc, {
         cacheControl: "3600",
         upsert: false,
       });
 
-    // const { data, error } = supabase.storage
-    //   .from("public")
-    //   .getPublicUrl(`userimages/${username}.png`);
+    if (error) {
+      console.error(error, error.message);
+    }
 
-    // console.log(data.publicUrl);
+    await supabase.from("users").update({ pfpset: true }).eq("email", email);
+    setSrc(data.publicUrl);
+  }
 
-    // if (error) {
-    //   console.error("Error fetching profile picture:", error.message);
-    // } else {
-    //   setSrc(data.publicUrl);
-    // }
-  };
+  // async function updateProfilePicture(e) {
+  //   e.preventDefault();
+  //   const newImgSrc = document.getElementById("pfp-input-button").files[0];
+  //   const { data, error } = await supabase.storage
+  //     .from("public")
+  //     .update(`userimages/${username}.jpg`, newImgSrc, {
+  //       cacheControl: "3600",
+  //       upsert: true,
+  //     });
 
-  const fetchProfilePicture = async () => {
+  //   if (error) {
+  //     console.error(error, error.message);
+  //   }
+
+  //   setSrc(data.publicUrl);
+  // }
+
+  async function fetchProfilePicture() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -159,19 +177,16 @@ export default function UserProfile({ username, setUsername, email }) {
       .getPublicUrl(`userimages/${user.user_metadata.username}.jpg`);
 
     if (error) {
-      console.error("Error fetching profile picture:", error.message);
-    } else {
-      setSrc(data.publicUrl);
+      console.error(error, error.message);
+      return;
     }
-  };
+
+    setSrc(data.publicUrl);
+  }
 
   useEffect(() => {
     fetchProfilePicture();
-  }, []);
-
-  useEffect(() => {
-    retrieveUserData();
-  }, [username, src]);
+  }, [src]);
 
   // popup functions
 
@@ -217,12 +232,42 @@ export default function UserProfile({ username, setUsername, email }) {
               src={src}
               style={{ borderRadius: "50%", width: 200, height: 200 }}
             />
-            <input
-              style={{ backgroundColor: "white", color: "white" }}
-              id="pfp-input-button"
-              type="file"
-              onChange={handlePictureSelected}
-            />
+            <br />
+            <br />
+            {profilePicError && (
+              <h6 style={{ color: "black" }}>Error Fetching</h6>
+            )}
+            <Button
+              // disabled={currentUserPfpData}
+              color="secondary"
+              sx={{ marginRight: 2, marginBottom: 3, fontFamily: "ubuntu" }}
+              variant="contained"
+              component="label"
+            >
+              Set PFP
+              <input
+                id="pfp-input-button"
+                type="file"
+                onChange={setProfilePicture}
+                hidden
+              />
+            </Button>
+            <Button
+              disabled={true}
+              color="secondary"
+              sx={{ marginBottom: 3, fontFamily: "ubuntu" }}
+              variant="contained"
+              component="label"
+            >
+              Change PFP - Coming Soon <Construction />
+              <input
+                style={{ backgroundColor: "white", color: "white" }}
+                id="pfp-input-button"
+                type="file"
+                // onChange={updateProfilePicture}
+                hidden
+              />
+            </Button>
           </Grid>
           <Grid item xs={12} sm={4}>
             <Stack spacing={2}>
@@ -263,6 +308,7 @@ export default function UserProfile({ username, setUsername, email }) {
                       }
                     />
                   </FormControl>
+                  {usernameTaken && <h6>Username Taken!</h6>}
                   <FormControl
                     sx={{
                       marginTop: 2,
@@ -331,6 +377,7 @@ export default function UserProfile({ username, setUsername, email }) {
                       }
                     />
                   </FormControl>
+                  {emailTaken && <h6>Email Taken!</h6>}
                   <FormControl
                     sx={{
                       marginTop: 2,

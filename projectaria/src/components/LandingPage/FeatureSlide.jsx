@@ -9,7 +9,7 @@ export default function FeatureSlide({
   return (
     <Card
       sx={{
-        padding: 5,
+        // padding: 5,
         textAlign: "center",
         backgroundColor: { background },
       }}

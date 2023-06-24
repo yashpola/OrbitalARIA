@@ -8,6 +8,7 @@ export default function UniversalPopup({ popupText, closePopUp }) {
     <ThemeProvider theme={ariaTheme}>
       <Card
         sx={{
+          backgroundColor: "#DC9A7F",
           display: "flex",
           margin: "auto",
           justifyContent: "center",
@@ -21,9 +22,10 @@ export default function UniversalPopup({ popupText, closePopUp }) {
           <Paper
             sx={{
               padding: 2,
-              backgroundColor: "#4e1530",
-              color: "white",
+              backgroundColor: "#eee",
+              color: "black",
             }}
+            elevation={2}
           >
             {popupText}
           </Paper>
@@ -35,7 +37,7 @@ export default function UniversalPopup({ popupText, closePopUp }) {
             variant="contained"
             onClick={closePopUp}
           >
-            Got it!
+            Ok
           </Button>
         </Stack>
       </Card>

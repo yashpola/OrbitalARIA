@@ -12,12 +12,15 @@ import NoPage from "./404Page";
 import UserProfile from "../Profile/UserProfile";
 import Fallback from "./FallBack";
 
-export default function NavBar() {
+export default function NavBar({
+  currentUserEmailData,
+  currentUserUsernameData,
+}) {
   /* React states */
   // User info storage
-  const [adminAccess, setAdminAccess] = useState(false);
   const [username, setUsername] = useState("Profile");
   const [email, setEmail] = useState("");
+  const [currentUserPfpData, setCurrentUserPfpData] = useState("");
 
   /* Component functionality */
   async function setAccess() {
@@ -26,14 +29,10 @@ export default function NavBar() {
     } = await supabase.auth.getUser();
 
     const { data } = await supabase
-      .from("administrators")
-      .select("email")
+      .from("users")
+      .select("pfpset")
       .eq("email", user.email);
-    if (data[0] === undefined) {
-      setAdminAccess(false);
-    } else {
-      setAdminAccess(true);
-    }
+    setCurrentUserPfpData(data[0].pfpset);
 
     setUsername(user.user_metadata.username);
     setEmail(user.email);
@@ -72,7 +71,6 @@ export default function NavBar() {
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav">
-              <li></li>
               <li>
                 <div id="navbar-gpa" className="nav-item nav-link">
                   <NavLink
@@ -134,6 +132,9 @@ export default function NavBar() {
           path="/profile"
           element={
             <UserProfile
+              currentUserEmailData={currentUserEmailData}
+              currentUserUsernameData={currentUserUsernameData}
+              currentUserPfpData={currentUserPfpData}
               username={username}
               setUsername={setUsername}
               email={email}

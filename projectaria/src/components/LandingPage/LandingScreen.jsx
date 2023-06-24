@@ -1,88 +1,28 @@
 // mui imports
-import { Card, Box, Container } from "@mui/material";
-// react imports
-import { useState, useRef, useEffect } from "react";
+import {
+  Grid,
+  Box,
+  Paper,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Stack,
+  Avatar,
+} from "@mui/material";
+import { ExpandMore } from "@mui/icons-material";
+// React imports
 import { useSelector, useDispatch } from "react-redux";
-// component imports
+// React components
 import userProfileIcon from "../images/landingimages/userprofile.png";
 import gradePointArchiveIcon from "../images/landingimages/gradepointarchive.png";
 import studySessionIcon from "../images/landingimages/studysession.png";
-import FeatureSlide from "./FeatureSlide";
-import UniversalPopup from "../Universal/UniversalPopup";
 import { toggle } from "../StudySessionPage/studySessionSlice";
+import UniversalPopup from "../Universal/UniversalPopup";
 
 export default function LandingScreen() {
-  /* Component variables */
-  const slides = [
-    <FeatureSlide
-      navigateNext={navigateNext}
-      navigatePrevious={navigatePrevious}
-      background="#DC9A7F"
-      feature="User Profiles"
-      image={userProfileIcon}
-      description="Personalized secure website experience"
-    />,
-    <FeatureSlide
-      navigateNext={navigateNext}
-      navigatePrevious={navigatePrevious}
-      background="#A86868"
-      feature="GradePointArchive"
-      image={gradePointArchiveIcon}
-      description="All your grades in one repo. Stay updated on your academic progress"
-    />,
-    <FeatureSlide
-      navigateNext={navigateNext}
-      navigatePrevious={navigatePrevious}
-      background="#983811"
-      feature="StudySession"
-      image={studySessionIcon}
-      description="Track your study times and keep motivated on completing your goals"
-    />,
-  ];
-
-  /* React States */
-  // Slideshow Rendering
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const timeOutRef = useRef(null);
-  const delay = 4000;
-
   // Redux global state
   const timerOngoing = useSelector((state) => state.timer.value);
   const dispatch = useDispatch();
-
-  /* Component Functionality */
-  function resetTimeout() {
-    if (timeOutRef.current) {
-      clearTimeout(timeOutRef.current);
-    }
-  }
-
-  useEffect(() => {
-    resetTimeout();
-    timeOutRef.current = setTimeout(
-      () =>
-        setCurrentSlide((prevSlide) =>
-          prevSlide === slides.length - 1 ? 0 : prevSlide + 1
-        ),
-      delay
-    );
-
-    return () => {
-      resetTimeout();
-    };
-  });
-
-  function navigateNext() {
-    const lastSlide = currentSlide === slides.length - 1;
-    const nextSlide = lastSlide ? 0 : currentSlide + 1;
-    setCurrentSlide(nextSlide);
-  }
-
-  function navigatePrevious() {
-    const firstSlide = currentSlide === 0;
-    const nextSlide = firstSlide ? slides.length - 1 : currentSlide - 1;
-    setCurrentSlide(nextSlide);
-  }
 
   function closePopUp(e) {
     e.preventDefault();
@@ -94,47 +34,115 @@ export default function LandingScreen() {
       {timerOngoing && (
         <UniversalPopup
           closePopUp={closePopUp}
-          popupText="Your ongoing session was terminated."
+          popupText="Your ongoing session was terminated"
         />
       )}
-      <Card
-        id="landing-slideshow-header"
-        sx={{ fontSize: 100, textAlign: "center" }}
-      >
-        aria
-        <p style={{ fontSize: 30, color: "#4e1530" }}>
-          artificial resource for interactive academics
-        </p>
-      </Card>
-      <Card
-        sx={{ backgroundColor: "white" }}
-        id="landing-slideshow-body"
-        elevation={0}
-      >
-        <div
-          className="slideshowSlider"
-          style={{
-            transform: `translate3d(${-currentSlide * 100}%, 0, 0)`,
-          }}
-        >
-          {slides.map((feature, index) => (
-            <div className="slide" key={index}>
-              {feature}
+      <Grid container spacing={4} sx={{ backgroundColor: "white", padding: 2 }}>
+        <Grid item xs={12} sm={6}>
+          <Paper
+            sx={{
+              backgroundColor: "transparent",
+              textAlign: "center",
+              marginTop: "20%",
+            }}
+            elevation={0}
+          >
+            <div style={{ color: "black", fontSize: 100 }}>aria</div>
+            <div style={{ color: "#4e1530", fontSize: 20 }}>
+              artificial resource for interactive academics
             </div>
-          ))}
-        </div>
-        <div id="landing-slideshow-footer" className="slideshowDots">
-          {slides.map((_, idx) => (
-            <div
-              key={idx}
-              className={`slideshowDot${currentSlide === idx ? " active" : ""}`}
-              onClick={() => {
-                setCurrentSlide(idx);
+            <Box>
+              <Stack
+                direction="row"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  flexWrap: "wrap",
+                  marginTop: 5,
+                }}
+              >
+                <Avatar
+                  src={userProfileIcon}
+                  sx={{ height: 150, width: 150 }}
+                  alt="User Profile"
+                ></Avatar>
+                <Avatar
+                  src={gradePointArchiveIcon}
+                  sx={{ height: 150, width: 150 }}
+                  alt="Grade Point Archive"
+                ></Avatar>
+                <Avatar
+                  src={studySessionIcon}
+                  sx={{ height: 150, width: 150 }}
+                  alt="Study Session"
+                ></Avatar>
+              </Stack>
+            </Box>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Paper
+            sx={{
+              backgroundColor: "white",
+              marginTop: "30%",
+            }}
+          >
+            <Accordion
+              sx={{
+                backgroundColor: "#4e1530",
               }}
-            ></div>
-          ))}
-        </div>
-      </Card>
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMore sx={{ color: "white" }} />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+                sx={{ color: "white" }}
+              >
+                User Profiling
+              </AccordionSummary>
+              <AccordionDetails sx={{ color: "white" }}>
+                Personalized website experience with secure authentication
+              </AccordionDetails>
+            </Accordion>
+            <Accordion
+              sx={{
+                backgroundColor: "#a86868",
+              }}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMore sx={{ color: "white" }} />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+                sx={{ color: "white" }}
+              >
+                GradePointArchive
+              </AccordionSummary>
+              <AccordionDetails sx={{ color: "white" }}>
+                A record of all your module grades across semesters and years.
+                Compute GPA at any point in your record
+              </AccordionDetails>
+            </Accordion>
+            <Accordion
+              sx={{
+                backgroundColor: "#DC9A7F",
+              }}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMore sx={{ color: "white" }} />}
+                aria-controls="panel3a-content"
+                id="panel3a-header"
+                sx={{ color: "white" }}
+              >
+                StudySession
+              </AccordionSummary>
+              <AccordionDetails sx={{ color: "white" }}>
+                Motivation to complete your daily study goals
+              </AccordionDetails>
+            </Accordion>
+          </Paper>
+        </Grid>
+        <Box sx={{ height: "100vh" }}></Box>
+      </Grid>
     </>
   );
 }

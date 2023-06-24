@@ -37,6 +37,18 @@ export const ariaTheme = createTheme({
 
 export default function App() {
   const [session, setSession] = useState(null);
+  const [currentUserEmailData, setCurrentUserEmailData] = useState([]);
+  const [currentUserUsernameData, setCurrentUserUsernameData] = useState([]);
+
+  async function fetchUserData() {
+    const { data } = await supabase.from("users").select();
+    setCurrentUserEmailData(data.map(({ email }) => email));
+    setCurrentUserUsernameData(data.map(({ username }) => username));
+  }
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     const subscription = supabase.auth.onAuthStateChange((_event, session) => {
@@ -47,7 +59,17 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      {session ? <NavBar /> : <LoginScreen />}{" "}
+      {session ? (
+        <NavBar
+          currentUserEmailData={currentUserEmailData}
+          currentUserUsernameData={currentUserUsernameData}
+        />
+      ) : (
+        <LoginScreen
+          currentUserEmailData={currentUserEmailData}
+          currentUserUsernameData={currentUserUsernameData}
+        />
+      )}{" "}
       <Routes>
         <Route
           exact
