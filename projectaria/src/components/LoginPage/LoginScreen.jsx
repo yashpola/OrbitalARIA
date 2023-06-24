@@ -1,23 +1,11 @@
 // mui imports
-import {
-  Stack,
-  Checkbox,
-  FormControlLabel,
-  FormControl,
-  FilledInput,
-  Button,
-  InputAdornment,
-  InputLabel,
-} from "@mui/material";
-import { Key } from "@mui/icons-material";
+import { Stack, Checkbox, FormControlLabel } from "@mui/material";
 // react imports
-import { React, useState, useEffect } from "react";
+import { React, useState } from "react";
 // supabase imports
 import { supabase } from "../../supabase.js";
 // component imports
 import UniversalPopup from "../Universal/UniversalPopup.jsx";
-import ForgotPasswordScreen from "../Universal/ForgotPasswordScreen.jsx";
-import { redirect } from "react-router-dom";
 
 export default function LoginScreen({
   currentUserEmailData,
@@ -26,6 +14,7 @@ export default function LoginScreen({
   /* React States */
 
   // conditional rendering
+  // const [passwordResetEmail, setPasswordResetEmail] = useState(false);
 
   // internal bad user input handling
   const [passwordMatching, setPasswordMatching] = useState(true);
@@ -38,9 +27,6 @@ export default function LoginScreen({
   const [accountCreated, setAccountCreated] = useState(false);
   const [accountCreationFail, setAccountCreationFail] = useState(false);
   const [accountLoginFail, setAccountLoginFail] = useState(false);
-
-  // others
-  const [passwordResetEmail, setPasswordResetEmail] = useState(false);
 
   /* Component functionality */
 
@@ -162,21 +148,21 @@ export default function LoginScreen({
     }
   }
 
-  async function forgotPassword(e) {
-    e.preventDefault();
-    setPasswordResetEmail(true);
-    await supabase.auth.resetPasswordForEmail(
-      document.getElementById("loginemail").value,
-      { redirectTo: "https://orbital-aria.vercel.app/profile" }
-    );
-  }
+  // async function forgotPassword(e) {
+  //   e.preventDefault();
+  //   setPasswordResetEmail(true);
+  //   await supabase.auth.resetPasswordForEmail(
+  //     document.getElementById("loginemail").value,
+  //     { redirectTo: "https://orbital-aria.vercel.app/profile" }
+  //   );
+  // }
 
   // popup functions
   function closePopUp() {
     setAccountCreated(false);
     setAccountCreationFail(false);
     setAccountLoginFail(false);
-    setPasswordResetEmail(false);
+    // setPasswordResetEmail(false);
   }
 
   return (
@@ -187,12 +173,12 @@ export default function LoginScreen({
           popupText="Login unsuccessful. Check email and password?"
         />
       )}
-      {passwordResetEmail && (
+      {/* {passwordResetEmail && (
         <UniversalPopup
           closePopUp={closePopUp}
           popupText="Password reset email sent!"
         />
-      )}
+      )} */}
       {accountCreated && (
         <UniversalPopup
           closePopUp={closePopUp}
@@ -220,13 +206,13 @@ export default function LoginScreen({
             <button onClick={logIn} id="login-button" className="log--in">
               Log In
             </button>
-            <button
+            {/* <button
               id="forgot-password-link"
               onClick={forgotPassword}
               className="forgot--password"
             >
               Forgot your password?
-            </button>
+            </button> */}
           </form>
         </div>
         <div className="overlay-container">
