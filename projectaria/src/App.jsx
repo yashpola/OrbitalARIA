@@ -6,7 +6,6 @@ import { createTheme } from "@mui/material";
 // react imports
 import { useState, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
-import { Routes, Route, NavLink } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
 // supabase imports
 import { supabase } from "./supabase";
@@ -14,7 +13,6 @@ import { supabase } from "./supabase";
 import LoginScreen from "./components/LoginPage/LoginScreen";
 import NavBar from "./components/Universal/NavBar";
 import Fallback from "./components/Universal/FallBack";
-import ForgotPasswordScreen from "./components/Universal/ForgotPasswordScreen";
 
 export const ariaTheme = createTheme({
   palette: {
@@ -69,14 +67,7 @@ export default function App() {
           currentUserEmailData={currentUserEmailData}
           currentUserUsernameData={currentUserUsernameData}
         />
-      )}{" "}
-      <Routes>
-        <Route
-          exact
-          path="/forgotpassword"
-          element={<ForgotPasswordScreen />}
-        />
-      </Routes>
+      )}
     </BrowserRouter>
   );
 }
