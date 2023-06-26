@@ -17,6 +17,7 @@ export default function NavBar({ currentUserEmailData }) {
   // User info storage
   const [username, setUsername] = useState("Profile");
   const [email, setEmail] = useState("");
+  const [userID, setUserID] = useState("");
   const [src, setSrc] = useState();
 
   /* Component functionality */
@@ -30,6 +31,7 @@ export default function NavBar({ currentUserEmailData }) {
       .select("username")
       .eq("email", user.email);
 
+    setUserID(user.id);
     setUsername(data[0].username);
     setEmail(user.email);
   }
@@ -131,12 +133,12 @@ export default function NavBar({ currentUserEmailData }) {
         <Route
           exact
           path="/gradepointarchive"
-          element={<GradePointArchiveScreen />}
+          element={<GradePointArchiveScreen userID={userID} />}
         />
         <Route
           exact
           path="/studysession"
-          element={<StudySessionScreen email={email} />}
+          element={<StudySessionScreen userID={userID} />}
         />
         <Route
           exact

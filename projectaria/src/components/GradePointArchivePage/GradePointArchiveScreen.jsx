@@ -10,7 +10,7 @@ import { toggle } from "../StudySessionPage/studySessionSlice";
 import YearContainer from "./YearContainer";
 import UniversalPopup from "../Universal/UniversalPopup";
 
-export default function GradePointArchiveScreen() {
+export default function GradePointArchiveScreen({ userID }) {
   /* Component variables */
   const gradePoint = {
     "A+": 5,
@@ -61,7 +61,7 @@ export default function GradePointArchiveScreen() {
     const { data, error } = await supabase
       .from("modules")
       .select("credits, lettergrade")
-      .eq("user_email", user.email);
+      .eq("user_id", user.id);
 
     if (error) {
       triggerModuleFetchError(true);
@@ -76,12 +76,14 @@ export default function GradePointArchiveScreen() {
     let totalScore = 0;
     let totalCredits = 0;
 
-    data.map((mod) => {
-      if (!notCountedGrades.includes(mod.lettergrade)) {
-        totalScore += gradePoint[mod.lettergrade] * mod.credits;
-        totalCredits += mod.credits;
-      }
-    });
+    data
+      .filter((mod) => !notCountedGrades.includes(mod.lettergrade))
+      .map(
+        (mod) => (
+          (totalScore += gradePoint[mod.lettergrade] * mod.credits),
+          (totalCredits += mod.credits)
+        )
+      );
 
     let cumulativeGPA = (totalScore / totalCredits).toFixed(2);
 
@@ -92,6 +94,7 @@ export default function GradePointArchiveScreen() {
     yearsList.push(
       <YearContainer
         key={i}
+        userID={userID}
         nusModsData={nusModsData}
         calculateGPA={calculateGPA}
         yearID={i}

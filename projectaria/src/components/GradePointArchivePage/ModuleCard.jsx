@@ -32,7 +32,7 @@ export default function ModuleCard({
   retrieveUserMods,
   yearID,
   semID,
-  email,
+  userID,
   calculateGPA,
   gradeList,
 }) {
@@ -56,7 +56,7 @@ export default function ModuleCard({
   async function deleteMod(e) {
     e.preventDefault();
     const { error } = await supabase.from("modules").delete().match({
-      user_email: email,
+      user_id: userID,
       year: yearID,
       semester: semID,
       code: code,
@@ -71,6 +71,7 @@ export default function ModuleCard({
     e.preventDefault();
     setEditForm(!editForm);
     setExistingMod(false);
+    setGrade("");
   }
 
   async function editMod(e) {
@@ -101,7 +102,7 @@ export default function ModuleCard({
         lettergrade: grade === "" ? lettergrade : grade,
       })
       .match({
-        user_email: email,
+        user_id: userID,
         year: yearID,
         semester: semID,
         code: code,

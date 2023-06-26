@@ -17,7 +17,7 @@ import { Cancel } from "@mui/icons-material";
 import { supabase } from "../../supabase";
 
 export default function SessionHistoryCard({
-  email,
+  userID,
   retrieveSessionHistory,
   sessionHistoryArray,
   setSessionHistoryCardOpen,
@@ -28,7 +28,7 @@ export default function SessionHistoryCard({
     const { error } = await supabase
       .from("studysessions")
       .delete()
-      .eq("user_email", email);
+      .eq("user_id", userID);
 
     retrieveSessionHistory();
   }

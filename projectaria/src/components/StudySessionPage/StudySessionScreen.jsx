@@ -16,10 +16,10 @@ import { supabase } from "../../supabase";
 // component imports
 import plantIcon from "../images/studysessionimages/plant.png";
 import { ariaTheme } from "../../App";
-import SessionCreationCard from "./NewSession";
+import NewSession from "./NewSession";
 import SessionHistoryCard from "./SessionHistoryCard";
 
-export default function StudySessionScreen({ email }) {
+export default function StudySessionScreen({ userID }) {
   /* React states */
   // React-redux global states
   const timerOngoing = useSelector((state) => state.timer.value);
@@ -34,7 +34,7 @@ export default function StudySessionScreen({ email }) {
     const { data, error } = await supabase
       .from("studysessions")
       .select("created_at, duration, completed")
-      .eq("user_email", email);
+      .eq("user_id", userID);
 
     setSessionHistory(data);
   }
@@ -53,14 +53,15 @@ export default function StudySessionScreen({ email }) {
   }
 
   const sessionHistoryCardProps = {
-    email,
+    userID,
     retrieveSessionHistory,
     sessionHistoryArray,
     setSessionHistoryCardOpen,
   };
 
   const sessionCreationCardProps = {
-    email,
+    userID,
+    openSessionCreationCard,
     setSessionHistoryCardOpen,
   };
 
@@ -126,7 +127,7 @@ export default function StudySessionScreen({ email }) {
           </Grid>
           <Grid item xs={12} sm={6}>
             {sessionCreationCard && (
-              <SessionCreationCard {...sessionCreationCardProps} />
+              <NewSession {...sessionCreationCardProps} />
             )}
             {sessionHistoryCardOpen && (
               <SessionHistoryCard {...sessionHistoryCardProps} />

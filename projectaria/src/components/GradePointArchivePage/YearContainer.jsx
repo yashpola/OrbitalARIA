@@ -5,7 +5,12 @@ import { useState } from "react";
 // component imports
 import SemesterContainer from "./SemesterContainer";
 
-export default function YearContainer({ calculateGPA, nusModsData, yearID }) {
+export default function YearContainer({
+  calculateGPA,
+  nusModsData,
+  yearID,
+  userID,
+}) {
   /* React states */
   // Conditional rendering
   const [semsShown, setSemsShown] = useState(false);
@@ -20,6 +25,7 @@ export default function YearContainer({ calculateGPA, nusModsData, yearID }) {
     calculateGPA,
     nusModsData,
     yearID,
+    userID,
   };
 
   return (

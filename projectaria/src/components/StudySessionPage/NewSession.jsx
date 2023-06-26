@@ -16,10 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { toggle } from "./studySessionSlice";
 import TimerCard from "./TimerCard";
 
-export default function SessionCreationCard({
-  openSessionCreationCard,
-  email,
-}) {
+export default function NewSession({ openSessionCreationCard, userID }) {
   /* React States */
 
   // User input storage + bad input handling
@@ -71,7 +68,7 @@ export default function SessionCreationCard({
   };
 
   const timerCardProps = {
-    email,
+    userID,
     hours,
     minutes,
   };

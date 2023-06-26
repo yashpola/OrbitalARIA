@@ -30,6 +30,7 @@ export default function SemesterContainer({
   calculateGPA,
   yearID,
   semID,
+  userID,
 }) {
   /* Component variables */
   const gradeList = [
@@ -65,7 +66,7 @@ export default function SemesterContainer({
   // User data storage
   const [userModArray, setModArray] = useState([]);
   const userModCodes = userModArray.map(({ code }) => code);
-  const [email, setEmail] = useState("");
+  // const [userID, setUserID] = useState("");
 
   // Internal bad user input handling
   const [emptyFields, setEmptyFields] = useState(false);
@@ -87,9 +88,6 @@ export default function SemesterContainer({
 
   async function addMod(e) {
     e.preventDefault();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
 
     const moduleCode = document.getElementById("moduleCode").value;
 
@@ -107,7 +105,7 @@ export default function SemesterContainer({
     let moduleCredits = moduleCreditsList[moduleCodeList.indexOf(moduleCode)];
 
     await supabase.from("modules").insert({
-      user_email: user.email,
+      user_id: userID,
       year: yearID,
       semester: semID,
       code: moduleCode,
@@ -116,7 +114,7 @@ export default function SemesterContainer({
       lettergrade: grade,
     });
 
-    setEmail(user.email);
+    // setUserID(user.id);
     showAddModForm(false);
     setClearAllButton(true);
     retrieveUserMods();
@@ -125,31 +123,22 @@ export default function SemesterContainer({
   }
 
   async function retrieveUserMods() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
     const { data, error } = await supabase
       .from("modules")
       .select("code, title, credits, lettergrade")
       .match({
-        user_email: user.email,
+        user_id: userID,
         year: yearID,
         semester: semID,
       });
 
-    setEmail(user.email);
+    // setUserID(user.id);
     setModArray(data);
   }
 
   async function deleteAllMods(e) {
-    e.preventDefault();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
     const { error } = await supabase.from("modules").delete().match({
-      user_email: user.email,
+      user_id: userID,
       year: yearID,
       semester: semID,
     });
@@ -185,12 +174,12 @@ export default function SemesterContainer({
   const moduleCardProps = {
     userModCodes,
     nusModsData,
-    email,
     yearID,
     semID,
     retrieveUserMods,
     calculateGPA,
     gradeList,
+    userID,
   };
 
   return (

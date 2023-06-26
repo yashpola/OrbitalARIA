@@ -12,7 +12,7 @@ import { supabase } from "../../supabase";
 import JSConfetti from "js-confetti";
 const jsConfetti = new JSConfetti();
 
-export default function TimerCard({ email, hours, minutes }) {
+export default function TimerCard({ userID, hours, minutes }) {
   /* React States */
   // React-redux global states
   const dispatch = useDispatch();
@@ -54,7 +54,7 @@ export default function TimerCard({ email, hours, minutes }) {
           jsConfetti.addConfetti();
           setSessionSuccess(true);
           await supabase.from("studysessions").insert({
-            user_email: email,
+            user_id: userID,
             duration: { hours: hours, minutes: minutes },
             completed: true,
           });
@@ -72,7 +72,7 @@ export default function TimerCard({ email, hours, minutes }) {
     setIsRunning(!isRunning);
     setTimerTerminated(true);
     await supabase.from("studysessions").insert({
-      user_email: email,
+      user_id: userID,
       duration: { hours: hours, minutes: minutes },
       completed: false,
     });
