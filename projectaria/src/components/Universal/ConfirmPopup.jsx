@@ -1,9 +1,9 @@
 // mui imports
-import { Button, Card, Paper, Stack, ThemeProvider } from "@mui/material";
+import { Button, Card, Paper, ThemeProvider } from "@mui/material";
 // component imports
 import { ariaTheme } from "../../App";
 
-export default function ConfirmPopup({ popupText, closePopUp, deleteAllMods }) {
+export default function ConfirmPopup({ closePopUp, proceedAction }) {
   return (
     <ThemeProvider theme={ariaTheme}>
       <Card
@@ -26,7 +26,7 @@ export default function ConfirmPopup({ popupText, closePopUp, deleteAllMods }) {
             marginBottom: 2,
           }}
         >
-          {popupText}
+          Are you sure? This action is irreversible.
         </Paper>
         <Button
           sx={{
@@ -35,7 +35,7 @@ export default function ConfirmPopup({ popupText, closePopUp, deleteAllMods }) {
             color: "white",
           }}
           variant="contained"
-          onClick={deleteAllMods}
+          onClick={proceedAction}
         >
           Proceed
         </Button>

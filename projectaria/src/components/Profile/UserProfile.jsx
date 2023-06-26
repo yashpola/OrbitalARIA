@@ -11,13 +11,20 @@ import {
   ThemeProvider,
   InputAdornment,
   Stack,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import {
   AccountCircle,
   Email,
   Edit,
-  Construction,
-  Key,
+  Undo,
+  ThumbUp,
+  ExpandMore,
+  ExpandLess,
+  Help,
+  Logout,
 } from "@mui/icons-material";
 // supabase imports
 import { supabase } from "../../supabase";
@@ -27,13 +34,13 @@ import { useSelector, useDispatch } from "react-redux";
 // component imports
 import UniversalPopup from "../Universal/UniversalPopup";
 import { ariaTheme } from "../../App";
-import userProfileIcon from "../../userprofile.png";
 import { toggle } from "../StudySessionPage/studySessionSlice";
 
 export default function UserProfile({
-  currentUserPfpData,
+  src,
+  setSrc,
+  fetchProfilePicture,
   currentUserEmailData,
-  currentUserUsernameData,
   username,
   setUsername,
   email,
@@ -43,24 +50,21 @@ export default function UserProfile({
   // conditional Rendering
   const [usernameFormOpen, setUsernameFormOpen] = useState(false);
   const [emailFormOpen, setEmailFormOpen] = useState(false);
-  const [passwordUpdateError, setPasswordUpdateError] = useState(false);
-  const [passwordUpdateSuccess, setPasswordUpdateSuccess] = useState(false);
-  const [passwordUpdateForm, setPasswordUpdateForm] = useState(false);
+  const [confirmDeletePFP, setConfirmDeletePFP] = useState(false);
+  const [editPFPAccordion, setEditPFPAccordion] = useState(false);
+  const [pfpHelpMessage, setPFPHelpMessage] = useState(false);
+  const [pfpChosen, setPFPChosen] = useState(false);
 
   // internal Checking of Fields
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [invalidUsername, setInvalidUsername] = useState(false);
   const [usernameTaken, setUsernameTaken] = useState(false);
   const [emailTaken, setEmailTaken] = useState(false);
-  const [passwordMatching, setPasswordMatching] = useState(true);
-
-  // internal username, email, pfp display
-  const [src, setSrc] = useState(undefined);
-  const [profilePicError, setProfilePicError] = useState(false);
 
   // supabase authentication success / failure
   const [emailChangeNotif, setEmailChangeNotif] = useState(false);
 
+  // react-redux global states
   const timerOngoing = useSelector((state) => state.timer.value);
   const dispatch = useDispatch();
 
@@ -91,6 +95,10 @@ export default function UserProfile({
     e.preventDefault();
     const newUsername = document.getElementById("newUsername").value;
     const validUsernameRegex = /^[a-zA-Z]/;
+
+    const { data } = await supabase.from("users").select("username");
+
+    const currentUserUsernameData = data.map(({ username }) => username);
 
     if (currentUserUsernameData.includes(newUsername)) {
       setUsernameTaken(true);
@@ -141,106 +149,94 @@ export default function UserProfile({
   }
 
   // internal username/email/pfp display functions
-
   async function setProfilePicture(e) {
     e.preventDefault();
+
     const imgSrc = document.getElementById("pfp-input-button").files[0];
-    const { data, error } = await supabase.storage
-      .from("public")
-      .upload(`userimages/${username}.jpg`, imgSrc, {
-        cacheControl: "3600",
+
+    const { data } = await supabase.storage
+      .from("userimages")
+      .upload(`${username}.jpg`, imgSrc, {
+        cacheControl: "1",
         upsert: false,
       });
 
-    if (error) {
-      console.error(error, error.message);
-    }
-
     await supabase.from("users").update({ pfpset: true }).eq("email", email);
+
+    setEditPFPAccordion(false);
+    checkProfilePictureSet();
     setSrc(data.publicUrl);
   }
 
-  // async function updateProfilePicture(e) {
-  //   e.preventDefault();
-  //   const newImgSrc = document.getElementById("pfp-input-button").files[0];
-  //   const { data, error } = await supabase.storage
-  //     .from("public")
-  //     .update(`userimages/${username}.jpg`, newImgSrc, {
-  //       cacheControl: "3600",
-  //       upsert: true,
-  //     });
-
-  //   if (error) {
-  //     console.error(error, error.message);
-  //   }
-
-  //   setSrc(data.publicUrl);
-  // }
-
-  async function fetchProfilePicture() {
+  async function checkProfilePictureSet() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
-    const { data, error } = supabase.storage
-      .from("public")
-      .getPublicUrl(`userimages/${user.user_metadata.username}.jpg`);
-
-    if (error) {
-      console.error(error, error.message);
-      return;
-    }
-
-    setSrc(data.publicUrl);
+    const { data } = await supabase
+      .from("users")
+      .select("pfpset")
+      .eq("email", user.email);
+    setPFPChosen(data[0].pfpset);
   }
 
   useEffect(() => {
+    checkProfilePictureSet();
+  }, []);
+
+  async function updateProfilePicture(e) {
+    e.preventDefault();
+
+    const newImgSrc = document.getElementById("pfp-update-button").files[0];
+    const { error } = await supabase.storage
+      .from("userimages")
+      .update(`${username}.jpg`, newImgSrc, {
+        cacheControl: "1",
+        upsert: true,
+      });
+
+    if (error) console.error(error, error.message);
+
     fetchProfilePicture();
-  }, [src]);
+    setEditPFPAccordion(false);
+  }
+
+  function confirmDeleteProfilePicture(e) {
+    e.preventDefault();
+    setConfirmDeletePFP(true);
+    document.getElementById("pfp-image").style.opacity = 0.3;
+  }
+
+  async function deleteProfilePicture(e) {
+    e.preventDefault();
+    const { error } = await supabase.storage
+      .from("userimages")
+      .remove([`${username}.jpg`]);
+
+    if (error) console.error(error, error.message);
+
+    setConfirmDeletePFP(false);
+
+    await supabase.from("users").update({ pfpset: false }).eq("email", email);
+
+    checkProfilePictureSet();
+    setEditPFPAccordion(false);
+    fetchProfilePicture();
+  }
 
   // popup functions
 
   function closePopUp(e) {
     e.preventDefault();
     setEmailChangeNotif(false);
+    setConfirmDeletePFP(false);
+    document.getElementById("pfp-image").style.opacity = 1;
   }
 
   function closeSessionTerminatedPopUp(e) {
     e.preventDefault();
     dispatch(toggle());
   }
-
-  async function updateUserPassword(e) {
-    e.preventDefault();
-    const newPassword = document.getElementById("newPassword").value;
-    const confirmNewPassword =
-      document.getElementById("confirmNewPassword").value;
-
-    if (newPassword !== confirmNewPassword) {
-      setPasswordMatching(false);
-      return;
-    } else {
-      setPasswordMatching(true);
-    }
-    // const newPassword = prompt(
-    //   "What would you like your new password to be?"
-    // );
-    const { data, error } = await supabase.auth.updateUser({
-      password: newPassword,
-    });
-
-    if (data) setPasswordUpdateSuccess(true);
-    if (error) setPasswordUpdateError(true);
-  }
-
-  useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
-      console.log("i ran");
-      if (event === "PASSWORD_RECOVERY") {
-        setPasswordUpdateForm(true);
-      }
-    });
-  }, []);
 
   return (
     <ThemeProvider theme={ariaTheme}>
@@ -263,11 +259,44 @@ export default function UserProfile({
           width: "80%",
           margin: "auto",
           marginTop: 5,
-          paddingTop: 5,
-          backgroundColor: "white",
         }}
       >
-        <Grid container sx={{ padding: 2 }} spacing={0}>
+        <Card
+          sx={{
+            padding: 3,
+            background: "transparent",
+            textAlign: "center",
+            whiteSpace: "pre-wrap",
+            backgroundColor: "#DC9A7F",
+          }}
+          elevation={0}
+        >
+          <h2>
+            <i style={{ color: "#4e1530" }}>ARIA</i>
+            &nbsp;ID
+          </h2>
+        </Card>
+        <Grid container sx={{ padding: 2 }} spacing={2}>
+          <Grid item xs={12}>
+            <IconButton
+              sx={{ outline: "none", color: "black" }}
+              onClick={(e) => (
+                e.preventDefault(), setPFPHelpMessage(!pfpHelpMessage)
+              )}
+            >
+              <Help />
+            </IconButton>
+          </Grid>
+          <Grid item xs={12}>
+            {pfpHelpMessage && (
+              <div>
+                <h6 style={{ color: "#4e1530" }}>
+                  Wait a few minutes before refreshing to see changes in the
+                  profile picture
+                </h6>
+              </div>
+            )}
+          </Grid>
           <Grid item xs={12} sm={8}>
             <img
               id="pfp-image"
@@ -275,44 +304,96 @@ export default function UserProfile({
               style={{ borderRadius: "50%", width: 200, height: 200 }}
             />
             <br />
-            <br />
-            {profilePicError && (
-              <h6 style={{ color: "black" }}>Error Fetching</h6>
-            )}
-            <Button
-              // disabled={currentUserPfpData}
-              color="secondary"
-              sx={{ marginRight: 2, marginBottom: 3, fontFamily: "ubuntu" }}
-              variant="contained"
-              component="label"
+            <Accordion
+              disableGutters={true}
+              expanded={editPFPAccordion}
+              sx={{ backgroundColor: "transparent" }}
+              elevation={0}
             >
-              Set PFP
-              <input
-                id="pfp-input-button"
-                type="file"
-                onChange={setProfilePicture}
-                hidden
-              />
-            </Button>
-            <Button
-              disabled={true}
-              color="secondary"
-              sx={{ marginBottom: 3, fontFamily: "ubuntu" }}
-              variant="contained"
-              component="label"
-            >
-              Change PFP - Coming Soon <Construction />
-              <input
-                style={{ backgroundColor: "white", color: "white" }}
-                id="pfp-input-button"
-                type="file"
-                // onChange={updateProfilePicture}
-                hidden
-              />
-            </Button>
+              <AccordionSummary>
+                <Button
+                  color="secondary"
+                  sx={{ fontWeight: "bold" }}
+                  onClick={(e) => (
+                    e.preventDefault(),
+                    setEditPFPAccordion(!editPFPAccordion),
+                    setConfirmDeletePFP(false)
+                  )}
+                >
+                  Edit {editPFPAccordion ? <ExpandLess /> : <ExpandMore />}
+                </Button>
+              </AccordionSummary>
+              <AccordionDetails hidden={pfpChosen}>
+                <Button color="secondary" variant="outlined" component="label">
+                  Choose PFP
+                  <input
+                    id="pfp-input-button"
+                    type="file"
+                    onChange={setProfilePicture}
+                    hidden
+                  />
+                </Button>
+              </AccordionDetails>
+              <AccordionDetails hidden={!pfpChosen}>
+                <Button
+                  disabled={confirmDeletePFP}
+                  variant="outlined"
+                  color="secondary"
+                  component="label"
+                >
+                  Change PFP
+                  <input
+                    id="pfp-update-button"
+                    type="file"
+                    onChange={updateProfilePicture}
+                    hidden
+                  />
+                </Button>
+              </AccordionDetails>
+              <AccordionDetails hidden={!pfpChosen}>
+                {confirmDeletePFP ? (
+                  <div>
+                    <h6>Are you sure? </h6>
+                    <Button
+                      variant="contained"
+                      onClick={deleteProfilePicture}
+                      sx={{
+                        marginTop: 2,
+                        marginRight: 2,
+                        backgroundColor: "green",
+                        color: "white",
+                      }}
+                      endIcon={<ThumbUp />}
+                    >
+                      Yes
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={closePopUp}
+                      sx={{
+                        marginTop: 2,
+                        backgroundColor: "red",
+                        color: "white",
+                      }}
+                      endIcon={<Undo />}
+                    >
+                      No
+                    </Button>
+                  </div>
+                ) : (
+                  <Button
+                    color="secondary"
+                    onClick={confirmDeleteProfilePicture}
+                    variant="outlined"
+                  >
+                    Remove PFP
+                  </Button>
+                )}
+              </AccordionDetails>
+            </Accordion>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <Stack spacing={2}>
+            <Stack spacing={4}>
               <Paper>
                 <Paper
                   id="username-card"
@@ -326,6 +407,7 @@ export default function UserProfile({
                     border: "1px solid black",
                   }}
                 >
+                  <AccountCircle sx={{ margin: 1, float: "left" }} />
                   {username}
                 </Paper>
                 <IconButton
@@ -394,6 +476,7 @@ export default function UserProfile({
                     overflow: "auto",
                   }}
                 >
+                  <Email sx={{ margin: 1, float: "left" }} />
                   {email}
                 </Paper>
                 <IconButton
@@ -449,79 +532,31 @@ export default function UserProfile({
                   </FormControl>
                 </>
               )}
-              {passwordUpdateForm && (
-                <div>
-                  <Stack
-                    sx={{
-                      backgroundColor: "white",
-                      padding: 5,
-                      border: "2px solid black",
-                    }}
-                    direction="column"
-                    spacing={2}
-                  >
-                    <FormControl>
-                      <InputLabel htmlFor="newPassword">
-                        New Password
-                      </InputLabel>
-                      <FilledInput
-                        id="newPassword"
-                        startAdornment={
-                          <InputAdornment position="start">
-                            <Key />
-                          </InputAdornment>
-                        }
-                      />
-                    </FormControl>
-                    <FormControl>
-                      <InputLabel htmlFor="confirmNewPassword">
-                        Confirm New Password
-                      </InputLabel>
-                      <FilledInput
-                        id="confirmnNewPassword"
-                        startAdornment={
-                          <InputAdornment position="start">
-                            <Key />
-                          </InputAdornment>
-                        }
-                      />
-                    </FormControl>
-                    {!passwordMatching && <h6>Passwords do not match!</h6>}
-                    {passwordUpdateSuccess && (
-                      <h6>Password updated! You may login now.</h6>
-                    )}
-                    {passwordUpdateError && (
-                      <h6>Error updating. Please try again later</h6>
-                    )}
-                    <FormControl>
-                      <Button
-                        onClick={updateUserPassword}
-                        sx={{
-                          fontFamily: "Ubuntu",
-                          fontWeight: "bold",
-                          color: "white",
-                          backgroundColor: "#ff4b2b",
-                        }}
-                        variant="contained"
-                      >
-                        Reset Password
-                      </Button>
-                    </FormControl>
-                  </Stack>
-                </div>
-              )}
               <Button
                 id="sign-out-button"
                 sx={{
-                  borderWidth: 2,
+                  borderWidth: 3,
                   fontFamily: "inherit",
                 }}
                 color="secondary"
                 onClick={signOut}
                 variant="outlined"
+                endIcon={<Logout />}
               >
                 Sign Out
               </Button>
+              {/* <Button
+                sx={{
+                  fontWeight: "bold",
+                  fontFamily: "inherit",
+                  border: "2px solid red",
+                  color: "red",
+                }}
+                variant="outlined"
+                onClick={confirmDeleteAccount}
+              >
+                Delete Account
+              </Button> */}
             </Stack>
           </Grid>
         </Grid>

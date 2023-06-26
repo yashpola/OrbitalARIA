@@ -280,11 +280,7 @@ export default function SemesterContainer({
           </Card>
         )}
         {confirmPopup && (
-          <ConfirmPopup
-            closePopUp={closePopUp}
-            deleteAllMods={deleteAllMods}
-            popupText="Are you sure? This action is irreversible"
-          />
+          <ConfirmPopup closePopUp={closePopUp} proceedAction={deleteAllMods} />
         )}
         {clearAllButton && !confirmPopup && (
           <Button

@@ -12,35 +12,46 @@ import NoPage from "./404Page";
 import UserProfile from "../Profile/UserProfile";
 import Fallback from "./FallBack";
 
-export default function NavBar({
-  currentUserEmailData,
-  currentUserUsernameData,
-}) {
+export default function NavBar({ currentUserEmailData }) {
   /* React states */
   // User info storage
   const [username, setUsername] = useState("Profile");
   const [email, setEmail] = useState("");
-  const [currentUserPfpData, setCurrentUserPfpData] = useState("");
+  const [src, setSrc] = useState();
 
   /* Component functionality */
-  async function setAccess() {
+  async function fetchUserData() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     const { data } = await supabase
       .from("users")
-      .select("pfpset")
+      .select("username")
       .eq("email", user.email);
-    setCurrentUserPfpData(data[0].pfpset);
 
-    setUsername(user.user_metadata.username);
+    setUsername(data[0].username);
     setEmail(user.email);
+  }
+  async function fetchProfilePicture() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { data } = supabase.storage
+      .from("userimages")
+      .getPublicUrl(`${user.user_metadata.username}.jpg`);
+
+    setSrc(data.publicUrl);
   }
 
   useEffect(() => {
-    setAccess();
+    fetchUserData();
   }, [username]);
+
+  useEffect(() => {
+    fetchProfilePicture();
+  }, [src]);
 
   return (
     <>
@@ -132,9 +143,10 @@ export default function NavBar({
           path="/profile"
           element={
             <UserProfile
+              src={src}
+              setSrc={setSrc}
+              fetchProfilePicture={fetchProfilePicture}
               currentUserEmailData={currentUserEmailData}
-              currentUserUsernameData={currentUserUsernameData}
-              currentUserPfpData={currentUserPfpData}
               username={username}
               setUsername={setUsername}
               email={email}

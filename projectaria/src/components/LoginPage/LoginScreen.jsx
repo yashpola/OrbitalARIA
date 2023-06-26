@@ -14,7 +14,7 @@ export default function LoginScreen({
   /* React States */
 
   // conditional rendering
-  // const [passwordResetEmail, setPasswordResetEmail] = useState(false);
+  const [passwordResetEmail, setPasswordResetEmail] = useState(false);
 
   // internal bad user input handling
   const [passwordMatching, setPasswordMatching] = useState(true);
@@ -148,21 +148,21 @@ export default function LoginScreen({
     }
   }
 
-  // async function forgotPassword(e) {
-  //   e.preventDefault();
-  //   setPasswordResetEmail(true);
-  //   await supabase.auth.resetPasswordForEmail(
-  //     document.getElementById("loginemail").value,
-  //     { redirectTo: "https://orbital-aria.vercel.app/profile" }
-  //   );
-  // }
+  async function forgotPassword(e) {
+    e.preventDefault();
+    setPasswordResetEmail(true);
+    await supabase.auth.resetPasswordForEmail(
+      document.getElementById("loginemail").value,
+      { redirectTo: "http://localhost:3000" }
+    );
+  }
 
   // popup functions
   function closePopUp() {
     setAccountCreated(false);
     setAccountCreationFail(false);
     setAccountLoginFail(false);
-    // setPasswordResetEmail(false);
+    setPasswordResetEmail(false);
   }
 
   return (
@@ -173,12 +173,12 @@ export default function LoginScreen({
           popupText="Login unsuccessful. Check email and password?"
         />
       )}
-      {/* {passwordResetEmail && (
+      {passwordResetEmail && (
         <UniversalPopup
           closePopUp={closePopUp}
-          popupText="Password reset email sent!"
+          popupText="Link sent! Please check your email to login"
         />
-      )} */}
+      )}
       {accountCreated && (
         <UniversalPopup
           closePopUp={closePopUp}
@@ -191,7 +191,6 @@ export default function LoginScreen({
           popupText="Account creation fail. Check email and password? Or contact aria@gmail.com"
         />
       )}
-
       <div className="loginscreen--container">
         <div className="form-container log-in-container">
           <form>
@@ -206,13 +205,13 @@ export default function LoginScreen({
             <button onClick={logIn} id="login-button" className="log--in">
               Log In
             </button>
-            {/* <button
+            <button
               id="forgot-password-link"
               onClick={forgotPassword}
               className="forgot--password"
             >
-              Forgot your password?
-            </button> */}
+              Forgot password? Receive Login Link
+            </button>
           </form>
         </div>
         <div className="overlay-container">
