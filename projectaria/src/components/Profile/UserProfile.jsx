@@ -108,6 +108,9 @@ export default function UserProfile({
     }
 
     if (newUsername.match(validUsernameRegex)) {
+      await supabase.storage
+        .from("userimages")
+        .move(`${username}.jpg`, `${newUsername}.jpg`);
       await supabase.auth.updateUser({
         data: { username: newUsername },
       });
@@ -115,6 +118,7 @@ export default function UserProfile({
         .from("users")
         .update({ username: newUsername })
         .eq("email", email);
+
       setUsername(newUsername);
       setUsernameFormOpen(false);
       setInvalidUsername(false);
