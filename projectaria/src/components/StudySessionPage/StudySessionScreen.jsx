@@ -52,6 +52,18 @@ export default function StudySessionScreen({ email }) {
     setSessionHistoryCardOpen(true);
   }
 
+  const sessionHistoryCardProps = {
+    email,
+    retrieveSessionHistory,
+    sessionHistoryArray,
+    setSessionHistoryCardOpen,
+  };
+
+  const sessionCreationCardProps = {
+    email,
+    setSessionHistoryCardOpen,
+  };
+
   return (
     <ThemeProvider theme={ariaTheme}>
       <Container
@@ -114,18 +126,10 @@ export default function StudySessionScreen({ email }) {
           </Grid>
           <Grid item xs={12} sm={6}>
             {sessionCreationCard && (
-              <SessionCreationCard
-                email={email}
-                openSessionCreationCard={openSessionCreationCard}
-              />
+              <SessionCreationCard {...sessionCreationCardProps} />
             )}
             {sessionHistoryCardOpen && (
-              <SessionHistoryCard
-                email={email}
-                retrieveSessionHistory={retrieveSessionHistory}
-                sessionHistoryArray={sessionHistoryArray}
-                setSessionHistoryCardOpen={setSessionHistoryCardOpen}
-              />
+              <SessionHistoryCard {...sessionHistoryCardProps} />
             )}
           </Grid>
         </Grid>

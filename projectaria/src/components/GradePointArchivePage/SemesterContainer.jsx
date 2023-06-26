@@ -182,6 +182,17 @@ export default function SemesterContainer({
     limit: 300,
   });
 
+  const moduleCardProps = {
+    userModCodes,
+    nusModsData,
+    email,
+    yearID,
+    semID,
+    retrieveUserMods,
+    calculateGPA,
+    gradeList,
+  };
+
   return (
     <ThemeProvider theme={ariaTheme}>
       <Container
@@ -299,18 +310,7 @@ export default function SemesterContainer({
           </Button>
         )}
         {userModArray.map((mod, index) => (
-          <ModuleCard
-            {...mod}
-            userModCodes={userModCodes}
-            nusModsData={nusModsData}
-            key={index}
-            email={email}
-            yearID={yearID}
-            semID={semID}
-            retrieveUserMods={retrieveUserMods}
-            calculateGPA={calculateGPA}
-            gradeList={gradeList}
-          />
+          <ModuleCard {...mod} {...moduleCardProps} key={index} />
         ))}
         {/* <ModuleCodes modData={modData} /> */}
       </Container>

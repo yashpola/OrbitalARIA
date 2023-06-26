@@ -1,15 +1,5 @@
 // mui imports
-import {
-  Grid,
-  Box,
-  Paper,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Stack,
-  Avatar,
-} from "@mui/material";
-import { ExpandMore } from "@mui/icons-material";
+import { Grid, Box, Paper, Stack, Avatar } from "@mui/material";
 // React imports
 import { useSelector, useDispatch } from "react-redux";
 // React components
@@ -18,6 +8,7 @@ import gradePointArchiveIcon from "../images/landingimages/gradepointarchive.png
 import studySessionIcon from "../images/landingimages/studysession.png";
 import { toggle } from "../StudySessionPage/studySessionSlice";
 import UniversalPopup from "../Universal/UniversalPopup";
+import LandingAccordion from "./LandingAccordion";
 
 export default function LandingScreen() {
   // Redux global state
@@ -81,65 +72,7 @@ export default function LandingScreen() {
           </Paper>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Paper
-            sx={{
-              backgroundColor: "white",
-              marginTop: "30%",
-            }}
-          >
-            <Accordion
-              sx={{
-                backgroundColor: "#4e1530",
-              }}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMore sx={{ color: "white" }} />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-                sx={{ color: "white" }}
-              >
-                User Profiling
-              </AccordionSummary>
-              <AccordionDetails sx={{ color: "white" }}>
-                Personalized website experience with secure authentication
-              </AccordionDetails>
-            </Accordion>
-            <Accordion
-              sx={{
-                backgroundColor: "#a86868",
-              }}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMore sx={{ color: "white" }} />}
-                aria-controls="panel2a-content"
-                id="panel2a-header"
-                sx={{ color: "white" }}
-              >
-                GradePointArchive
-              </AccordionSummary>
-              <AccordionDetails sx={{ color: "white" }}>
-                A record of all your module grades across semesters and years.
-                Compute GPA at any point in your record
-              </AccordionDetails>
-            </Accordion>
-            <Accordion
-              sx={{
-                backgroundColor: "#DC9A7F",
-              }}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMore sx={{ color: "white" }} />}
-                aria-controls="panel3a-content"
-                id="panel3a-header"
-                sx={{ color: "white" }}
-              >
-                StudySession
-              </AccordionSummary>
-              <AccordionDetails sx={{ color: "white" }}>
-                Motivation to complete your daily study goals
-              </AccordionDetails>
-            </Accordion>
-          </Paper>
+          <LandingAccordion />
         </Grid>
         <Box sx={{ height: "100vh" }}></Box>
       </Grid>

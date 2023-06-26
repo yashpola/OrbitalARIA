@@ -16,6 +16,12 @@ export default function YearContainer({ calculateGPA, nusModsData, yearID }) {
     setSemsShown(!semsShown);
   }
 
+  const semesterContainerProps = {
+    calculateGPA,
+    nusModsData,
+    yearID,
+  };
+
   return (
     <>
       <Grid sx={{ padding: 2 }} container spacing={2}>
@@ -49,20 +55,10 @@ export default function YearContainer({ calculateGPA, nusModsData, yearID }) {
         {semsShown && (
           <>
             <Grid item xs={12} sm={6}>
-              <SemesterContainer
-                calculateGPA={calculateGPA}
-                nusModsData={nusModsData}
-                yearID={yearID}
-                semID={1}
-              />
+              <SemesterContainer {...semesterContainerProps} semID={1} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <SemesterContainer
-                calculateGPA={calculateGPA}
-                nusModsData={nusModsData}
-                yearID={yearID}
-                semID={2}
-              />
+              <SemesterContainer {...semesterContainerProps} semID={2} />
             </Grid>
           </>
         )}

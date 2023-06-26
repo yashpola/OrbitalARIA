@@ -70,6 +70,12 @@ export default function SessionCreationCard({
     color: "white",
   };
 
+  const timerCardProps = {
+    email,
+    hours,
+    minutes,
+  };
+
   return (
     <Card
       id="new-session-container"
@@ -161,7 +167,7 @@ export default function SessionCreationCard({
           </Grid>
         </Grid>
       ) : (
-        <TimerCard email={email} hours={hours} minutes={minutes} />
+        <TimerCard {...timerCardProps} />
       )}
     </Card>
   );
