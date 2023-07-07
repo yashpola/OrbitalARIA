@@ -113,9 +113,19 @@ export default function SessionHistoryCard({
                   </TableCell>
                   <TableCell sx={{ fontFamily: "Ubuntu" }} align="left">
                     {session.completed ? (
-                      <p style={{ color: "#32CD32" }}>Success</p>
+                      <p
+                        id={`session-status-${index}`}
+                        style={{ color: "#32CD32" }}
+                      >
+                        Success
+                      </p>
                     ) : (
-                      <p style={{ color: "red" }}>Failure</p>
+                      <p
+                        id={`session-status-${index}`}
+                        style={{ color: "red" }}
+                      >
+                        Failure
+                      </p>
                     )}
                   </TableCell>
                 </TableRow>
