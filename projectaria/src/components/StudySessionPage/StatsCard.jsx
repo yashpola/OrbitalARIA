@@ -77,7 +77,7 @@ export default function StatsCard({
   return (
     <Container sx={{ backgroundColor: "transparent" }}>
       <Card
-        id="session-history-container"
+        id="session-statistics-container"
         sx={{
           // height: "445px",
           overflow: "auto",
@@ -97,33 +97,26 @@ export default function StatsCard({
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <Card sx={bubbleStyling}>
-              <h2>{totalSessionHours}h</h2>
-              <h2>{totalSessionMinutes}m</h2>
+              <h2 id="total-session-hours">{totalSessionHours}h</h2>
+              <h2 id="total-session-minutes">{totalSessionMinutes}m</h2>
               <h6>total focus time</h6>
             </Card>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Card sx={bubbleStyling}>
-              <h2>
-                {numberCompletedSessions}{" "}
-                <Celebration sx={{ color: "green" }} />
-              </h2>
-              <h2>
-                {numberFailedSessions}{" "}
-                <IndeterminateCheckBox sx={{ color: "red" }} />
-              </h2>
+              <h2 id="number-completed-sessions">{numberCompletedSessions} </h2>
+              <Celebration sx={{ color: "green" }} />
+              <h2 id="number-terminated-sessions">{numberFailedSessions} </h2>
+              <IndeterminateCheckBox sx={{ color: "red" }} />
               <h6>sessions</h6>
             </Card>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Card sx={bubbleStyling}>
-              <h2>
-                {sessionSuccessStreak}{" "}
-                <LocalFireDepartment sx={{ color: "#FFA500" }} />
-              </h2>
-              <h2>
-                {sessionFailStreak} <HeartBroken sx={{ color: "red" }} />
-              </h2>
+              <h2 id="session-success-streak">{sessionSuccessStreak} </h2>
+              <LocalFireDepartment sx={{ color: "#FFA500" }} />
+              <h2 id="session-fail-streak">{sessionFailStreak}</h2>
+              <HeartBroken sx={{ color: "red" }} />
               <h6>streaks</h6>
             </Card>
           </Grid>
