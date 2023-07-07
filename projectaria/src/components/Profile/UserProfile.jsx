@@ -2,6 +2,7 @@
 import {
   Button,
   Card,
+  Container,
   FilledInput,
   Paper,
   Grid,
@@ -12,7 +13,13 @@ import {
   InputAdornment,
   Stack,
 } from "@mui/material";
-import { AccountCircle, Email, Edit, Logout } from "@mui/icons-material";
+import {
+  AccountCircle,
+  Email,
+  Edit,
+  Logout,
+  Palette,
+} from "@mui/icons-material";
 // supabase imports
 import { supabase } from "../../supabase";
 // react imports
@@ -20,9 +27,14 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 // component imports
 import UniversalPopup from "../Universal/UniversalPopup";
-import { ariaTheme } from "../../App";
+import {
+  possibleThemes,
+  possibleFontColors,
+  possibleBackgroundColorsUserProfile,
+} from "../themes";
 import { toggle } from "../StudySessionPage/studySessionSlice";
 import ProfilePicture from "./ProfilePicture";
+import ThemeOptionsCard from "./ThemeOptionsCard";
 
 export default function UserProfile({
   src,
@@ -33,11 +45,14 @@ export default function UserProfile({
   setUsername,
   email,
 }) {
+  /* Component variables */
+
   /* React States */
 
   // conditional Rendering
   const [usernameFormOpen, setUsernameFormOpen] = useState(false);
   const [emailFormOpen, setEmailFormOpen] = useState(false);
+  const [themeOptionsCard, setThemeOptionsCard] = useState(false);
 
   // internal Checking of Fields
   const [invalidEmail, setInvalidEmail] = useState(false);
@@ -50,6 +65,7 @@ export default function UserProfile({
 
   // react-redux global states
   const timerOngoing = useSelector((state) => state.timer.value);
+  const presentTheme = useSelector((state) => state.currentTheme.value);
   const dispatch = useDispatch();
 
   /* Component functionality */
@@ -143,6 +159,11 @@ export default function UserProfile({
     setEmailChangeNotif(false);
   }
 
+  function openThemeOptions(e) {
+    e.preventDefault();
+    setThemeOptionsCard(!themeOptionsCard);
+  }
+
   function closeSessionTerminatedPopUp(e) {
     e.preventDefault();
     dispatch(toggle());
@@ -157,185 +178,244 @@ export default function UserProfile({
     email,
   };
 
+  // css
+  const paperStyle = {
+    textAlign: "center",
+    fontWeight: "bold",
+    letterSpacing: "1px",
+    color: possibleFontColors[presentTheme],
+    lineHeight: "60px",
+    border: "1px solid black",
+    overflow: "auto",
+  };
+
   return (
-    <ThemeProvider theme={ariaTheme}>
-      {emailChangeNotif && (
-        <UniversalPopup
-          closePopUp={closePopUp}
-          popupText="Please check both your old and new emails for a 
-            successful email change"
-        />
-      )}
+    <ThemeProvider theme={possibleThemes[presentTheme]}>
       {timerOngoing && (
         <UniversalPopup
           closePopUp={closeSessionTerminatedPopUp}
           popupText="Your ongoing session was terminated."
         />
       )}
-      <Card
-        id="user-profile-container"
+      <Container
         sx={{
-          width: "80%",
-          margin: "auto",
-          marginTop: 5,
+          backgroundColor: "transparent",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <Card
+          id="user-profile-container"
           sx={{
-            padding: 3,
-            background: "transparent",
-            textAlign: "center",
-            whiteSpace: "pre-wrap",
-            backgroundColor: "#DC9A7F",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "auto",
+            marginTop: 5,
+            backgroundColor: "white",
           }}
-          elevation={0}
         >
-          <h2>
-            <i style={{ color: "#4e1530" }}>ARIA</i>
-            &nbsp; ID
-          </h2>
-        </Card>
-        <Grid container sx={{ padding: 2 }} spacing={2}>
-          <ProfilePicture {...pfpProps} />
-          <Grid item xs={12} sm={4}>
-            <Stack spacing={4}>
-              <Paper>
-                <Paper
-                  id="username-card"
+          <Grid container sx={{ padding: 2 }} spacing={2}>
+            <Grid item xs={12}>
+              <Card
+                sx={{
+                  padding: 3,
+                  background: "transparent",
+                  textAlign: "center",
+                  whiteSpace: "pre-wrap",
+                  border: "2px solid black",
+                  backgroundColor: "#eee",
+                }}
+                elevation={0}
+              >
+                <h2 style={{ color: "black" }}>
+                  <i>ARIA</i>
+                  &nbsp; ID
+                </h2>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={9}>
+              <ProfilePicture {...pfpProps} />
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <Stack direction="column" spacing={1}>
+                <Button
+                  id="sign-out-button"
                   sx={{
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    letterSpacing: "1px",
-                    backgroundColor: "#A86868",
-                    color: "white",
-                    lineHeight: "60px",
-                    border: "1px solid black",
+                    borderWidth: 3,
+                    fontFamily: "inherit",
                   }}
+                  color="secondary"
+                  onClick={openThemeOptions}
+                  variant="outlined"
+                  endIcon={<Palette />}
                 >
-                  <AccountCircle sx={{ margin: 1, float: "left" }} />
-                  {username}
-                </Paper>
-                <IconButton
-                  id="edit-username-button"
-                  onClick={handleUsernameForm}
-                  sx={{ float: "right", color: "black" }}
-                  size="large"
-                >
-                  <Edit fontSize="inherit" />
-                </IconButton>
-              </Paper>
-              {usernameFormOpen && (
-                <>
-                  <FormControl>
-                    <InputLabel htmlFor="newUsername">New Username</InputLabel>
-                    <FilledInput
-                      id="newUsername"
-                      startAdornment={
-                        <InputAdornment position="start">
-                          <AccountCircle />
-                        </InputAdornment>
-                      }
-                    />
-                  </FormControl>
-                  {usernameTaken && <h6>Username Taken!</h6>}
-                  <FormControl
-                    sx={{
-                      marginTop: 2,
-                    }}
-                  >
-                    <Button
-                      id="update-username-button"
-                      sx={{ fontFamily: "inherit" }}
-                      color="secondary"
-                      onClick={updateUsername}
-                      variant="outlined"
-                    >
-                      Update
-                    </Button>
-                    <br />
-                    {invalidUsername && (
-                      <p
-                        style={{
-                          marginTop: 10,
-                          textAlign: "center",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Invalid Username!
-                      </p>
-                    )}
-                  </FormControl>
-                </>
-              )}
-              <Paper>
-                <Paper
-                  id="user-email-card"
+                  Change Theme
+                </Button>
+                {themeOptionsCard && <ThemeOptionsCard />}
+                {emailChangeNotif && (
+                  <UniversalPopup
+                    closePopUp={closePopUp}
+                    popupText="Please check both your old and new emails for a 
+            successful email change"
+                  />
+                )}
+
+                <Button
+                  id="sign-out-button"
                   sx={{
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    letterSpacing: "1px",
-                    backgroundColor: "#A86868",
-                    color: "white",
-                    lineHeight: "60px",
-                    border: "1px solid black",
-                    overflow: "auto",
+                    borderWidth: 3,
+                    fontFamily: "inherit",
                   }}
+                  color="secondary"
+                  onClick={signOut}
+                  variant="outlined"
+                  endIcon={<Logout />}
                 >
-                  <Email sx={{ margin: 1, float: "left" }} />
-                  {email}
-                </Paper>
-                <IconButton
-                  id="edit-email-button"
-                  onClick={handleEmailForm}
-                  sx={{ float: "right", color: "black" }}
-                  size="large"
-                >
-                  <Edit fontSize="inherit" />
-                </IconButton>
-              </Paper>
-              {emailFormOpen && (
-                <>
-                  <FormControl>
-                    <InputLabel htmlFor="newEmail">New Email</InputLabel>
-                    <FilledInput
-                      id="newEmail"
-                      type="text"
-                      startAdornment={
-                        <InputAdornment position="start">
-                          <Email />
-                        </InputAdornment>
-                      }
-                    />
-                  </FormControl>
-                  {emailTaken && <h6>Email Taken!</h6>}
-                  <FormControl
-                    sx={{
-                      marginTop: 2,
-                    }}
+                  Sign Out
+                </Button>
+              </Stack>
+            </Grid>
+            <Grid item xs={12}>
+              <Stack spacing={4}>
+                <Paper sx={{ backgroundColor: "white" }}>
+                  <Paper id="username-card" sx={paperStyle} elevation={0}>
+                    <AccountCircle sx={{ margin: 1, float: "left" }} />
+                    {username}
+                  </Paper>
+                  <IconButton
+                    id="edit-username-button"
+                    onClick={handleUsernameForm}
+                    sx={{ float: "right", color: "black" }}
+                    size="large"
                   >
-                    <Button
-                      id="update-email-button"
-                      sx={{ fontFamily: "inherit" }}
-                      color="secondary"
-                      onClick={updateEmail}
-                      variant="outlined"
+                    <Edit fontSize="inherit" />
+                  </IconButton>
+                </Paper>
+                {usernameFormOpen && (
+                  <>
+                    <FormControl>
+                      <InputLabel htmlFor="newUsername">
+                        New Username
+                      </InputLabel>
+                      <FilledInput
+                        id="newUsername"
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <AccountCircle />
+                          </InputAdornment>
+                        }
+                      />
+                    </FormControl>
+                    {usernameTaken && <h6>Username Taken!</h6>}
+                    <FormControl
+                      sx={{
+                        marginTop: 2,
+                      }}
                     >
-                      Update
-                    </Button>
-                    {invalidEmail && (
-                      <p
-                        style={{
-                          marginTop: 10,
-                          textAlign: "center",
-                          fontWeight: "bold",
-                        }}
+                      <Button
+                        id="update-username-button"
+                        sx={{ fontFamily: "inherit" }}
+                        color="secondary"
+                        onClick={updateUsername}
+                        variant="outlined"
                       >
-                        Invalid Email!
-                      </p>
-                    )}
-                    <br />
-                  </FormControl>
-                </>
+                        Update
+                      </Button>
+                      <br />
+                      {invalidUsername && (
+                        <p
+                          style={{
+                            marginTop: 10,
+                            textAlign: "center",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Invalid Username!
+                        </p>
+                      )}
+                    </FormControl>
+                  </>
+                )}
+                <Paper sx={{ backgroundColor: "white" }}>
+                  <Paper id="user-email-card" sx={paperStyle} elevation={0}>
+                    <Email sx={{ margin: 1, float: "left" }} />
+                    {email}
+                  </Paper>
+                  <IconButton
+                    id="edit-email-button"
+                    onClick={handleEmailForm}
+                    sx={{ float: "right", color: "black" }}
+                    size="large"
+                  >
+                    <Edit fontSize="inherit" />
+                  </IconButton>
+                </Paper>
+                {emailFormOpen && (
+                  <>
+                    <FormControl>
+                      <InputLabel htmlFor="newEmail">New Email</InputLabel>
+                      <FilledInput
+                        id="newEmail"
+                        type="text"
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <Email />
+                          </InputAdornment>
+                        }
+                      />
+                    </FormControl>
+                    {emailTaken && <h6>Email Taken!</h6>}
+                    <FormControl
+                      sx={{
+                        marginTop: 2,
+                      }}
+                    >
+                      <Button
+                        id="update-email-button"
+                        sx={{ fontFamily: "inherit" }}
+                        color="secondary"
+                        onClick={updateEmail}
+                        variant="outlined"
+                      >
+                        Update
+                      </Button>
+                      {invalidEmail && (
+                        <p
+                          style={{
+                            marginTop: 10,
+                            textAlign: "center",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Invalid Email!
+                        </p>
+                      )}
+                      <br />
+                    </FormControl>
+                  </>
+                )}
+                {/* <Button
+                id="sign-out-button"
+                sx={{
+                  borderWidth: 3,
+                  fontFamily: "inherit",
+                }}
+                color="secondary"
+                onClick={openThemeOptions}
+                variant="outlined"
+                endIcon={<Palette />}
+              >
+                Change Theme
+              </Button>
+              {themeOptionsCard && <ThemeOptionsCard />}
+              {emailChangeNotif && (
+                <UniversalPopup
+                  closePopUp={closePopUp}
+                  popupText="Please check both your old and new emails for a 
+            successful email change"
+                />
               )}
               <Button
                 id="sign-out-button"
@@ -349,8 +429,8 @@ export default function UserProfile({
                 endIcon={<Logout />}
               >
                 Sign Out
-              </Button>
-              {/* <Button
+              </Button> */}
+                {/* <Button
                 sx={{
                   fontWeight: "bold",
                   fontFamily: "inherit",
@@ -362,10 +442,11 @@ export default function UserProfile({
               >
                 Delete Account
               </Button> */}
-            </Stack>
+              </Stack>
+            </Grid>
           </Grid>
-        </Grid>
-      </Card>
+        </Card>
+      </Container>
     </ThemeProvider>
   );
 }

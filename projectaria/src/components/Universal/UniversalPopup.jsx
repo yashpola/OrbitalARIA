@@ -1,14 +1,17 @@
 // mui imports
 import { Button, Card, Paper, Stack, ThemeProvider } from "@mui/material";
+// react imports
+import { useSelector } from "react-redux";
 // component imports
-import { ariaTheme } from "../../App";
+import { possibleThemes, buttonColors } from "../themes";
 
 export default function UniversalPopup({ popupText, closePopUp }) {
+  const presentTheme = useSelector((state) => state.currentTheme.value);
+
   return (
-    <ThemeProvider theme={ariaTheme}>
+    <ThemeProvider theme={possibleThemes[presentTheme]}>
       <Card
         sx={{
-          backgroundColor: "#DC9A7F",
           display: "flex",
           margin: "auto",
           justifyContent: "center",
@@ -27,13 +30,13 @@ export default function UniversalPopup({ popupText, closePopUp }) {
             }}
             elevation={2}
           >
-            {popupText}
+            <div id="universal-popup-text">{popupText}</div>
           </Paper>
           <Button
             sx={{
               fontWeight: "bold",
             }}
-            color="secondary"
+            color={buttonColors[presentTheme]}
             variant="contained"
             onClick={closePopUp}
           >

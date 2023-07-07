@@ -2,16 +2,20 @@
 import { Stack, Checkbox, FormControlLabel } from "@mui/material";
 // react imports
 import { React, useState } from "react";
+import { useDispatch } from "react-redux";
 // supabase imports
 import { supabase } from "../../supabase.js";
 // component imports
 import UniversalPopup from "../Universal/UniversalPopup.jsx";
+import { updateLoggedIn } from "./loginSlice.jsx";
 
 export default function LoginScreen({
   currentUserEmailData,
   currentUserUsernameData,
 }) {
   /* React States */
+  // Redux global
+  const dispatch = useDispatch();
 
   // conditional rendering
   const [passwordResetEmail, setPasswordResetEmail] = useState(false);
@@ -33,14 +37,39 @@ export default function LoginScreen({
   // supabase login/signup functions
   async function logIn(e) {
     e.preventDefault();
+    const loginEmail = document.getElementById("loginemail").value;
+    const loginPassword = document.getElementById("loginpassword").value;
     const { error } = await supabase.auth.signInWithPassword({
-      email: document.getElementById("loginemail").value,
-      password: document.getElementById("loginpassword").value,
+      email: loginEmail,
+      password: loginPassword,
     });
 
     if (error) {
       setAccountLoginFail(true);
+    } else {
+      const { data } = await supabase
+        .from("stats")
+        .select("lastLogin")
+        .eq("user_email", loginEmail);
+      dispatch(updateLoggedIn(data[0].lastLogin));
+
+      const newLoginTime = new Date().getTime();
+
+      await supabase
+        .from("stats")
+        .upsert({
+          user_email: loginEmail,
+          lastLogin: newLoginTime,
+        })
+        .select();
     }
+
+    //query for prev date here and save it somewhere
+    // const data = await supabase
+    //   .from("stats")
+    //   .select("lastLogin")
+    //   .eq("user_email", loginEmail);
+    // console.log(data[0].lastLogin);
   }
 
   const validUsernameRegex = /^[a-zA-Z]/;
@@ -142,6 +171,13 @@ export default function LoginScreen({
           email: signUpEmail,
           username: signUpUsername,
         });
+
+        await supabase.from("stats").insert({
+          user_email: signUpEmail,
+          failStreak: 0,
+          successStreak: 0,
+          lastLogin: Date.now(),
+        });
       }
     } else {
       return;
@@ -152,8 +188,7 @@ export default function LoginScreen({
     e.preventDefault();
     setPasswordResetEmail(true);
     await supabase.auth.resetPasswordForEmail(
-      document.getElementById("loginemail").value,
-      { redirectTo: "http://localhost:3000" }
+      document.getElementById("loginemail").value
     );
   }
 

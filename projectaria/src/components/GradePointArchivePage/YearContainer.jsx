@@ -4,8 +4,10 @@ import { ExpandMore, ExpandLess } from "@mui/icons-material";
 import { useState } from "react";
 // component imports
 import SemesterContainer from "./SemesterContainer";
+import { possibleFontColors } from "../themes";
 
 export default function YearContainer({
+  presentTheme,
   calculateGPA,
   nusModsData,
   yearID,
@@ -22,6 +24,7 @@ export default function YearContainer({
   }
 
   const semesterContainerProps = {
+    presentTheme,
     calculateGPA,
     nusModsData,
     yearID,
@@ -40,6 +43,7 @@ export default function YearContainer({
               justifyContent: "center",
               padding: 1,
               fontSize: 30,
+              color: possibleFontColors[presentTheme],
             }}
             elevation={3}
           >
@@ -47,7 +51,7 @@ export default function YearContainer({
             <IconButton
               id="year-expand-button"
               onClick={showMods}
-              sx={{ color: "black" }}
+              sx={{ color: possibleFontColors[presentTheme] }}
               size="large"
             >
               {semsShown ? (

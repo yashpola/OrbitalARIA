@@ -118,121 +118,115 @@ export default function ProfilePicture({
 
   return (
     <>
-      <Grid item xs={12}>
-        <IconButton
-          sx={{ outline: "none", color: "black" }}
-          onClick={(e) => (
-            e.preventDefault(), setPFPHelpMessage(!pfpHelpMessage)
-          )}
-        >
-          <Help />
-        </IconButton>
-      </Grid>
-      <Grid item xs={12}>
-        {pfpHelpMessage && (
-          <div>
-            <h6 style={{ color: "#4e1530" }}>
-              Wait a few minutes before refreshing to see changes in the profile
-              picture
-            </h6>
-          </div>
+      {/* <IconButton
+        sx={{ outline: "none", color: "black" }}
+        onClick={(e) => (
+          e.preventDefault(), setPFPHelpMessage(!pfpHelpMessage)
         )}
-      </Grid>
-      <Grid item xs={12} sm={8}>
-        <img
-          id="pfp-image"
-          src={src}
-          style={{ borderRadius: "50%", width: 200, height: 200 }}
-        />
-        <br />
-        <Accordion
-          disableGutters={true}
-          expanded={editPFPAccordion}
-          sx={{ backgroundColor: "transparent" }}
-          elevation={0}
-        >
-          <AccordionSummary>
-            <Button
-              color="secondary"
-              sx={{ fontWeight: "bold" }}
-              onClick={(e) => (
-                e.preventDefault(),
-                setEditPFPAccordion(!editPFPAccordion),
-                setConfirmDeletePFP(false)
-              )}
-            >
-              Edit {editPFPAccordion ? <ExpandLess /> : <ExpandMore />}
-            </Button>
-          </AccordionSummary>
-          <AccordionDetails hidden={pfpChosen}>
-            <Button color="secondary" variant="outlined" component="label">
-              Choose PFP
-              <input
-                id="pfp-input-button"
-                type="file"
-                onChange={setProfilePicture}
-                hidden
-              />
-            </Button>
-          </AccordionDetails>
-          <AccordionDetails hidden={!pfpChosen}>
-            <Button
-              disabled={confirmDeletePFP}
-              variant="outlined"
-              color="secondary"
-              component="label"
-            >
-              Change PFP
-              <input
-                id="pfp-update-button"
-                type="file"
-                onChange={updateProfilePicture}
-                hidden
-              />
-            </Button>
-          </AccordionDetails>
-          <AccordionDetails hidden={!pfpChosen}>
-            {confirmDeletePFP ? (
-              <div>
-                <h6>Are you sure? </h6>
-                <Button
-                  variant="contained"
-                  onClick={deleteProfilePicture}
-                  sx={{
-                    marginTop: 2,
-                    marginRight: 2,
-                    backgroundColor: "green",
-                    color: "white",
-                  }}
-                  endIcon={<ThumbUp />}
-                >
-                  Yes
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={closePopUp}
-                  sx={{
-                    marginTop: 2,
-                    backgroundColor: "red",
-                    color: "white",
-                  }}
-                  endIcon={<Undo />}
-                >
-                  No
-                </Button>
-              </div>
-            ) : (
-              <Button
-                color="secondary"
-                onClick={confirmDeleteProfilePicture}
-                variant="outlined"
-              >
-                Remove PFP
-              </Button>
+      >
+        <Help />
+      </IconButton>
+      {pfpHelpMessage && (
+        <div>
+          <h6 style={{ color: "#4e1530" }}>
+            Wait a few minutes before refreshing to see changes in the profile
+            picture
+          </h6>
+        </div>
+      )} */}
+      <img
+        id="pfp-image"
+        src={src}
+        style={{ borderRadius: "50%", width: 200, height: 200 }}
+      />
+      <br />
+      <Accordion
+        disableGutters={true}
+        expanded={editPFPAccordion}
+        sx={{ backgroundColor: "transparent" }}
+        elevation={0}
+      >
+        <AccordionSummary>
+          <Button
+            color="secondary"
+            sx={{ fontWeight: "bold" }}
+            onClick={(e) => (
+              e.preventDefault(),
+              setEditPFPAccordion(!editPFPAccordion),
+              setConfirmDeletePFP(false)
             )}
-          </AccordionDetails>
-        </Accordion>
-      </Grid>
+          >
+            Edit {editPFPAccordion ? <ExpandLess /> : <ExpandMore />}
+          </Button>
+        </AccordionSummary>
+        <AccordionDetails hidden={pfpChosen}>
+          <Button color="secondary" variant="outlined" component="label">
+            Choose PFP
+            <input
+              id="pfp-input-button"
+              type="file"
+              onChange={setProfilePicture}
+              hidden
+            />
+          </Button>
+        </AccordionDetails>
+        <AccordionDetails hidden={!pfpChosen}>
+          <Button
+            disabled={confirmDeletePFP}
+            variant="outlined"
+            color="secondary"
+            component="label"
+          >
+            Change PFP
+            <input
+              id="pfp-update-button"
+              type="file"
+              onChange={updateProfilePicture}
+              hidden
+            />
+          </Button>
+        </AccordionDetails>
+        <AccordionDetails hidden={!pfpChosen}>
+          {confirmDeletePFP ? (
+            <div>
+              <h6>Are you sure? </h6>
+              <Button
+                variant="contained"
+                onClick={deleteProfilePicture}
+                sx={{
+                  marginTop: 2,
+                  marginRight: 2,
+                  backgroundColor: "green",
+                  color: "white",
+                }}
+                endIcon={<ThumbUp />}
+              >
+                Yes
+              </Button>
+              <Button
+                variant="contained"
+                onClick={closePopUp}
+                sx={{
+                  marginTop: 2,
+                  backgroundColor: "red",
+                  color: "white",
+                }}
+                endIcon={<Undo />}
+              >
+                No
+              </Button>
+            </div>
+          ) : (
+            <Button
+              color="secondary"
+              onClick={confirmDeleteProfilePicture}
+              variant="outlined"
+            >
+              Remove PFP
+            </Button>
+          )}
+        </AccordionDetails>
+      </Accordion>
     </>
   );
 }

@@ -7,6 +7,8 @@ import {
   Button,
   Grid,
   IconButton,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import { Cancel } from "@mui/icons-material";
 // react imports
@@ -14,15 +16,22 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 // component imports
 import { toggle } from "./studySessionSlice";
+import { buttonColors, possibleFontColors } from "../themes";
 import TimerCard from "./TimerCard";
 
-export default function NewSession({ openSessionCreationCard, userID }) {
+export default function NewSession({
+  openSessionCreationCard,
+  presentTheme,
+  userID,
+  email,
+}) {
   /* React States */
 
   // User input storage + bad input handling
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [invalidTiming, showInvalidTiming] = useState(false);
+  const [deepFocus, setDeepFocus] = useState(false);
 
   // React-redux global states
   const timerOngoing = useSelector((state) => state.timer.value);
@@ -53,6 +62,7 @@ export default function NewSession({ openSessionCreationCard, userID }) {
       setHours(tempHours);
       setMinutes(tempMinutes);
       showInvalidTiming(false);
+      setDeepFocus(document.getElementById("deepfocuscheckbox").checked);
       dispatch(toggle());
     }
   }
@@ -64,13 +74,16 @@ export default function NewSession({ openSessionCreationCard, userID }) {
 
   const headingStyle = {
     textAlign: "center",
-    color: "white",
+    color: possibleFontColors[presentTheme],
   };
 
   const timerCardProps = {
+    email,
+    presentTheme,
     userID,
     hours,
     minutes,
+    deepFocus,
   };
 
   return (
@@ -81,17 +94,17 @@ export default function NewSession({ openSessionCreationCard, userID }) {
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-        height: "445px",
-        backgroundColor: "#DC9A7F",
+        // height: "445px",
+        // backgroundColor: "#DC9A7F",
         padding: 3,
       }}
     >
       {!timerOngoing ? (
-        <Grid container spacing={2}>
+        <Grid container spacing={1}>
           <IconButton
             id="close-new-session-button"
             onClick={closeSessionCreationCard}
-            sx={{ float: "right", color: "white" }}
+            sx={{ float: "right", color: possibleFontColors[presentTheme] }}
           >
             <Cancel fontSize="inherit" />
           </IconButton>
@@ -104,7 +117,6 @@ export default function NewSession({ openSessionCreationCard, userID }) {
                   backgroundColor: "white",
                   fontStyle: "bold",
                 }}
-                color="tertiary"
                 type="number"
                 label="Hours"
               />
@@ -112,7 +124,6 @@ export default function NewSession({ openSessionCreationCard, userID }) {
                 <TextField
                   id="session-minutes-input"
                   sx={{ backgroundColor: "white" }}
-                  color="tertiary"
                   type="number"
                   label="Minutes"
                   variant="outlined"
@@ -145,22 +156,51 @@ export default function NewSession({ openSessionCreationCard, userID }) {
             </Stack>
           </Grid> */}
           <Grid item xs={12}>
+            <FormControlLabel
+              required
+              control={
+                <Checkbox
+                  id="deepfocuscheckbox"
+                  sx={{
+                    color: possibleFontColors[presentTheme],
+                    "&.Mui-checked": {
+                      color: possibleFontColors[presentTheme],
+                    },
+                  }}
+                />
+              }
+              label=<div
+                style={{
+                  color: possibleFontColors[presentTheme],
+                  fontWeight: "bold",
+                }}
+              >
+                Deep Focus
+              </div>
+            />
+          </Grid>
+          <Grid item xs={12}>
             {invalidTiming && <h6 style={headingStyle}>Invalid timing</h6>}
             <FormControl>
               <Button
                 id="session-start-button"
                 sx={{
                   fontFamily: "inherit",
-                  backgroundColor: "black",
-                  color: "white",
-                  margin: 2,
                 }}
+                color={buttonColors[presentTheme]}
                 onClick={startTimer}
                 variant="contained"
               >
                 Start
               </Button>
             </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <Card sx={{ marginTop: 2, padding: 1, backgroundColor: "#eee" }}>
+              <h6 style={{ color: "black" }}>
+                Deep Focus: Leaving the ARIA website will terminate your session
+              </h6>
+            </Card>
           </Grid>
         </Grid>
       ) : (

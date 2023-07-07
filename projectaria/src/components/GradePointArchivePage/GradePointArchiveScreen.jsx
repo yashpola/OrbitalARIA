@@ -1,5 +1,13 @@
 // mui imports
-import { Button, Container, Grid, Paper } from "@mui/material";
+import {
+  Button,
+  Card,
+  Container,
+  Grid,
+  IconButton,
+  Paper,
+  ThemeProvider,
+} from "@mui/material";
 // react imports
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,6 +17,8 @@ import { supabase } from "../../supabase";
 import { toggle } from "../StudySessionPage/studySessionSlice";
 import YearContainer from "./YearContainer";
 import UniversalPopup from "../Universal/UniversalPopup";
+import { buttonColors, possibleFontColors, possibleThemes } from "../themes";
+import { Analytics, Cancel, Help, Refresh } from "@mui/icons-material";
 
 export default function GradePointArchiveScreen({ userID }) {
   /* Component variables */
@@ -32,14 +42,18 @@ export default function GradePointArchiveScreen({ userID }) {
   /* React States */
   // Redux global
   const timerOngoing = useSelector((state) => state.timer.value);
+  const presentTheme = useSelector((state) => state.currentTheme.value);
   const dispatch = useDispatch();
 
-  // No. of years present
+  // Conditional rendering
   const [yearCount, setYearCount] = useState(4);
+  const [analyticsCard, setAnalyticsCard] = useState(false);
+  const [analyticsHelpMessage, setHelpMessage] = useState(false);
 
   // Intermediate Data Storage
   const [gpa, setGPA] = useState("");
   const [nusModsData, setLocalModsData] = useState([]);
+  const [moduleAverages, setModuleAverages] = useState([]);
 
   // Supabase fetch error
   const [modulesFetchError, triggerModuleFetchError] = useState(false);
@@ -86,20 +100,100 @@ export default function GradePointArchiveScreen({ userID }) {
       );
 
     let cumulativeGPA = (totalScore / totalCredits).toFixed(2);
-
     setGPA(isNaN(cumulativeGPA) ? "" : cumulativeGPA);
   }
 
   for (let i = 1; i <= yearCount; i++) {
     yearsList.push(
       <YearContainer
+        presentTheme={presentTheme}
         key={i}
         userID={userID}
         nusModsData={nusModsData}
         calculateGPA={calculateGPA}
+        retrieveModGroups={retrieveModGroups}
         yearID={i}
       />
     );
+  }
+
+  function getMedianGrade(anArray) {
+    anArray.sort();
+    if (anArray.length == 0) {
+      return;
+    }
+    anArray.sort((a, b) => a - b);
+    const midpoint = Math.floor(anArray.length / 2);
+    const medianPoint =
+      anArray.length % 2 === 1
+        ? anArray[midpoint]
+        : (anArray[midpoint - 1] + anArray[midpoint]) / 2;
+
+    return Object.keys(gradePoint).find(
+      (key) => gradePoint[key] === medianPoint
+    );
+  }
+
+  function getTopGrade(anArray) {
+    const topGradePoint = Math.max(...anArray);
+    return Object.keys(gradePoint).find(
+      (key) => gradePoint[key] === topGradePoint
+    );
+  }
+
+  function getBottomGrade(anArray) {
+    const bottomGradePoint = Math.min(...anArray);
+    return Object.keys(gradePoint).find(
+      (key) => gradePoint[key] === bottomGradePoint
+    );
+  }
+
+  let moduleGroups = {};
+  let moduleArrays = [];
+
+  async function retrieveModGroups(e) {
+    e.preventDefault();
+    if (moduleAverages.length === 0) {
+      const { data } = await supabase
+        .from("modules")
+        .select("lettergrade, type")
+        .eq("user_id", userID);
+      moduleGroups = data
+        .filter(
+          (dataPoint) => !notCountedGrades.includes(dataPoint.lettergrade)
+        )
+        .reduce((accumulator, currentValue) => {
+          (accumulator[currentValue.type] =
+            accumulator[currentValue.type] || []).push(
+            gradePoint[currentValue.lettergrade]
+          );
+          return accumulator;
+        }, {});
+
+      Object.keys(moduleGroups).forEach(function (key) {
+        moduleArrays.push({ modCode: key, numberMods: moduleGroups[key] });
+      });
+      moduleArrays.sort((a, b) => b.numberMods.length - a.numberMods.length);
+
+      let displayedMods = 1;
+      moduleArrays.forEach(function (modObject, index) {
+        if (displayedMods <= 3) {
+          moduleAverages.push(
+            <div key={index}>
+              <div>{modObject.modCode}</div>
+              <div>
+                Median: {getMedianGrade(modObject.numberMods)} | High:{" "}
+                {getTopGrade(modObject.numberMods)} | Low:{" "}
+                {getBottomGrade(modObject.numberMods)}
+              </div>
+            </div>
+          );
+          displayedMods++;
+        }
+      });
+      setModuleAverages(moduleAverages);
+    }
+    setAnalyticsCard(true);
   }
 
   function addYear(e) {
@@ -126,78 +220,165 @@ export default function GradePointArchiveScreen({ userID }) {
   }, []);
 
   return (
-    <>
-      {timerOngoing && (
-        <UniversalPopup
-          closePopUp={closePopUp}
-          popupText="Your ongoing session was terminated."
-        />
-      )}
-      <Paper
-        id="gpa-page-header"
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: 5,
-          padding: 2,
-          fontSize: 20,
-          backgroundColor: "white",
-        }}
-        elevation={0}
-      >
-        Current GPA: &nbsp;
-        {modulesFetchError ? (
-          <div style={{ color: "red" }}>Error Fetching</div>
-        ) : (
-          gpa
+    <ThemeProvider theme={possibleThemes[presentTheme]}>
+      <>
+        {timerOngoing && (
+          <UniversalPopup
+            closePopUp={closePopUp}
+            popupText="Your ongoing session was terminated."
+          />
         )}
-      </Paper>
-      <Container
-        id="gpa-page-body"
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 2,
-          backgroundColor: "#A86868",
-        }}
-      >
-        <Grid container spacing={5}>
-          {yearsList.map((year, index) => (
-            <Grid key={index} item xs={12}>
-              {year}
-            </Grid>
-          ))}
-          <Grid sx={{}} item xs={6}>
-            <Button
-              id="add-year-button"
-              sx={{
-                fontFamily: "inherit",
-                backgroundColor: "#4e1530",
-              }}
-              variant="contained"
-              onClick={addYear}
-            >
-              Add Year
-            </Button>
-            {yearCount > 4 && (
+        <Paper
+          id="gpa-page-header"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 5,
+            padding: 2,
+            fontSize: 20,
+            backgroundColor: "white",
+          }}
+          elevation={0}
+        >
+          Current GPA: &nbsp;
+          {modulesFetchError ? (
+            <div style={{ color: "red" }}>Error Fetching</div>
+          ) : (
+            gpa
+          )}
+        </Paper>
+        <Container
+          id="gpa-page-body"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 2,
+          }}
+        >
+          <Grid container spacing={5}>
+            <Grid item xs={12}>
               <Button
-                id="undo-add-year-button"
+                onClick={retrieveModGroups}
+                sx={{ fontFamily: "inherit", marginRight: 1 }}
+                color="primary"
+                variant="contained"
+                endIcon={<Analytics />}
+              >
+                View Analytics
+              </Button>
+              <IconButton
+                color={buttonColors[presentTheme]}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setHelpMessage(!analyticsHelpMessage);
+                }}
+              >
+                <Help />
+              </IconButton>
+              <br />
+              {analyticsHelpMessage && (
+                <Card
+                  sx={{
+                    backgroundColor: "#eee",
+                    display: "inline-flex",
+                    marginTop: 1,
+                    padding: 1,
+                  }}
+                >
+                  <ol>
+                    <li>
+                      <h6>
+                        Displays stats for up to 3 most frequent module codes{" "}
+                      </h6>
+                    </li>
+                    <li>
+                      <h6>S, CS, CU, IP, IC, W-grade modules not included</h6>
+                    </li>
+                    <li>
+                      <h6>Refresh page to update analytics</h6>
+                    </li>
+                  </ol>
+                </Card>
+              )}
+            </Grid>
+            {analyticsCard && (
+              <Grid item xs={12}>
+                <Card sx={{ padding: 2 }}>
+                  <IconButton
+                    color={buttonColors[presentTheme]}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setAnalyticsCard(false);
+                    }}
+                  >
+                    <Cancel fontSize="inherit" />
+                  </IconButton>
+                  {moduleAverages.length === 0 ? (
+                    <Card
+                      sx={{
+                        backgroundColor: "#eee",
+                        padding: 2,
+                        textAlign: "center",
+                      }}
+                    >
+                      No modules yet!
+                    </Card>
+                  ) : (
+                    <>
+                      {moduleAverages.map((modMedian, index) => (
+                        <Card
+                          sx={{
+                            backgroundColor: "#eee",
+                            padding: 2,
+                            textAlign: "center",
+                          }}
+                          key={index}
+                        >
+                          {modMedian}
+                        </Card>
+                      ))}
+                    </>
+                  )}
+                </Card>
+              </Grid>
+            )}
+            {yearsList.map((year, index) => (
+              <Grid key={index} item xs={12}>
+                {year}
+              </Grid>
+            ))}
+            <Grid item xs={6}>
+              <Button
+                id="add-year-button"
                 sx={{
                   fontFamily: "inherit",
-                  backgroundColor: "#4e1530",
-                  marginLeft: 5,
                 }}
+                color="primary"
                 variant="contained"
-                onClick={removeLastYear}
+                onClick={addYear}
               >
-                Undo Add Year
+                Add Year
               </Button>
-            )}
+              {yearCount > 4 && (
+                <Button
+                  id="undo-add-year-button"
+                  sx={{
+                    fontFamily: "inherit",
+                    marginLeft: 5,
+                  }}
+                  color="primary"
+                  variant="contained"
+                  onClick={removeLastYear}
+                >
+                  Undo Add Year
+                </Button>
+              )}
+            </Grid>
           </Grid>
-        </Grid>
-      </Container>
-    </>
+        </Container>
+      </>
+    </ThemeProvider>
   );
 }

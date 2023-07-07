@@ -1,24 +1,32 @@
 // react imports
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Routes, Route, NavLink } from "react-router-dom";
-import { ErrorBoundary } from "react-error-boundary";
 // supabase imports
 import { supabase } from "../../supabase";
 // component imports
+import { navBarColor } from "../themes";
 import LandingScreen from "../LandingPage/LandingScreen";
 import GradePointArchiveScreen from "../GradePointArchivePage/GradePointArchiveScreen";
 import StudySessionScreen from "../StudySessionPage/StudySessionScreen";
 import NoPage from "./404Page";
 import UserProfile from "../Profile/UserProfile";
-import Fallback from "./FallBack";
 
 export default function NavBar({ currentUserEmailData }) {
   /* React states */
+  // Redux global
+  const presentTheme = useSelector((state) => state.currentTheme.value);
+  const timerOngoing = useSelector((state) => state.timer.value);
+  const lastLoggedIn = useSelector((state) => state.lastLogged.value);
+
+  const [confirmNavigation, setConfirmNavigation] = useState(false);
+
   // User info storage
   const [username, setUsername] = useState("Profile");
   const [email, setEmail] = useState("");
   const [userID, setUserID] = useState("");
   const [src, setSrc] = useState();
+  const [loginDiff, setLoginDiff] = useState(0);
 
   /* Component functionality */
   async function fetchUserData() {
@@ -47,6 +55,15 @@ export default function NavBar({ currentUserEmailData }) {
     setSrc(data.publicUrl);
   }
 
+  function calculateDifferenceLoggedIn() {
+    const studySessionTabTime = new Date().getTime();
+    setLoginDiff(Math.round((studySessionTabTime - lastLoggedIn) / 86400000));
+  }
+
+  function confirmNav() {
+    timerOngoing && setConfirmNavigation(true);
+  }
+
   useEffect(() => {
     fetchUserData();
   }, [username]);
@@ -55,13 +72,22 @@ export default function NavBar({ currentUserEmailData }) {
     fetchProfilePicture();
   }, [src]);
 
+  useEffect(() => {
+    calculateDifferenceLoggedIn();
+  }, []);
+
   return (
     <>
       <div>
-        <nav className="navbar navbar-expand-lg navbar-dark">
+        <nav
+          style={{ backgroundColor: navBarColor[presentTheme] }}
+          className="navbar navbar-expand-lg navbar-dark"
+        >
           <div id="navbar-brand" className="navbar-brand-aria">
             <NavLink
-              to="/"
+              onClick={confirmNav}
+              id="aria-nav-link"
+              to={timerOngoing ? "/studysession" : "/"}
               style={({ isActive }) => ({
                 textDecoration: isActive ? "underline" : "none",
                 color: !isActive ? "white" : "grey",
@@ -83,12 +109,13 @@ export default function NavBar({ currentUserEmailData }) {
           </button>
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav">
+            <ul className="navbar-nav ml-auto">
               <li>
                 <div id="navbar-gpa" className="nav-item nav-link">
                   <NavLink
+                    onClick={confirmNav}
                     id="gpa-nav-link"
-                    to="/gradepointarchive"
+                    to={timerOngoing ? "/studysession" : "/gradepointarchive"}
                     style={({ isActive }) => ({
                       textDecoration: isActive ? "underline" : "none",
                       color: !isActive ? "white" : "grey",
@@ -101,6 +128,7 @@ export default function NavBar({ currentUserEmailData }) {
               <li>
                 <div id="navbar-studysession" className="nav-item nav-link">
                   <NavLink
+                    id="studysession-nav-link"
                     to="/studysession"
                     style={({ isActive }) => ({
                       textDecoration: isActive ? "underline" : "none",
@@ -114,7 +142,9 @@ export default function NavBar({ currentUserEmailData }) {
               <li>
                 <div id="navbar-username" className="nav-item nav-link">
                   <NavLink
-                    to="/profile"
+                    onClick={confirmNav}
+                    id="profile-nav-link"
+                    to={timerOngoing ? "/studysession" : "/profile"}
                     style={({ isActive }) => ({
                       textDecoration: isActive ? "underline" : "none",
                       color: !isActive ? "white" : "grey",
@@ -138,7 +168,15 @@ export default function NavBar({ currentUserEmailData }) {
         <Route
           exact
           path="/studysession"
-          element={<StudySessionScreen userID={userID} />}
+          element={
+            <StudySessionScreen
+              confirmNavigation={confirmNavigation}
+              setConfirmNavigation={setConfirmNavigation}
+              loginDiff={loginDiff}
+              email={email}
+              userID={userID}
+            />
+          }
         />
         <Route
           exact

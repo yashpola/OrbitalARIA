@@ -22,7 +22,6 @@ export default function ConfirmPopup({
           justifyContent: "center",
           textAlign: "center",
           padding: 3,
-          marginTop: 2,
           border: "1px solid black",
         }}
         elevation={0}
@@ -39,6 +38,7 @@ export default function ConfirmPopup({
           {popupText}
         </Paper>
         <Button
+          hidden={!timerOngoing}
           sx={{
             backgroundColor: "red",
             fontWeight: "bold",
@@ -49,17 +49,31 @@ export default function ConfirmPopup({
         >
           Proceed
         </Button>
-        <Button
-          sx={{
-            marginLeft: 2,
-            fontWeight: "bold",
-          }}
-          color={buttonColors[presentTheme]}
-          variant="contained"
-          onClick={closePopUp}
-        >
-          Cancel
-        </Button>
+        {timerOngoing ? (
+          <Button
+            sx={{
+              marginLeft: 2,
+              fontWeight: "bold",
+            }}
+            color={buttonColors[presentTheme]}
+            variant="contained"
+            onClick={closePopUp}
+          >
+            Cancel
+          </Button>
+        ) : (
+          <Button
+            sx={{
+              marginLeft: 2,
+              fontWeight: "bold",
+            }}
+            color={buttonColors[presentTheme]}
+            variant="contained"
+            onClick={closePopUp}
+          >
+            Close
+          </Button>
+        )}
       </Card>
     </ThemeProvider>
   );

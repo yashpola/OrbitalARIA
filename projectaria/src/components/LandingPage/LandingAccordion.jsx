@@ -6,18 +6,28 @@ import {
   Paper,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
+// component imports
+import {
+  accordionColoring,
+  possibleFontColors,
+  possibleThemes,
+} from "../themes";
 
-export default function LandingAccordion() {
+export default function LandingAccordion({ presentTheme }) {
   return (
     <Paper
       sx={{
-        backgroundColor: "white",
-        marginTop: "30%",
+        backgroundColor: "transparent",
+        margin: "auto",
+        maxWidth: "70%",
       }}
     >
       <Accordion
         sx={{
-          backgroundColor: "#4e1530",
+          backgroundColor: accordionColoring[`${presentTheme}Dark`],
+          "& .MuiAccordionSummary-content": {
+            justifyContent: "center",
+          },
         }}
       >
         <AccordionSummary
@@ -26,15 +36,18 @@ export default function LandingAccordion() {
           id="panel1a-header"
           sx={{ color: "white" }}
         >
-          User Profiling
+          User Accounts
         </AccordionSummary>
-        <AccordionDetails sx={{ color: "white" }}>
+        <AccordionDetails sx={{ color: "white", textAlign: "center" }}>
           Personalized website experience with secure authentication
         </AccordionDetails>
       </Accordion>
       <Accordion
         sx={{
-          backgroundColor: "#a86868",
+          backgroundColor: accordionColoring[`${presentTheme}Medium`],
+          "& .MuiAccordionSummary-content": {
+            justifyContent: "center",
+          },
         }}
       >
         <AccordionSummary
@@ -45,14 +58,17 @@ export default function LandingAccordion() {
         >
           GradePointArchive
         </AccordionSummary>
-        <AccordionDetails sx={{ color: "white" }}>
-          A record of all your module grades across semesters and years. Compute
-          GPA at any point in your record
+        <AccordionDetails sx={{ color: "white", textAlign: "center" }}>
+          A record of all your module grades across semesters and years. Stay
+          updated on your academic health.
         </AccordionDetails>
       </Accordion>
       <Accordion
         sx={{
-          backgroundColor: "#DC9A7F",
+          backgroundColor: accordionColoring[`${presentTheme}Light`],
+          "& .MuiAccordionSummary-content": {
+            justifyContent: "center",
+          },
         }}
       >
         <AccordionSummary
@@ -63,8 +79,9 @@ export default function LandingAccordion() {
         >
           StudySession
         </AccordionSummary>
-        <AccordionDetails sx={{ color: "white" }}>
-          Motivation to complete your daily study goals
+        <AccordionDetails sx={{ color: "white", textAlign: "center" }}>
+          A source of motivation for your daily study goals. Keep tabs on the
+          work you do.
         </AccordionDetails>
       </Accordion>
     </Paper>

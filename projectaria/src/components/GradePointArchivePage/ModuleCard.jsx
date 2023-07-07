@@ -12,7 +12,6 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  ThemeProvider,
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 // react imports
@@ -20,9 +19,10 @@ import { useState } from "react";
 // supabase imports
 import { supabase } from "../../supabase";
 // component imports
-import { ariaTheme } from "../../App";
 
 export default function ModuleCard({
+  presentTheme,
+  possibleFontColors,
   userModCodes,
   nusModsData,
   code,
@@ -41,7 +41,6 @@ export default function ModuleCard({
   const moduleTitleList = nusModsData.map(({ title }) => title);
   const moduleCreditsList = nusModsData.map(({ moduleCredit }) => moduleCredit);
 
-  /* React States */
   // Autocomplete + dropdown rendering
   const [grade, setGrade] = useState("");
   const [modCodeOptions, showModCodeOptions] = useState(false);
@@ -125,98 +124,100 @@ export default function ModuleCard({
   });
 
   return (
-    <ThemeProvider theme={ariaTheme}>
-      <Card id="mod-container" sx={{ marginTop: 3, padding: 2 }}>
-        <Paper
-          id="mod-header"
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 2,
-            marginBottom: 2,
-            backgroundColor: "#4e1530",
-            fontSize: 20,
-            color: "white",
-          }}
+    <Card
+      id="mod-container"
+      sx={{ backgroundColor: "white", marginTop: 3, padding: 2 }}
+    >
+      <Paper
+        id="mod-header"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 2,
+          marginBottom: 2,
+          // backgroundColor: "#6497B1",
+          // backgroundColor: "white",
+          fontSize: 20,
+          color: possibleFontColors[presentTheme],
+        }}
+      >
+        {code} ({lettergrade})
+        <IconButton
+          id="edit-mod-form-button"
+          onClick={openEditForm}
+          sx={{ marginLeft: "auto", color: possibleFontColors[presentTheme] }}
         >
-          {code} ({lettergrade})
-          <IconButton
-            id="edit-mod-form-button"
-            onClick={openEditForm}
-            sx={{ marginLeft: "auto", color: "white" }}
-          >
-            <Edit />
-          </IconButton>
-          <IconButton
-            id="delete-mod-button"
-            onClick={deleteMod}
-            sx={{ marginLeft: "auto", color: "white" }}
-          >
-            <Delete />
-          </IconButton>
-        </Paper>
-        <h5 id="mod-title">{title}</h5>
-        <h5 id="mod-credits" style={{ float: "right" }}>
-          {credits}mc
-        </h5>
-        {editForm && (
-          <Stack sx={{ marginTop: 5 }} direction="column" spacing={2}>
-            <FormControl fullWidth>
-              <Autocomplete
-                disablePortal
-                filterOptions={filterOptions}
-                onInputChange={(_, value) => {
-                  if (value.length === 0) {
-                    if (modCodeOptions) showModCodeOptions(false);
-                  } else {
-                    if (!modCodeOptions) showModCodeOptions(true);
-                  }
-                }}
-                onClose={() => showModCodeOptions(false)}
-                id="newModCode"
-                options={moduleCodeList}
-                renderInput={(params) => (
-                  <TextField {...params} label="Module Code" />
-                )}
-              />
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel id="module-grade-label">Module Grade</InputLabel>
-              <Select
-                labelId="module-grade-label"
-                id="newModGrade"
-                value={grade}
-                label="Module Grade"
-                onChange={handleGradeInput}
-              >
-                {gradeList.map((gradeValue, index) => (
-                  <MenuItem key={index} value={gradeValue}>
-                    {gradeValue}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl>
-              {existingMod && (
-                <h6 style={{ textAlign: "center" }}>Already added!</h6>
+          <Edit />
+        </IconButton>
+        <IconButton
+          id="delete-mod-button"
+          onClick={deleteMod}
+          sx={{ marginLeft: "auto", color: possibleFontColors[presentTheme] }}
+        >
+          <Delete />
+        </IconButton>
+      </Paper>
+      <h5 id="mod-title">{title}</h5>
+      <h5 id="mod-credits" style={{ float: "right" }}>
+        {credits}mc
+      </h5>
+      {editForm && (
+        <Stack sx={{ marginTop: 5 }} direction="column" spacing={2}>
+          <FormControl fullWidth>
+            <Autocomplete
+              disablePortal
+              filterOptions={filterOptions}
+              onInputChange={(_, value) => {
+                if (value.length === 0) {
+                  if (modCodeOptions) showModCodeOptions(false);
+                } else {
+                  if (!modCodeOptions) showModCodeOptions(true);
+                }
+              }}
+              onClose={() => showModCodeOptions(false)}
+              id="newModCode"
+              options={moduleCodeList}
+              renderInput={(params) => (
+                <TextField {...params} label="New Course Code" />
               )}
-              <Button
-                id="edit-mod-button"
-                sx={{
-                  fontFamily: "inherit",
-                  fontSize: 20,
-                  color: "black",
-                }}
-                variant="contained"
-                onClick={editMod}
-              >
-                Edit Module
-              </Button>
-            </FormControl>
-          </Stack>
-        )}
-      </Card>
-    </ThemeProvider>
+            />
+          </FormControl>
+          <FormControl fullWidth>
+            <InputLabel id="module-grade-label">New Module Grade</InputLabel>
+            <Select
+              labelId="module-grade-label"
+              id="newModGrade"
+              value={grade}
+              label="New Course Grade"
+              onChange={handleGradeInput}
+            >
+              {gradeList.map((gradeValue, index) => (
+                <MenuItem key={index} value={gradeValue}>
+                  {gradeValue}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl>
+            {existingMod && (
+              <h6 style={{ textAlign: "center" }}>Already added!</h6>
+            )}
+            <Button
+              id="edit-mod-button"
+              sx={{
+                fontFamily: "inherit",
+                fontSize: 20,
+              }}
+              color="secondary"
+              variant="contained"
+              onClick={editMod}
+            >
+              Edit Course
+            </Button>
+          </FormControl>
+        </Stack>
+      )}
+    </Card>
   );
 }
