@@ -1,4 +1,11 @@
-import { Avatar, Card, Container, IconButton, Grid } from "@mui/material";
+import {
+  Avatar,
+  Card,
+  Container,
+  IconButton,
+  Grid,
+  Stack,
+} from "@mui/material";
 import {
   Cancel,
   Celebration,
@@ -52,6 +59,10 @@ export default function StatsCard({
   const numberFailedSessions = totalSessions.length - numberCompletedSessions;
 
   const bubbleStyling = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between",
     borderRadius: 16,
     backgroundColor: "#eee",
     padding: 3,
@@ -97,9 +108,9 @@ export default function StatsCard({
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <Card sx={bubbleStyling}>
-              <h2 id="total-session-hours">{totalSessionHours}h</h2>
-              <h2 id="total-session-minutes">{totalSessionMinutes}m</h2>
-              <h6>total focus time</h6>
+              <h2 id="total-session-hours">{totalSessionHours}</h2>hours
+              <h2 id="total-session-minutes">{totalSessionMinutes}</h2>minutes
+              <h5 style={{ marginTop: "5px" }}>total focus time</h5>
             </Card>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -108,7 +119,7 @@ export default function StatsCard({
               <Celebration sx={{ color: "green" }} />
               <h2 id="number-terminated-sessions">{numberFailedSessions} </h2>
               <IndeterminateCheckBox sx={{ color: "red" }} />
-              <h6>sessions</h6>
+              <h5>sessions</h5>
             </Card>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -117,11 +128,11 @@ export default function StatsCard({
               <LocalFireDepartment sx={{ color: "#FFA500" }} />
               <h2 id="session-fail-streak">{sessionFailStreak}</h2>
               <HeartBroken sx={{ color: "red" }} />
-              <h6>streaks</h6>
+              <h5>streaks</h5>
             </Card>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <img src={foxSrc} style={{ width: "150px", height: "150px" }} />
+            <img src={foxSrc} style={{ width: "200px", height: "200px" }} />
           </Grid>
         </Grid>
       </Card>
