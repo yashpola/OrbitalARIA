@@ -206,7 +206,7 @@ export default function StudySessionScreen({
                   <Button
                     id="new-session-button"
                     onClick={newSession}
-                    disabled={timerOngoing}
+                    disabled={timerOngoing || sessionCreationCard}
                     color="secondary"
                     variant="contained"
                     sx={{
@@ -220,7 +220,7 @@ export default function StudySessionScreen({
                     id="view-session-history-button"
                     color="secondary"
                     onClick={openSessionHistory}
-                    disabled={timerOngoing}
+                    disabled={timerOngoing || sessionHistoryCardOpen}
                     variant="contained"
                     sx={{
                       fontSize: 20,
@@ -234,7 +234,7 @@ export default function StudySessionScreen({
                     color="secondary"
                     onClick={openStatisticsCard}
                     variant="contained"
-                    disabled={timerOngoing}
+                    disabled={timerOngoing || statisticsCard}
                     sx={{
                       fontSize: 20,
                       fontFamily: "Ubuntu",

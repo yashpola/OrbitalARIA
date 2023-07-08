@@ -261,6 +261,7 @@ export default function GradePointArchiveScreen({ userID }) {
             <Grid item xs={12}>
               <Button
                 onClick={retrieveModGroups}
+                disabled={analyticsCard}
                 sx={{ fontFamily: "inherit", marginRight: 1 }}
                 color="primary"
                 variant="contained"
