@@ -31,6 +31,7 @@ import happyFox from "../images/studysessionimages/happyfox.png";
 import angryFox from "../images/studysessionimages/angryfox.png";
 import normalFox from "../images/studysessionimages/normalfox.png";
 import UniversalPopup from "../Universal/UniversalPopup";
+import { Settings } from "@mui/icons-material";
 
 export default function StudySessionScreen({
   confirmNavigation,
@@ -92,6 +93,7 @@ export default function StudySessionScreen({
 
   function newSession(e) {
     e.preventDefault();
+
     openSessionCreationCard(true);
     setSessionHistoryCardOpen(false);
     setStatsCardOpen(false);

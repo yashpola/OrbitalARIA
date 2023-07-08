@@ -9,6 +9,7 @@ import {
   IconButton,
   FormControlLabel,
   Checkbox,
+  Divider,
 } from "@mui/material";
 import { Cancel } from "@mui/icons-material";
 // react imports
@@ -108,6 +109,72 @@ export default function NewSession({
           >
             <Cancel fontSize="inherit" />
           </IconButton>
+          <Grid item xs={12}>
+            <h4 style={headingStyle}>Quickstart</h4>
+            <div
+              style={{
+                marginTop: "20px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-evenly",
+                flexWrap: "wrap",
+              }}
+            >
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setHours(0);
+                  setMinutes(30);
+                  dispatch(toggle());
+                }}
+                color={buttonColors[presentTheme]}
+                variant="contained"
+              >
+                0:30
+              </Button>
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setHours(1);
+                  setMinutes(0);
+                  dispatch(toggle());
+                }}
+                color={buttonColors[presentTheme]}
+                variant="contained"
+              >
+                1:00
+              </Button>
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setHours(1);
+                  setMinutes(30);
+                  dispatch(toggle());
+                }}
+                color={buttonColors[presentTheme]}
+                variant="contained"
+              >
+                1:30
+              </Button>
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setHours(2);
+                  setMinutes(0);
+                  dispatch(toggle());
+                }}
+                color={buttonColors[presentTheme]}
+                variant="contained"
+              >
+                2:00
+              </Button>
+            </div>
+          </Grid>
+          <Grid item xs={12}>
+            <Divider
+              sx={{ margin: 3, border: "1px solid black", color: "black" }}
+            />
+          </Grid>
           <Grid item xs={12}>
             <Stack direction="column" spacing={2}>
               <h4 style={headingStyle}>Set Time</h4>{" "}
