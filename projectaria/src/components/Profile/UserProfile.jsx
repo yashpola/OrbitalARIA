@@ -76,12 +76,14 @@ export default function UserProfile({
     e.preventDefault();
     setUsernameFormOpen(!usernameFormOpen);
     setInvalidUsername(false);
+    setUsernameTaken(false);
   }
 
   function handleEmailForm(e) {
     e.preventDefault();
     setEmailFormOpen(!emailFormOpen);
     setInvalidEmail(false);
+    setEmailTaken(false);
   }
 
   function signOut(e) {
@@ -197,6 +199,13 @@ export default function UserProfile({
           popupText="Your ongoing session was terminated."
         />
       )}
+      {emailChangeNotif && (
+        <UniversalPopup
+          closePopUp={closePopUp}
+          popupText="Please check both your old and new emails for a 
+            successful email change"
+        />
+      )}
       <Container
         sx={{
           backgroundColor: "transparent",
@@ -254,14 +263,6 @@ export default function UserProfile({
                   Change Theme
                 </Button>
                 {themeOptionsCard && <ThemeOptionsCard />}
-                {emailChangeNotif && (
-                  <UniversalPopup
-                    closePopUp={closePopUp}
-                    popupText="Please check both your old and new emails for a 
-            successful email change"
-                  />
-                )}
-
                 <Button
                   id="sign-out-button"
                   sx={{
