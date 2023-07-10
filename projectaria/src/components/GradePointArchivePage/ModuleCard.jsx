@@ -184,7 +184,7 @@ export default function ModuleCard({
             />
           </FormControl>
           <FormControl fullWidth>
-            <InputLabel id="module-grade-label">New Module Grade</InputLabel>
+            <InputLabel id="module-grade-label">New Course Grade</InputLabel>
             <Select
               labelId="module-grade-label"
               id="newModGrade"

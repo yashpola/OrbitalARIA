@@ -291,11 +291,11 @@ export default function GradePointArchiveScreen({ userID }) {
                   <ol>
                     <li>
                       <h6>
-                        Displays stats for up to 3 most frequent module codes{" "}
+                        Displays stats for up to 3 most frequent course codes{" "}
                       </h6>
                     </li>
                     <li>
-                      <h6>S, CS, CU, IP, IC, W-grade modules not included</h6>
+                      <h6>S, CS, CU, IP, IC, W-grade courses not included</h6>
                     </li>
                     <li>
                       <h6>Refresh page to update analytics</h6>
