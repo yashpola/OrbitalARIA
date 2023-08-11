@@ -31,6 +31,7 @@ export default function SemesterContainer({
   yearID,
   semID,
   userID,
+  specialTerm,
 }) {
   /* Component variables */
   const gradeList = [
@@ -66,6 +67,7 @@ export default function SemesterContainer({
   // User data storage
   const [userModArray, setModArray] = useState([]);
   const userModCodes = userModArray.map(({ code }) => code);
+  const [userMods, setUserMods] = useState([]);
   // const [userID, setUserID] = useState("");
 
   // Internal bad user input handling
@@ -95,7 +97,7 @@ export default function SemesterContainer({
 
     const moduleCode = document.getElementById("moduleCode").value;
 
-    if (userModCodes.includes(moduleCode)) {
+    if (userMods.includes(moduleCode)) {
       setExistingMod(!existingMod);
       return;
     }
@@ -142,6 +144,14 @@ export default function SemesterContainer({
 
     // setUserID(user.id);
     setModArray(data);
+  }
+
+  async function checkModExists(modCode) {
+    const { data } = await supabase.from("modules").select("code").match({
+      user_id: userID,
+    });
+
+    setUserMods(data.map(({ code }) => code).includes(modCode));
   }
 
   async function deleteAllMods(e) {
@@ -211,7 +221,7 @@ export default function SemesterContainer({
         }}
         elevation={3}
       >
-        Sem {semID}
+        {specialTerm ? "Special Term" : `Sem ${semID}`}
         <IconButton
           id="create-mod-button"
           sx={{ marginLeft: "auto", color: possibleFontColors[presentTheme] }}

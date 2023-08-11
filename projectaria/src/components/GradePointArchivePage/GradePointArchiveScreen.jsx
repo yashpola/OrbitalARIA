@@ -52,6 +52,7 @@ export default function GradePointArchiveScreen({ userID }) {
 
   // Intermediate Data Storage
   const [gpa, setGPA] = useState("");
+  const [moduleCredits, setModuleCredits] = useState("");
   const [nusModsData, setLocalModsData] = useState([]);
   const [moduleAverages, setModuleAverages] = useState([]);
 
@@ -101,6 +102,7 @@ export default function GradePointArchiveScreen({ userID }) {
 
     let cumulativeGPA = (totalScore / totalCredits).toFixed(2);
     setGPA(isNaN(cumulativeGPA) ? "" : cumulativeGPA);
+    setModuleCredits(totalCredits);
   }
 
   for (let i = 1; i <= yearCount; i++) {
@@ -156,7 +158,7 @@ export default function GradePointArchiveScreen({ userID }) {
     if (moduleAverages.length === 0) {
       const { data } = await supabase
         .from("modules")
-        .select("lettergrade, type")
+        .select("lettergrade, credits, type")
         .eq("user_id", userID);
       moduleGroups = data
         .filter(
@@ -246,7 +248,8 @@ export default function GradePointArchiveScreen({ userID }) {
             <div style={{ color: "red" }}>Error Fetching</div>
           ) : (
             gpa
-          )}
+          )}{" "}
+          &nbsp;| Total Credits: {moduleCredits}
         </Paper>
         <Container
           id="gpa-page-body"
@@ -290,11 +293,6 @@ export default function GradePointArchiveScreen({ userID }) {
                 >
                   <ol>
                     <li>
-                      <h6>
-                        Displays stats for up to 3 most frequent course codes{" "}
-                      </h6>
-                    </li>
-                    <li>
                       <h6>S, CS, CU, IP, IC, W-grade courses not included</h6>
                     </li>
                     <li>
@@ -316,6 +314,16 @@ export default function GradePointArchiveScreen({ userID }) {
                   >
                     <Cancel fontSize="inherit" />
                   </IconButton>
+                  <Card
+                    sx={{
+                      backgroundColor: "#eee",
+                      padding: 2,
+                      borderBottom: "5px solid black",
+                      textAlign: "center",
+                    }}
+                  >
+                    Your top 3 most common module codes
+                  </Card>
                   {moduleAverages.length === 0 ? (
                     <Card
                       sx={{

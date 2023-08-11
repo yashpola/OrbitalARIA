@@ -16,6 +16,7 @@ export default function YearContainer({
   /* React states */
   // Conditional rendering
   const [semsShown, setSemsShown] = useState(false);
+  const [specialTerm, setSpecialTerm] = useState(false);
 
   /* Component Functionality */
   function showMods(e) {
@@ -69,6 +70,13 @@ export default function YearContainer({
             </Grid>
             <Grid item xs={12} sm={6}>
               <SemesterContainer {...semesterContainerProps} semID={2} />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <SemesterContainer
+                {...semesterContainerProps}
+                semID={3}
+                specialTerm={true}
+              />
             </Grid>
           </>
         )}

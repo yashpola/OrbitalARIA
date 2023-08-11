@@ -110,7 +110,7 @@ export default function StatsCard({
             <Card sx={bubbleStyling}>
               <h2 id="total-session-hours">{totalSessionHours}</h2>hours
               <h2 id="total-session-minutes">{totalSessionMinutes}</h2>minutes
-              <h5 style={{ marginTop: "5px" }}>total focus time</h5>
+              <h5 style={{ marginTop: "5px" }}>focus time</h5>
             </Card>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -119,7 +119,7 @@ export default function StatsCard({
               <Celebration sx={{ color: "green" }} />
               <h2 id="number-terminated-sessions">{numberFailedSessions} </h2>
               <IndeterminateCheckBox sx={{ color: "red" }} />
-              <h5>sessions</h5>
+              <h5 style={{ marginTop: "5px" }}>sessions</h5>
             </Card>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -128,7 +128,7 @@ export default function StatsCard({
               <LocalFireDepartment sx={{ color: "#FFA500" }} />
               <h2 id="session-fail-streak">{sessionFailStreak}</h2>
               <HeartBroken sx={{ color: "red" }} />
-              <h5>streaks</h5>
+              <h5 style={{ marginTop: "5px" }}>streaks</h5>
             </Card>
           </Grid>
           <Grid item xs={12} sm={6}>

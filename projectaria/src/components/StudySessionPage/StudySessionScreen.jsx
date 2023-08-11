@@ -18,8 +18,6 @@ import {
   possibleThemes,
   photoFrameBackgroundColor,
   photoFrameBorderColor,
-  possibleFontColors,
-  buttonColors,
 } from "../themes";
 import NewSession from "./NewSession";
 import SessionHistoryCard from "./SessionHistoryCard";
@@ -31,7 +29,6 @@ import happyFox from "../images/studysessionimages/happyfox.png";
 import angryFox from "../images/studysessionimages/angryfox.png";
 import normalFox from "../images/studysessionimages/normalfox.png";
 import UniversalPopup from "../Universal/UniversalPopup";
-import { Settings } from "@mui/icons-material";
 
 export default function StudySessionScreen({
   confirmNavigation,
