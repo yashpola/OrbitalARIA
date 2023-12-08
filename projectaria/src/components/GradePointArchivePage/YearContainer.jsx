@@ -76,6 +76,15 @@ export default function YearContainer({
                 {...semesterContainerProps}
                 semID={3}
                 specialTerm={true}
+                specialTermID={1}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <SemesterContainer
+                {...semesterContainerProps}
+                semID={3}
+                specialTerm={true}
+                specialTermID={2}
               />
             </Grid>
           </>

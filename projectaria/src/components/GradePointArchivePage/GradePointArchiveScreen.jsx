@@ -88,6 +88,9 @@ export default function GradePointArchiveScreen({ userID }) {
       return;
     }
 
+    let totalCreditsIncludingSU = 0;
+    data.map((mod) => (totalCreditsIncludingSU += mod.credits));
+
     let totalScore = 0;
     let totalCredits = 0;
 
@@ -102,7 +105,7 @@ export default function GradePointArchiveScreen({ userID }) {
 
     let cumulativeGPA = (totalScore / totalCredits).toFixed(2);
     setGPA(isNaN(cumulativeGPA) ? "" : cumulativeGPA);
-    setModuleCredits(totalCredits);
+    setModuleCredits(totalCreditsIncludingSU);
   }
 
   for (let i = 1; i <= yearCount; i++) {

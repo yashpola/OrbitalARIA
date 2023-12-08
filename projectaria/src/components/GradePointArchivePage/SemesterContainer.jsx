@@ -32,6 +32,7 @@ export default function SemesterContainer({
   semID,
   userID,
   specialTerm,
+  specialTermID,
 }) {
   /* Component variables */
   const gradeList = [
@@ -221,7 +222,7 @@ export default function SemesterContainer({
         }}
         elevation={3}
       >
-        {specialTerm ? "Special Term" : `Sem ${semID}`}
+        {specialTerm ? `Special Term ${specialTermID}` : `Sem ${semID}`}
         <IconButton
           id="create-mod-button"
           sx={{ marginLeft: "auto", color: possibleFontColors[presentTheme] }}
