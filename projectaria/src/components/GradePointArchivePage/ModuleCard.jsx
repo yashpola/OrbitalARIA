@@ -18,7 +18,8 @@ import { Delete, Edit } from "@mui/icons-material";
 import { useState } from "react";
 // supabase imports
 import { supabase } from "../../supabase";
-// component imports
+// data imports
+import nusmodsData from "../../data/nusmods-2024-2025.json";
 
 export default function ModuleCard({
   presentTheme,
@@ -37,9 +38,9 @@ export default function ModuleCard({
   gradeList,
 }) {
   /* Module Info from NUSMODS */
-  const moduleCodeList = nusModsData.map(({ moduleCode }) => moduleCode);
-  const moduleTitleList = nusModsData.map(({ title }) => title);
-  const moduleCreditsList = nusModsData.map(({ moduleCredit }) => moduleCredit);
+  const moduleCodeList = nusmodsData.map(({ moduleCode }) => moduleCode);
+  const moduleTitleList = nusmodsData.map(({ title }) => title);
+  const moduleCreditsList = nusmodsData.map(({ moduleCredit }) => moduleCredit);
 
   // Autocomplete + dropdown rendering
   const [grade, setGrade] = useState("");
