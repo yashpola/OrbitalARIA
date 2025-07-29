@@ -62,7 +62,7 @@ export default function GradePointArchiveScreen({ userID }) {
   /* Component Functionality */
   async function fetchModData() {
     const response = await fetch(
-      "https://api.nusmods.com/v2/2024-2025/moduleInfo.json"
+      "https://api.nusmods.com/v2/2025-2026/moduleInfo.json"
     );
     const jsonData = await response.json();
     setLocalModsData(jsonData);
